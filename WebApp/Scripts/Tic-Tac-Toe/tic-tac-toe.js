@@ -1,0 +1,356 @@
+﻿class TicTacToe {
+
+    #id;
+    #detects;
+    #container;
+    #currentPlayer = 1;
+
+    constructor(elementId) {
+
+        this.genInstanceId();
+
+        let element = $("#" + elementId);
+        if (element && element.length > 0) {
+            this.#container = element;
+        }
+        else {
+            throw new Error("Unable to find element with id " + elementId);
+        }
+
+        this.bindEvents();
+    }
+
+    log(msg) {
+        if (console && console.log)
+            console.log(msg);
+    }
+
+    genInstanceId() {
+
+        let detects = {
+            'ambientlight': function () {
+                return Modernizr.ambientlight;
+            },
+            'batteryapi': function () {
+                return Modernizr.batteryapi;
+            },
+            'blobconstructor': function () {
+                return Modernizr.blobconstructor;
+            },
+            'canvas': function () {
+                return Modernizr.canvas;
+            },
+            'cookies': function () {
+                return Modernizr.cookies;
+            },
+            'cors': function () {
+                return Modernizr.cors;
+            },
+            'cryptography': function () {
+                return Modernizr.cryptography;
+            },
+            'dart': function () {
+                return Modernizr.dart;
+            },
+            'dataview': function () {
+                return Modernizr.dataview;
+            },
+            'emoji': function () {
+                return Modernizr.emoji;
+            },
+            'exiforientation': function () {
+                return Modernizr.exiforientation;
+            },
+            'flash': function () {
+                return Modernizr.flash;
+            },
+            'forcetouch': function () {
+                return Modernizr.forcetouch;
+            },
+            'fullscreen': function () {
+                return Modernizr.fullscreen;
+            },
+            'gamepads': function () {
+                return Modernizr.gamepads;
+            },
+            'geolocation': function () {
+                return Modernizr.geolocation;
+            },
+            'history': function () {
+                return Modernizr.history;
+            },
+            'ie8compat': function () {
+                return Modernizr.ie8compat;
+            },
+            'notification': function () {
+                return Modernizr.notification;
+            },
+            'proximity': function () {
+                return Modernizr.proximity;
+            },
+            'quotamanagement': function () {
+                return Modernizr.quotamanagement;
+            },
+            'touchevents': function () {
+                return Modernizr.touchevents;
+            },
+            'vibrate': function () {
+                return Modernizr.vibrate;
+            },
+            'audioloop': function () {
+                return Modernizr.audioloop;
+            },
+            'audiopreload': function () {
+                return Modernizr.audiopreload;
+            },
+            'webaudio': function () {
+                return Modernizr.webaudio;
+            }
+        }
+
+        Modernizr.addTest(detects);
+        this.#detects = detects;
+
+        let instanceId = "";
+        if (detects.ambientlight()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.batteryapi()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.blobconstructor()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.canvas()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.cookies()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.cors()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.cryptography()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.dart()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.dataview()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.emoji()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.exiforientation()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.flash()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.forcetouch()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.fullscreen()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.gamepads()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.geolocation()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.history()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.ie8compat()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.notification()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.proximity()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.quotamanagement()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.touchevents()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.vibrate()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.audioloop()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.audiopreload()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        if (detects.webaudio()) {
+            instanceId += "1";
+        }
+        else {
+            instanceId += "0";
+        }
+
+        instanceId += (new Date()).valueOf();
+
+        this.#id = instanceId;
+    }
+
+    getInstanceId() {
+        return this.#id;
+    }
+
+    get InstanceId() {
+        return this.getInstanceId();
+    }
+
+    bindEvents() {
+
+        let cells = this.#container.children().children();
+
+        for (var i = 0; i < cells.length; i++) {
+            $(cells[i]).attr("id", "cell" + i);
+            $(cells[i]).attr("data-state", 0);
+        }
+
+        cells.off();
+        cells.on('click', this, this.cellClicked);
+    }
+
+    cellClicked(event) {
+
+        let app = event.data;
+        //app.log(event);
+        //app.log($(event.target));
+        //app.log("cell " + $(event.target).attr("id") + " clicked");
+
+        let cellState = new Number($(event.target).attr("data-state"));
+        if (cellState == 0) {
+            $(event.target).attr("data-state", app.#currentPlayer);
+        }
+
+        app.refreshGrid();
+    }
+
+    refreshGrid() {
+
+        let cells = this.#container.children().children();
+
+        for (var i = 0; i < length; i++) {
+
+            let cell = cells[i];
+
+            let cellState = new Number(cell.attr("data-state"));
+            if (cellState == 1) {
+                cell.css("background-image", "url('Images\Tic-Tac-Toe\Cross120x120.png')");
+            } else if (cellState == 2) {
+                cell.css("background-image", "url('Images\Tic-Tac-Toe\Circle120x120.png')");
+            } else {
+                cell.css("background-image", "");
+            }
+        }
+    }
+}

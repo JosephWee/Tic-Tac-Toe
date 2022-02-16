@@ -15,3 +15,57 @@ select,
 textarea {
     max-width: 280px;
 }
+
+div.tic-tac-toe-grid {
+    display: table;
+}
+
+div.tic-tac-toe-row-first {
+    display: table-row;
+    height: 120px;
+}
+
+div.tic-tac-toe-row {
+    display: table-row;
+    height: 120px;
+}
+
+div.tic-tac-toe-row-last {
+    display: table-row;
+    height: 120px;
+}
+
+div.tic-tac-toe-cell-first {
+    display: table-cell;
+    border-right: 1px inset black;
+    width: 120px;
+}
+
+div.tic-tac-toe-cell {
+    display: table-cell;
+    border-left: 1px inset black;
+    border-right: 1px inset black;
+    width: 120px;
+}
+
+div.tic-tac-toe-cell-last {
+    display: table-cell;
+    border-left: 1px inset black;
+    width: 120px;
+}
+
+div.tic-tac-toe-row-first div {
+    border-bottom: 1px inset black;
+    height: 120px;
+}
+
+div.tic-tac-toe-row div {
+    border-top: 1px inset black;
+    border-bottom: 1px inset black;
+    height: 120px;
+}
+
+div.tic-tac-toe-row-last div {
+    border-top: 1px inset black;
+    height: 120px;
+}
