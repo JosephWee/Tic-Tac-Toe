@@ -3,7 +3,8 @@
     #id;
     #detects;
     #container;
-    #currentPlayer = 1;
+    #cells;
+    #currentPlayer;
 
     constructor(elementId) {
 
@@ -17,7 +18,7 @@
             throw new Error("Unable to find element with id " + elementId);
         }
 
-        this.bindEvents();
+        this.initialize();
     }
 
     log(msg) {
@@ -307,9 +308,46 @@
         return this.getInstanceId();
     }
 
+    initialize() {
+        this.#container.html();
+        this.#container.html(
+            '<div class="tic-tac-toe-grid">' +
+            '    <div class="tic-tac-toe-row-first">' +
+            '        <div class="tic-tac-toe-cell-first"></div>' +
+            '        <div class="tic-tac-toe-cell"></div>' +
+             '       <div class="tic-tac-toe-cell-last"></div>' +
+            '    </div>' +
+            '    <div class="tic-tac-toe-row">' +
+            '        <div class="tic-tac-toe-cell-first"></div>' +
+            '        <div class="tic-tac-toe-cell"></div>' +
+            '        <div class="tic-tac-toe-cell-last"></div>' +
+            '    </div>' +
+            '    <div class="tic-tac-toe-row-last">' +
+            '        <div class="tic-tac-toe-cell-first"></div>' +
+            '        <div class="tic-tac-toe-cell"></div>' +
+            '        <div class="tic-tac-toe-cell-last"></div>' +
+            '    </div>' +
+            '</div>' +
+            '<div>' +
+            '    <div>' +
+            '        <span>Current Player</span>' +
+            '        <label class="currentPlayer"></label>' +
+            '    </div > ' +
+            '    <div>' +
+            '        <button type="button" class="btn btn-danger reset">Reset</button>' +
+            '    </div > ' +
+            '</div>'
+        );
+
+        this.#cells = this.#container.find("div.tic-tac-toe-grid").children().children();
+        this.#currentPlayer = 1;
+        this.bindEvents();
+        this.refreshUI();
+    }
+
     bindEvents() {
 
-        let cells = this.#container.children().children();
+        let cells = this.#cells;
 
         for (var i = 0; i < cells.length; i++) {
             $(cells[i]).attr("id", "cell" + i);
@@ -318,6 +356,12 @@
 
         cells.off();
         cells.on('click', this, this.cellClicked);
+
+        this.#container.find("button.reset").off();
+        this.#container.find("button.reset").on('click', this, function (event) {
+            let app = event.data;
+            app.initialize();
+        });
     }
 
     cellClicked(event) {
@@ -332,25 +376,33 @@
             $(event.target).attr("data-state", app.#currentPlayer);
         }
 
-        app.refreshGrid();
+        if (app.#currentPlayer == 1) {
+            app.#currentPlayer = 2;
+        } else {
+            app.#currentPlayer = 1;
+        }
+
+        app.refreshUI.call(app);
     }
 
-    refreshGrid() {
+    refreshUI() {
 
-        let cells = this.#container.children().children();
+        let cells = this.#cells;
 
-        for (var i = 0; i < length; i++) {
+        for (var i = 0; i < cells.length; i++) {
 
-            let cell = cells[i];
+            let cell = $(cells[i]);
 
-            let cellState = new Number(cell.attr("data-state"));
+            let cellState = cell.attr("data-state");
             if (cellState == 1) {
-                cell.css("background-image", "url('Images\Tic-Tac-Toe\Cross120x120.png')");
+                cell.css("background-image", "url('./Images/Tic-Tac-Toe/Cross120x120.png')");
             } else if (cellState == 2) {
-                cell.css("background-image", "url('Images\Tic-Tac-Toe\Circle120x120.png')");
+                cell.css("background-image", "url('./Images/Tic-Tac-Toe/Circle120x120.png')");
             } else {
                 cell.css("background-image", "");
             }
         }
+
+        this.#container.find("label.currentPlayer").html(this.#currentPlayer);
     }
 }
