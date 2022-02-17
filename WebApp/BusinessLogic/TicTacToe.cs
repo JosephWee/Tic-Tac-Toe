@@ -20,6 +20,7 @@ namespace WebApp.BusinessLogic
             int winner = int.MinValue;
             bool gameOver = true;
             int blankCellCount = 0;
+            List<int> WinningCells = new List<int>();
 
             int[,] cell = new int[request.GridSize, request.GridSize];
 
@@ -39,7 +40,7 @@ namespace WebApp.BusinessLogic
                     blankCellCount++;
             }
 
-            if (blankCellCount > 1)
+            if (blankCellCount > 0)
                 gameOver = false;
 
             //Check every row
@@ -63,6 +64,9 @@ namespace WebApp.BusinessLogic
                     {
                         winner = cell[r, 0];
                         gameOver = true;
+
+                        for (int i = 0; i < request.GridSize; i++)
+                            WinningCells.Add(i + r * request.GridSize);
                     }
                 }
             }
@@ -88,6 +92,9 @@ namespace WebApp.BusinessLogic
                     {
                         winner = cell[0, c];
                         gameOver = true;
+
+                        for (int r = 0; r < request.GridSize; r++)
+                            WinningCells.Add(c + (r * request.GridSize));
                     }
                 }
             }
@@ -112,6 +119,9 @@ namespace WebApp.BusinessLogic
                 {
                     winner = cell[0, 0];
                     gameOver = true;
+
+                    for (int i = 0; i < request.GridSize; i++)
+                        WinningCells.Add(i * (request.GridSize + 1));
                 }
             }
 
@@ -137,6 +147,9 @@ namespace WebApp.BusinessLogic
                 {
                     winner = cell[request.GridSize - 1, 0];
                     gameOver = true;
+
+                    for (int i = request.GridSize; i >= 1; i--)
+                        WinningCells.Add((request.GridSize - 1) * i);
                 }
             }
 
@@ -151,6 +164,8 @@ namespace WebApp.BusinessLogic
                     response.Status = Models.TicTacToeGameStatus.Player2Wins;
                 else
                     response.Status = Models.TicTacToeGameStatus.Draw;
+
+                response.WinningCells = WinningCells;
             }
             else
             {

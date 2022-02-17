@@ -27,6 +27,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 0);
+            Assert.IsTrue(response.WinningCells[1] == 1);
+            Assert.IsTrue(response.WinningCells[2] == 2);
 
 
 
@@ -44,6 +48,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 3);
+            Assert.IsTrue(response.WinningCells[1] == 4);
+            Assert.IsTrue(response.WinningCells[2] == 5);
 
 
 
@@ -61,6 +69,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 6);
+            Assert.IsTrue(response.WinningCells[1] == 7);
+            Assert.IsTrue(response.WinningCells[2] == 8);
 
 
 
@@ -78,6 +90,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 0);
+            Assert.IsTrue(response.WinningCells[1] == 3);
+            Assert.IsTrue(response.WinningCells[2] == 6);
 
 
 
@@ -95,6 +111,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 1);
+            Assert.IsTrue(response.WinningCells[1] == 4);
+            Assert.IsTrue(response.WinningCells[2] == 7);
 
 
 
@@ -112,7 +132,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
-
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 2);
+            Assert.IsTrue(response.WinningCells[1] == 5);
+            Assert.IsTrue(response.WinningCells[2] == 8);
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
@@ -129,6 +152,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 0);
+            Assert.IsTrue(response.WinningCells[1] == 4);
+            Assert.IsTrue(response.WinningCells[2] == 8);
 
 
 
@@ -146,6 +173,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 6);
+            Assert.IsTrue(response.WinningCells[1] == 4);
+            Assert.IsTrue(response.WinningCells[2] == 2);
         }
 
         [TestMethod]
@@ -169,6 +200,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 0);
+            Assert.IsTrue(response.WinningCells[1] == 1);
+            Assert.IsTrue(response.WinningCells[2] == 2);
 
 
 
@@ -186,6 +221,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 3);
+            Assert.IsTrue(response.WinningCells[1] == 4);
+            Assert.IsTrue(response.WinningCells[2] == 5);
 
 
 
@@ -203,6 +242,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 6);
+            Assert.IsTrue(response.WinningCells[1] == 7);
+            Assert.IsTrue(response.WinningCells[2] == 8);
 
 
 
@@ -220,6 +263,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 0);
+            Assert.IsTrue(response.WinningCells[1] == 3);
+            Assert.IsTrue(response.WinningCells[2] == 6);
 
 
 
@@ -237,6 +284,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 1);
+            Assert.IsTrue(response.WinningCells[1] == 4);
+            Assert.IsTrue(response.WinningCells[2] == 7);
 
 
 
@@ -254,6 +305,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 2);
+            Assert.IsTrue(response.WinningCells[1] == 5);
+            Assert.IsTrue(response.WinningCells[2] == 8);
 
 
 
@@ -271,6 +326,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 0);
+            Assert.IsTrue(response.WinningCells[1] == 4);
+            Assert.IsTrue(response.WinningCells[2] == 8);
 
 
 
@@ -288,6 +347,10 @@ namespace UnitTests
                 WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.IsTrue(response.WinningCells.Count == 3);
+            Assert.IsTrue(response.WinningCells[0] == 6);
+            Assert.IsTrue(response.WinningCells[1] == 4);
+            Assert.IsTrue(response.WinningCells[2] == 2);
         }
 
         [TestMethod]

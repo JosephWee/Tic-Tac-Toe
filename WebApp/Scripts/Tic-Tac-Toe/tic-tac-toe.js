@@ -6,6 +6,7 @@
     #cells;
     #currentPlayer;
     #state;
+    #winningCells;
 
     constructor(elementId) {
 
@@ -341,6 +342,7 @@
         this.#cells = this.#container.find("div.tic-tac-toe-grid").children().children();
         this.#currentPlayer = 1;
         this.#state = 0;
+        this.#winningCells = [];
         this.bindEvents();
         this.refreshUI();
     }
@@ -395,12 +397,19 @@
         for (var i = 0; i < cells.length; i++) {
 
             let cell = $(cells[i]);
+            let isWinningCell = this.#winningCells.includes(i);
 
             let cellState = cell.attr("data-state");
             if (cellState == 1) {
-                cell.css("background-image", "url('./Images/Tic-Tac-Toe/Cross120x120.png')");
+                if (isWinningCell)
+                    cell.css("background-image", "url('./Images/Tic-Tac-Toe/CrossRed120x120.png')");
+                else
+                    cell.css("background-image", "url('./Images/Tic-Tac-Toe/Cross120x120.png')");
             } else if (cellState == 2) {
-                cell.css("background-image", "url('./Images/Tic-Tac-Toe/Circle120x120.png')");
+                if (isWinningCell)
+                    cell.css("background-image", "url('./Images/Tic-Tac-Toe/CircleRed120x120.png')");
+                else
+                    cell.css("background-image", "url('./Images/Tic-Tac-Toe/Circle120x120.png')");
             } else {
                 cell.css("background-image", "");
             }
@@ -456,6 +465,12 @@
                 success: function (resp) {
                     app.log(resp);
                     app.#state = resp.Status;
+                    app.#winningCells = [];
+
+                    //debugger;
+                    if (resp.WinningCells && Array.isArray(resp.WinningCells)) {
+                        app.#winningCells = resp.WinningCells;
+                    }
                 }
             }
         );

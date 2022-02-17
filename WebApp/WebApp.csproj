@@ -177,8 +177,12 @@
     <Content Include="Global.asax" />
     <Content Include="Images\Tic-Tac-Toe\Circle100x100.png" />
     <Content Include="Images\Tic-Tac-Toe\Circle120x120.png" />
+    <Content Include="Images\Tic-Tac-Toe\CircleRed100x100.png" />
+    <Content Include="Images\Tic-Tac-Toe\CircleRed120x120.png" />
     <Content Include="Images\Tic-Tac-Toe\Cross100x100.png" />
     <Content Include="Images\Tic-Tac-Toe\Cross120x120.png" />
+    <Content Include="Images\Tic-Tac-Toe\CrossRed100x100.png" />
+    <Content Include="Images\Tic-Tac-Toe\CrossRed120x120.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
