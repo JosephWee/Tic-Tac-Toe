@@ -9,21 +9,38 @@ namespace WebApp.BusinessLogic
     {
         public static Models.TicTacToeUpdateResponse EvaluateResult(Models.TicTacToeUpdateRequest request)
         {
+            if (request == null)
+                throw new ArgumentNullException("Request is null");
+            if (request.CellStates == null)
+                throw new ArgumentNullException("Request.CellStates is null");
+            if (request.CellStates.Count != request.TotalCellCount)
+                throw new ArgumentNullException("Unexpected Request.CellStates count");
+
+            List<int> validCellStateValues = new List<int>() { 0, 1, 2 };
             int winner = int.MinValue;
             bool gameOver = true;
+            int blankCellCount = 0;
 
             int[,] cell = new int[request.GridSize, request.GridSize];
 
             for (int i = 0; i < request.TotalCellCount; i++)
             {
                 int col = i % request.GridSize;
-                int row = (i - col + 1) % request.GridSize;
+                int row = i / request.GridSize;
+                
                 int cellState = request.CellStates[i];
+
+                if (!validCellStateValues.Contains(cellState))
+                    throw new ArgumentException(string.Format("Cell[{0},{1}] is invalid", row, col));
+
                 cell[row, col] = cellState;
 
                 if (cellState == 0)
-                    gameOver = false;
+                    blankCellCount++;
             }
+
+            if (blankCellCount > 1)
+                gameOver = false;
 
             //Check every row
             if (!gameOver)
@@ -81,7 +98,7 @@ namespace WebApp.BusinessLogic
                 bool allTheSame = true;
                 int prevCellState = cell[0, 0];
 
-                for (int i = 0; i < request.GridSize; i++)
+                for (int i = 1; i < request.GridSize; i++)
                 {
                     int cellState = cell[i, i];
                     if (cellState != prevCellState)
@@ -89,12 +106,12 @@ namespace WebApp.BusinessLogic
                         allTheSame = false;
                         break;
                     }
+                }
 
-                    if (cell[0, 0] != 0 && allTheSame)
-                    {
-                        winner = cell[0, 0];
-                        gameOver = true;
-                    }
+                if (cell[0, 0] != 0 && allTheSame)
+                {
+                    winner = cell[0, 0];
+                    gameOver = true;
                 }
             }
 
@@ -102,23 +119,24 @@ namespace WebApp.BusinessLogic
             if (!gameOver)
             {
                 bool allTheSame = true;
-                int prevCellState = cell[0, 0];
+                int r = request.GridSize - 1;
+                int prevCellState = cell[r, 0];
 
-                for (int i = 0; i < request.GridSize; i++)
+                for (int i = 1; i < request.GridSize; i++)
                 {
-                    int r = request.GridSize - 1 - i;
+                    r = request.GridSize - 1 - i;
                     int cellState = cell[r, i];
                     if (cellState != prevCellState)
                     {
                         allTheSame = false;
                         break;
                     }
+                }
 
-                    if (cell[request.GridSize - 1, 0] != 0 && allTheSame)
-                    {
-                        winner = cell[request.GridSize - 1, 0];
-                        gameOver = true;
-                    }
+                if (cell[request.GridSize - 1, 0] != 0 && allTheSame)
+                {
+                    winner = cell[request.GridSize - 1, 0];
+                    gameOver = true;
                 }
             }
 
