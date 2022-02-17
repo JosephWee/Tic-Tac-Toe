@@ -430,5 +430,34 @@
         if (unusedCells.length == 0) {
             this.#state = 3;
         }
+
+        let requestData =
+        {
+            GridSize: 3,
+            CellStates: []
+        };
+
+        for (var i = 0; i < this.#cells.length; i++) {
+            let cell = $(this.#cells[i]);
+            let cellState = new Number(cell.attr("data-state"));
+            requestData.CellStates.push(cellState);
+        }
+
+        let requestJson = JSON.stringify(requestData);
+        let app = this;
+
+        $.ajax(
+            "./api/TicTacToe",
+            {
+                async: false,
+                method: "post",
+                contentType: "application/json",
+                data: requestJson,
+                success: function (resp) {
+                    app.log(resp);
+                    app.#state = resp.Status;
+                }
+            }
+        );
     }
 }

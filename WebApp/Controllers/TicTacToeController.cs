@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace WebApp.Controllers
 {
@@ -23,24 +24,32 @@ namespace WebApp.Controllers
         //}
 
         // POST api/values
-        public IHttpActionResult Post([FromBody] string value)
+        public IHttpActionResult Post([FromBody] Models.TicTacToeUpdateRequest value)
         {
-            Models.TicTacToeUpdateResponse tttResponse =
-                new Models.TicTacToeUpdateResponse();
+            Models.TicTacToeUpdateResponse tttUpdateResponse = null;
 
-            Models.TicTacToeUpdateRequest tttUpdateRequest =
-                JsonConvert.DeserializeObject<Models.TicTacToeUpdateRequest>(value);
+            try
+            {
+                 //tttUpdateRequest =
+                 //   JsonConvert.DeserializeObject(
+                 //   value.ToObject<Models.TicTacToeUpdateRequest>();
 
-            if (tttUpdateRequest == null
-                || tttUpdateRequest.CellStates == null
-                || tttUpdateRequest.CellStates.Count != tttUpdateRequest.TotalCellCount)
+                if (value == null)
+                    return BadRequest();
+
+                tttUpdateResponse =
+                    BusinessLogic.TicTacToe.EvaluateResult(value);
+            }
+            catch (ArgumentException argEx)
             {
                 return BadRequest();
             }
+            catch (Exception ex)
+            {
+                return InternalServerError();
+            }
 
-            
-
-            return Ok();
+            return Ok(tttUpdateResponse);
         }
 
         //// PUT api/values/5

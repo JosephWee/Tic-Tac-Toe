@@ -12,5 +12,11 @@ namespace WebApp.Models
         public int GridSize { get; set; }
         public int TotalCellCount { get { return this.GridSize * this.GridSize; } }
         public List<int> CellStates { get; set; }
+
+        public TicTacToeUpdateRequest()
+        {
+            GridSize = 3;
+            CellStates = new List<int>();
+        }
     }
 }
