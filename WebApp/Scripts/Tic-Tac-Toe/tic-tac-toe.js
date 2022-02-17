@@ -5,6 +5,7 @@
     #container;
     #cells;
     #currentPlayer;
+    #state;
 
     constructor(elementId) {
 
@@ -329,9 +330,7 @@
             '    </div>' +
             '</div>' +
             '<div>' +
-            '    <div>' +
-            '        <span>Current Player</span>' +
-            '        <label class="currentPlayer"></label>' +
+            '    <div class="display">' +
             '    </div > ' +
             '    <div>' +
             '        <button type="button" class="btn btn-danger reset">Reset</button>' +
@@ -341,6 +340,7 @@
 
         this.#cells = this.#container.find("div.tic-tac-toe-grid").children().children();
         this.#currentPlayer = 1;
+        this.#state = 0;
         this.bindEvents();
         this.refreshUI();
     }
@@ -371,18 +371,21 @@
         //app.log($(event.target));
         //app.log("cell " + $(event.target).attr("id") + " clicked");
 
-        let cellState = new Number($(event.target).attr("data-state"));
-        if (cellState == 0) {
-            $(event.target).attr("data-state", app.#currentPlayer);
-        }
+        if (app.#state == 0) {
+            let cellState = new Number($(event.target).attr("data-state"));
+            if (cellState == 0) {
+                $(event.target).attr("data-state", app.#currentPlayer);
+            }
 
-        if (app.#currentPlayer == 1) {
-            app.#currentPlayer = 2;
-        } else {
-            app.#currentPlayer = 1;
-        }
+            if (app.#currentPlayer == 1) {
+                app.#currentPlayer = 2;
+            } else {
+                app.#currentPlayer = 1;
+            }
 
-        app.refreshUI.call(app);
+            app.checkResult();
+            app.refreshUI.call(app);
+        }
     }
 
     refreshUI() {
@@ -403,6 +406,29 @@
             }
         }
 
-        this.#container.find("label.currentPlayer").html(this.#currentPlayer);
+        let msg = '';
+
+        if (this.#state == 0) {
+            msg = '<span>Current Player</span>&nbsp;<label class="currentPlayer">' + this.#currentPlayer + '</label>';
+        }
+        else if (this.#state == 1) {
+            msg = '<label>Player 1 wins</label>';
+        }
+        else if (this.#state == 2) {
+            msg = '<label>Player 2 wins</label>';
+        }
+        else {
+            msg = '<label>Draw</label>';
+        }
+
+        this.#container.find("div.display").html(msg);
+    }
+
+    checkResult() {
+
+        let unusedCells = this.#cells.filter("[data-state=0]");
+        if (unusedCells.length == 0) {
+            this.#state = 3;
+        }
     }
 }
