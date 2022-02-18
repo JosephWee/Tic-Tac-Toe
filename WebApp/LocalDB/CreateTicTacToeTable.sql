@@ -1,7 +1,7 @@
 ﻿USE [$(DatabaseName)];
 
 CREATE TABLE [dbo].[TicTacToeData] (
-    [Id]          INT            NOT NULL,
+    [Id]          INT            NOT NULL IDENTITY,
     [CreatedDate] DATETIME2 (7)  NOT NULL,
     [InstanceId]  NVARCHAR (200) NOT NULL,
     [GridSize]    INT            NOT NULL,

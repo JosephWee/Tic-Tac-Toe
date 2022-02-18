@@ -8,6 +8,8 @@ namespace WebApp.Models
 {
     public class TicTacToeUpdateRequest
     {
+        [MaxLength(200)]
+        public string InstanceId { get; set; }
         [Range(3, 5)]
         public int GridSize { get; set; }
         public int TotalCellCount { get { return this.GridSize * this.GridSize; } }

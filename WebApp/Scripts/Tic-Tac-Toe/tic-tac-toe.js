@@ -442,6 +442,7 @@
 
         let requestData =
         {
+            InstanceId: "" + this.InstanceId,
             GridSize: 3,
             CellStates: []
         };

@@ -193,6 +193,10 @@
     <Content Include="Images\Tic-Tac-Toe\CrossRed100x100.png" />
     <Content Include="Images\Tic-Tac-Toe\CrossRed120x120.png" />
     <Content Include="LocalDB\CreateTicTacToeTable.sql" />
+    <Content Include="LocalDB\TicTacToeData.mdf" />
+    <Content Include="LocalDB\TicTacToeData_log.ldf">
+      <DependentUpon>TicTacToeData.mdf</DependentUpon>
+    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
@@ -214,6 +218,7 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="connectionStrings.config" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

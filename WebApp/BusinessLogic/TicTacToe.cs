@@ -17,17 +17,38 @@ namespace WebApp.BusinessLogic
                 throw new ArgumentNullException("Unexpected Request.CellStates count");
 
             List<int> WinningCells = null;
-            
+            int BlankCellCount = int.MinValue;
+
             Models.TicTacToeUpdateResponse response = new Models.TicTacToeUpdateResponse()
             {
-                Status = EvaluateResult(request.GridSize, request.CellStates, out WinningCells),
+                Status = EvaluateResult(request.GridSize, request.CellStates, out BlankCellCount, out WinningCells),
                 WinningCells = WinningCells
             };
+
+            //Store to DB
+            List<Entity.TicTacToeDataEntry> TicTacToeData = new List<Entity.TicTacToeDataEntry>();
+            for (int i = 0; i < request.CellStates.Count; i++)
+            {
+                Entity.TicTacToeDataEntry newEntry = new Entity.TicTacToeDataEntry()
+                {
+                    CreatedDate = DateTime.UtcNow,
+                    InstanceId = request.InstanceId,
+                    GridSize = request.GridSize,
+                    MoveNumber = request.GridSize * request.GridSize - BlankCellCount,
+                    CellIndex = i,
+                    CellContent = request.CellStates[i]
+                };
+                TicTacToeData.Add(newEntry);
+            }
+
+            Entity.TicTacToeDataContext dbContext = new Entity.TicTacToeDataContext();
+            dbContext.TicTacToeData.AddRange(TicTacToeData);
+            dbContext.SaveChanges();
 
             return response;
         }
 
-        public static Models.TicTacToeGameStatus EvaluateResult(int GridSize, List<int> CellStates, out List<int> WinningCells)
+        public static Models.TicTacToeGameStatus EvaluateResult(int GridSize, List<int> CellStates, out int BlankCellCount, out List<int> WinningCells)
         {
             if (CellStates == null)
                 throw new ArgumentNullException("CellStates is null");
@@ -171,6 +192,7 @@ namespace WebApp.BusinessLogic
             }
 
             Models.TicTacToeGameStatus Status = Models.TicTacToeGameStatus.InProgress;
+            BlankCellCount = blankCellCount;
 
             if (gameOver)
             {

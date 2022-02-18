@@ -9,11 +9,13 @@ namespace UnitTests
         [TestMethod]
         public void TestPlayer1Wins()
         {
+            string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")}";
             WebApp.Models.TicTacToeUpdateRequest request;
             WebApp.Models.TicTacToeUpdateResponse response;
             WebApp.Models.TicTacToeGameStatus expectedGameStatus = WebApp.Models.TicTacToeGameStatus.Player1Wins;
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -35,6 +37,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -56,6 +59,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -77,6 +81,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -98,6 +103,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -119,6 +125,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -139,6 +146,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -160,6 +168,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -182,11 +191,13 @@ namespace UnitTests
         [TestMethod]
         public void TestPlayer2Wins()
         {
+            string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")}";
             WebApp.Models.TicTacToeUpdateRequest request;
             WebApp.Models.TicTacToeUpdateResponse response;
             WebApp.Models.TicTacToeGameStatus expectedGameStatus = WebApp.Models.TicTacToeGameStatus.Player2Wins;
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -208,6 +219,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -229,6 +241,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -250,6 +263,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -271,6 +285,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -292,6 +307,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -313,6 +329,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -334,6 +351,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -356,11 +374,13 @@ namespace UnitTests
         [TestMethod]
         public void TestDraw()
         {
+            string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")}";
             WebApp.Models.TicTacToeUpdateRequest request;
             WebApp.Models.TicTacToeUpdateResponse response;
             WebApp.Models.TicTacToeGameStatus expectedGameStatus = WebApp.Models.TicTacToeGameStatus.Draw;
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -378,6 +398,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -395,6 +416,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -413,11 +435,13 @@ namespace UnitTests
         [TestMethod]
         public void TestInProgress()
         {
+            string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")}";
             WebApp.Models.TicTacToeUpdateRequest request;
             WebApp.Models.TicTacToeUpdateResponse response;
             WebApp.Models.TicTacToeGameStatus expectedGameStatus = WebApp.Models.TicTacToeGameStatus.InProgress;
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -435,6 +459,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -452,6 +477,7 @@ namespace UnitTests
 
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {
@@ -470,11 +496,13 @@ namespace UnitTests
         [TestMethod]
         public void TestAnomalousData()
         {
+            string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")}";
             WebApp.Models.TicTacToeUpdateRequest request;
             WebApp.Models.TicTacToeUpdateResponse response;
             WebApp.Models.TicTacToeGameStatus expectedGameStatus = WebApp.Models.TicTacToeGameStatus.InProgress;
 
             request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
             request.GridSize = 3;
             request.CellStates = new System.Collections.Generic.List<int>()
             {

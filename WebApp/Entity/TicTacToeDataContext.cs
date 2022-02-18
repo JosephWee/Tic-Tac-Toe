@@ -8,7 +8,7 @@ namespace WebApp.Entity
 {
     public class TicTacToeDataContext : DbContext
     {
-        public TicTacToeDataContext() : base("TicTacToeData")
+        public TicTacToeDataContext() : base("name=TicTacToeDataConnString")
         {
         }
 
