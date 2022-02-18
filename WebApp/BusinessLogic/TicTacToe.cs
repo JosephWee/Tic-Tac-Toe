@@ -16,20 +16,37 @@ namespace WebApp.BusinessLogic
             if (request.CellStates.Count != request.TotalCellCount)
                 throw new ArgumentNullException("Unexpected Request.CellStates count");
 
+            List<int> WinningCells = null;
+            
+            Models.TicTacToeUpdateResponse response = new Models.TicTacToeUpdateResponse()
+            {
+                Status = EvaluateResult(request.GridSize, request.CellStates, out WinningCells),
+                WinningCells = WinningCells
+            };
+
+            return response;
+        }
+
+        public static Models.TicTacToeGameStatus EvaluateResult(int GridSize, List<int> CellStates, out List<int> WinningCells)
+        {
+            if (CellStates == null)
+                throw new ArgumentNullException("CellStates is null");
+
+            int TotalCellCount = GridSize * GridSize;
             List<int> validCellStateValues = new List<int>() { 0, 1, 2 };
             int winner = int.MinValue;
             bool gameOver = true;
             int blankCellCount = 0;
-            List<int> WinningCells = new List<int>();
+            List<int> winningCells = new List<int>();
 
-            int[,] cell = new int[request.GridSize, request.GridSize];
+            int[,] cell = new int[GridSize, GridSize];
 
-            for (int i = 0; i < request.TotalCellCount; i++)
+            for (int i = 0; i < TotalCellCount; i++)
             {
-                int col = i % request.GridSize;
-                int row = i / request.GridSize;
-                
-                int cellState = request.CellStates[i];
+                int col = i % GridSize;
+                int row = i / GridSize;
+
+                int cellState = CellStates[i];
 
                 if (!validCellStateValues.Contains(cellState))
                     throw new ArgumentException(string.Format("Cell[{0},{1}] is invalid", row, col));
@@ -46,11 +63,11 @@ namespace WebApp.BusinessLogic
             //Check every row
             if (!gameOver)
             {
-                for (int r = 0; r < request.GridSize; r++)
+                for (int r = 0; r < GridSize; r++)
                 {
                     bool allTheSame = true;
                     int prevCellState = cell[r, 0];
-                    for (int c = 1; c < request.GridSize; c++)
+                    for (int c = 1; c < GridSize; c++)
                     {
                         int cellState = cell[r, c];
                         if (cellState != prevCellState)
@@ -65,8 +82,8 @@ namespace WebApp.BusinessLogic
                         winner = cell[r, 0];
                         gameOver = true;
 
-                        for (int i = 0; i < request.GridSize; i++)
-                            WinningCells.Add(i + r * request.GridSize);
+                        for (int i = 0; i < GridSize; i++)
+                            winningCells.Add(i + r * GridSize);
                     }
                 }
             }
@@ -74,11 +91,11 @@ namespace WebApp.BusinessLogic
             //Check every column
             if (!gameOver)
             {
-                for (int c = 0; c < request.GridSize; c++)
+                for (int c = 0; c < GridSize; c++)
                 {
                     bool allTheSame = true;
                     int prevCellState = cell[0, c];
-                    for (int r = 1; r < request.GridSize; r++)
+                    for (int r = 1; r < GridSize; r++)
                     {
                         int cellState = cell[r, c];
                         if (cellState != prevCellState)
@@ -93,8 +110,8 @@ namespace WebApp.BusinessLogic
                         winner = cell[0, c];
                         gameOver = true;
 
-                        for (int r = 0; r < request.GridSize; r++)
-                            WinningCells.Add(c + (r * request.GridSize));
+                        for (int r = 0; r < GridSize; r++)
+                            winningCells.Add(c + (r * GridSize));
                     }
                 }
             }
@@ -105,7 +122,7 @@ namespace WebApp.BusinessLogic
                 bool allTheSame = true;
                 int prevCellState = cell[0, 0];
 
-                for (int i = 1; i < request.GridSize; i++)
+                for (int i = 1; i < GridSize; i++)
                 {
                     int cellState = cell[i, i];
                     if (cellState != prevCellState)
@@ -120,8 +137,8 @@ namespace WebApp.BusinessLogic
                     winner = cell[0, 0];
                     gameOver = true;
 
-                    for (int i = 0; i < request.GridSize; i++)
-                        WinningCells.Add(i * (request.GridSize + 1));
+                    for (int i = 0; i < GridSize; i++)
+                        winningCells.Add(i * (GridSize + 1));
                 }
             }
 
@@ -129,12 +146,12 @@ namespace WebApp.BusinessLogic
             if (!gameOver)
             {
                 bool allTheSame = true;
-                int r = request.GridSize - 1;
+                int r = GridSize - 1;
                 int prevCellState = cell[r, 0];
 
-                for (int i = 1; i < request.GridSize; i++)
+                for (int i = 1; i < GridSize; i++)
                 {
-                    r = request.GridSize - 1 - i;
+                    r = GridSize - 1 - i;
                     int cellState = cell[r, i];
                     if (cellState != prevCellState)
                     {
@@ -143,36 +160,35 @@ namespace WebApp.BusinessLogic
                     }
                 }
 
-                if (cell[request.GridSize - 1, 0] != 0 && allTheSame)
+                if (cell[GridSize - 1, 0] != 0 && allTheSame)
                 {
-                    winner = cell[request.GridSize - 1, 0];
+                    winner = cell[GridSize - 1, 0];
                     gameOver = true;
 
-                    for (int i = request.GridSize; i >= 1; i--)
-                        WinningCells.Add((request.GridSize - 1) * i);
+                    for (int i = GridSize; i >= 1; i--)
+                        winningCells.Add((GridSize - 1) * i);
                 }
             }
 
-            Models.TicTacToeUpdateResponse response =
-                new Models.TicTacToeUpdateResponse();
+            Models.TicTacToeGameStatus Status = Models.TicTacToeGameStatus.InProgress;
 
             if (gameOver)
             {
                 if (winner == 1)
-                    response.Status = Models.TicTacToeGameStatus.Player1Wins;
+                    Status = Models.TicTacToeGameStatus.Player1Wins;
                 else if (winner == 2)
-                    response.Status = Models.TicTacToeGameStatus.Player2Wins;
+                    Status = Models.TicTacToeGameStatus.Player2Wins;
                 else
-                    response.Status = Models.TicTacToeGameStatus.Draw;
+                    Status = Models.TicTacToeGameStatus.Draw;
 
-                response.WinningCells = WinningCells;
+                WinningCells = winningCells;
             }
             else
             {
-                response.Status = Models.TicTacToeGameStatus.InProgress;
+                WinningCells = null;
             }
-
-            return response;
+            
+            return Status;
         }
     }
 }
