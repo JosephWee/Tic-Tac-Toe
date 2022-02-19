@@ -446,6 +446,7 @@
         {
             InstanceId: "" + this.#gameId,
             GridSize: 3,
+            NumberOfPlayers: 1,
             CellStates: []
         };
 

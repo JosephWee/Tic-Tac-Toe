@@ -7,6 +7,16 @@ namespace WebApp.BusinessLogic
 {
     public class TicTacToe
     {
+        public static IReadOnlyList<int> ValidCellStateValues
+        {
+            get
+            {
+                return
+                    (new List<int>() { 0, 1, 2 })
+                    .AsReadOnly();
+            }
+        }
+
         public static Models.TicTacToeUpdateResponse EvaluateResult(Models.TicTacToeUpdateRequest request)
         {
             if (request == null)
@@ -34,7 +44,7 @@ namespace WebApp.BusinessLogic
                     CreatedDate = DateTime.UtcNow,
                     InstanceId = request.InstanceId,
                     GridSize = request.GridSize,
-                    MoveNumber = request.GridSize * request.GridSize - BlankCellCount,
+                    MoveNumber = request.TotalCellCount - BlankCellCount,
                     CellIndex = i,
                     CellContent = request.CellStates[i]
                 };
@@ -45,6 +55,15 @@ namespace WebApp.BusinessLogic
             dbContext.TicTacToeData.AddRange(TicTacToeData);
             dbContext.SaveChanges();
 
+            if (request.NumberOfPlayers == 1 && response.Status == Models.TicTacToeGameStatus.InProgress)
+            {
+                ITicTacToeComputerPlayer computerPlayer =
+                    ComputerPlayerConfig.CreateComputerPlayer();
+
+                response.ComputerMove =
+                    computerPlayer.GetMove(request.InstanceId, request.TotalCellCount - BlankCellCount);
+            }
+
             return response;
         }
 
@@ -54,7 +73,6 @@ namespace WebApp.BusinessLogic
                 throw new ArgumentNullException("CellStates is null");
 
             int TotalCellCount = GridSize * GridSize;
-            List<int> validCellStateValues = new List<int>() { 0, 1, 2 };
             int winner = int.MinValue;
             bool gameOver = true;
             int blankCellCount = 0;
@@ -69,7 +87,7 @@ namespace WebApp.BusinessLogic
 
                 int cellState = CellStates[i];
 
-                if (!validCellStateValues.Contains(cellState))
+                if (!ValidCellStateValues.Contains(cellState))
                     throw new ArgumentException(string.Format("Cell[{0},{1}] is invalid", row, col));
 
                 cell[row, col] = cellState;
@@ -211,6 +229,62 @@ namespace WebApp.BusinessLogic
             }
             
             return Status;
+        }
+
+        public static List<Entity.TicTacToeDataEntry>  GetAndValidate(string InstanceId, int LastMoveNumber)
+        {
+            Entity.TicTacToeDataContext context = new Entity.TicTacToeDataContext();
+
+            List<Entity.TicTacToeDataEntry> ds =
+                (from dr in context.TicTacToeData
+                 where
+                     dr.InstanceId == InstanceId
+                     && dr.MoveNumber == LastMoveNumber
+                 orderby
+                     dr.CellIndex
+                 select dr).ToList();
+
+
+
+            if (ds == null || !ds.Any())
+                return ds;
+
+
+
+            var invalidCellContent =
+                ds.Where(x => !TicTacToe.ValidCellStateValues.Contains(x.CellContent))
+                .ToList();
+
+            if (invalidCellContent.Any())
+                throw new ArgumentOutOfRangeException(
+                    string.Format("Cells {0} has invalid cell contents", string.Join(", ", invalidCellContent))
+                );
+
+
+
+            int minGridSize = ds.Min(x => x.GridSize);
+            int maxGridSize = ds.Max(x => x.GridSize);
+
+            if (minGridSize != maxGridSize)
+                throw new ArgumentOutOfRangeException("Data has inconsistent Grid Size");
+
+
+
+            bool allCellIndexOkay = true;
+            int TotalCellCount = minGridSize * minGridSize;
+            for (int i = 0; i < TotalCellCount; i++)
+            {
+                if (ds[i].CellIndex != i)
+                {
+                    allCellIndexOkay = false;
+                    break;
+                }
+            }
+
+            if (!allCellIndexOkay)
+                throw new IndexOutOfRangeException("Cell Indices are not 0 based or contiguous");
+
+            return ds;
         }
     }
 }

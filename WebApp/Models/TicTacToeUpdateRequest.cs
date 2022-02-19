@@ -10,11 +10,17 @@ namespace WebApp.Models
     {
         [MaxLength(200)]
         public string InstanceId { get; set; }
+        
         [Range(3, 5)]
         public int GridSize { get; set; }
-        public int TotalCellCount { get { return this.GridSize * this.GridSize; } }
+
+        [Range(1, 2)]
+        public int NumberOfPlayers { get; set; }
+
         public List<int> CellStates { get; set; }
 
+        public int TotalCellCount { get { return this.GridSize * this.GridSize; } }
+        
         public TicTacToeUpdateRequest()
         {
             GridSize = 3;

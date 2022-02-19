@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Linq;
 
 namespace UnitTests
 {
@@ -524,6 +525,153 @@ namespace UnitTests
             }
 
             Assert.IsTrue(exceptionFound);
+        }
+
+        [TestMethod]
+        public void TestDataRetrievalAndValidation()
+        {
+            string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")}";
+            WebApp.Models.TicTacToeUpdateRequest request;
+            WebApp.Models.TicTacToeUpdateResponse response;
+            int MoveNumber = 0;
+
+            request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
+            request.GridSize = 3;
+            request.CellStates = new System.Collections.Generic.List<int>()
+            {
+                1, 0, 0,
+                0, 0, 0,
+                0, 0, 0
+            };
+            response = null;
+
+            response =
+                WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
+            Assert.IsNotNull(response);
+            Assert.IsTrue(response.Status == WebApp.Models.TicTacToeGameStatus.InProgress);
+            MoveNumber++;
+
+
+
+            request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
+            request.GridSize = 3;
+            request.CellStates = new System.Collections.Generic.List<int>()
+            {
+                1, 0, 0,
+                0, 2, 0,
+                0, 0, 0
+            };
+            response = null;
+
+            response =
+                WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
+            Assert.IsNotNull(response);
+            Assert.IsTrue(response.Status == WebApp.Models.TicTacToeGameStatus.InProgress);
+            MoveNumber++;
+
+
+
+            request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
+            request.GridSize = 3;
+            request.CellStates = new System.Collections.Generic.List<int>()
+            {
+                1, 0, 0,
+                0, 2, 0,
+                0, 0, 1
+            };
+            response = null;
+
+            response =
+                WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
+            Assert.IsNotNull(response);
+            Assert.IsTrue(response.Status == WebApp.Models.TicTacToeGameStatus.InProgress);
+            MoveNumber++;
+
+
+
+            request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
+            request.GridSize = 3;
+            request.CellStates = new System.Collections.Generic.List<int>()
+            {
+                1, 0, 0,
+                0, 2, 0,
+                2, 0, 1
+            };
+            response = null;
+
+            response =
+                WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
+            Assert.IsNotNull(response);
+            Assert.IsTrue(response.Status == WebApp.Models.TicTacToeGameStatus.InProgress);
+            MoveNumber++;
+
+
+
+            request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
+            request.GridSize = 3;
+            request.CellStates = new System.Collections.Generic.List<int>()
+            {
+                1, 0, 1,
+                0, 2, 0,
+                2, 0, 1
+            };
+            response = null;
+
+            response =
+                WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
+            Assert.IsNotNull(response);
+            Assert.IsTrue(response.Status == WebApp.Models.TicTacToeGameStatus.InProgress);
+            MoveNumber++;
+
+
+
+            request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
+            request.GridSize = 3;
+            request.CellStates = new System.Collections.Generic.List<int>()
+            {
+                1, 2, 1,
+                0, 2, 0,
+                2, 0, 1
+            };
+            response = null;
+
+            response =
+                WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
+            Assert.IsNotNull(response);
+            Assert.IsTrue(response.Status == WebApp.Models.TicTacToeGameStatus.InProgress);
+            MoveNumber++;
+
+
+
+            request = new WebApp.Models.TicTacToeUpdateRequest();
+            request.InstanceId = InstanceId;
+            request.GridSize = 3;
+            request.CellStates = new System.Collections.Generic.List<int>()
+            {
+                1, 2, 1,
+                0, 2, 1,
+                2, 0, 1
+            };
+            response = null;
+
+            response =
+                WebApp.BusinessLogic.TicTacToe.EvaluateResult(request);
+            Assert.IsNotNull(response);
+            Assert.IsTrue(response.Status == WebApp.Models.TicTacToeGameStatus.Player1Wins);
+            MoveNumber++;
+
+
+            var ds =
+                WebApp.BusinessLogic.TicTacToe.GetAndValidate(InstanceId, MoveNumber);
+
+            int FetchedMoveNumber = ds.Max(x => x.MoveNumber);
+            Assert.AreEqual(MoveNumber, FetchedMoveNumber);
         }
     }
 }
