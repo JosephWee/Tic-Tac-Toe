@@ -76,7 +76,7 @@ namespace WebApp.BusinessLogic
 
             int TotalCellCount = GridSize * GridSize;
             int winner = int.MinValue;
-            bool gameOver = true;
+            bool winnerFound = false;
             int blankCellCount = 0;
             List<int> winningCells = new List<int>();
 
@@ -98,11 +98,8 @@ namespace WebApp.BusinessLogic
                     blankCellCount++;
             }
 
-            if (blankCellCount >= 0)
-                gameOver = false;
-
             //Check every row
-            if (!gameOver)
+            if (!winnerFound)
             {
                 for (int r = 0; r < GridSize; r++)
                 {
@@ -121,7 +118,7 @@ namespace WebApp.BusinessLogic
                     if (cell[r, 0] != 0 && allTheSame)
                     {
                         winner = cell[r, 0];
-                        gameOver = true;
+                        winnerFound = true;
 
                         for (int i = 0; i < GridSize; i++)
                             winningCells.Add(i + r * GridSize);
@@ -130,7 +127,7 @@ namespace WebApp.BusinessLogic
             }
 
             //Check every column
-            if (!gameOver)
+            if (!winnerFound)
             {
                 for (int c = 0; c < GridSize; c++)
                 {
@@ -149,7 +146,7 @@ namespace WebApp.BusinessLogic
                     if (cell[0, c] != 0 && allTheSame)
                     {
                         winner = cell[0, c];
-                        gameOver = true;
+                        winnerFound = true;
 
                         for (int r = 0; r < GridSize; r++)
                             winningCells.Add(c + (r * GridSize));
@@ -158,7 +155,7 @@ namespace WebApp.BusinessLogic
             }
 
             //Check diagonal top-bottom
-            if (!gameOver)
+            if (!winnerFound)
             {
                 bool allTheSame = true;
                 int prevCellState = cell[0, 0];
@@ -176,7 +173,7 @@ namespace WebApp.BusinessLogic
                 if (cell[0, 0] != 0 && allTheSame)
                 {
                     winner = cell[0, 0];
-                    gameOver = true;
+                    winnerFound = true;
 
                     for (int i = 0; i < GridSize; i++)
                         winningCells.Add(i * (GridSize + 1));
@@ -184,7 +181,7 @@ namespace WebApp.BusinessLogic
             }
 
             //Check diagonal bottom-top
-            if (!gameOver)
+            if (!winnerFound)
             {
                 bool allTheSame = true;
                 int r = GridSize - 1;
@@ -204,7 +201,7 @@ namespace WebApp.BusinessLogic
                 if (cell[GridSize - 1, 0] != 0 && allTheSame)
                 {
                     winner = cell[GridSize - 1, 0];
-                    gameOver = true;
+                    winnerFound = true;
 
                     for (int i = GridSize; i >= 1; i--)
                         winningCells.Add((GridSize - 1) * i);
@@ -214,19 +211,20 @@ namespace WebApp.BusinessLogic
             Models.TicTacToeGameStatus Status = Models.TicTacToeGameStatus.InProgress;
             BlankCellCount = blankCellCount;
 
-            if (gameOver)
+            if (winnerFound)
             {
                 if (winner == 1)
                     Status = Models.TicTacToeGameStatus.Player1Wins;
                 else if (winner == 2)
                     Status = Models.TicTacToeGameStatus.Player2Wins;
-                else
-                    Status = Models.TicTacToeGameStatus.Draw;
-
+                
                 WinningCells = winningCells;
             }
             else
             {
+                if (blankCellCount <= 0)
+                    Status = Models.TicTacToeGameStatus.Draw;
+                
                 WinningCells = null;
             }
             
