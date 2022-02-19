@@ -4,6 +4,7 @@
     #detects;
     #container;
     #cells;
+    #gameId;
     #currentPlayer;
     #state;
     #winningCells;
@@ -340,6 +341,7 @@
         );
 
         this.#cells = this.#container.find("div.tic-tac-toe-grid").children().children();
+        this.#gameId = (new Date()).valueOf();
         this.#currentPlayer = 1;
         this.#state = 0;
         this.#winningCells = [];
@@ -442,7 +444,7 @@
 
         let requestData =
         {
-            InstanceId: "" + this.InstanceId,
+            InstanceId: "" + this.#gameId,
             GridSize: 3,
             CellStates: []
         };
