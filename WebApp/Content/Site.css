@@ -69,3 +69,13 @@ div.tic-tac-toe-row-last div {
     border-top: 1px inset black;
     height: 120px;
 }
+
+div.gameMode {
+    display: inline-block;
+    padding-right: 20px;
+}
+
+div.currentPlayer {
+    display: inline-block;
+    padding-right: 20px;
+}

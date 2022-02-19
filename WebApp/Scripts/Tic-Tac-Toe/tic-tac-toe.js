@@ -5,6 +5,7 @@
     #container;
     #cells;
     #gameId;
+    #gameMode;
     #currentPlayer;
     #state;
     #winningCells;
@@ -336,12 +337,15 @@
             '    </div > ' +
             '    <div>' +
             '        <button type="button" class="btn btn-danger reset">Reset</button>' +
+            '        <button type="button" class="btn btn-danger changeMode">Change Mode</button>' +
             '    </div > ' +
             '</div>'
         );
 
         this.#cells = this.#container.find("div.tic-tac-toe-grid").children().children();
         this.#gameId = (new Date()).valueOf();
+        let readGameMode = parseInt(sessionStorage.getItem(this.InstanceId + "gameMode"));
+        this.#gameMode = readGameMode === 1 || readGameMode === 2 ? readGameMode : 1;
         this.#currentPlayer = 1;
         this.#state = 0;
         this.#winningCells = [];
@@ -361,6 +365,17 @@
         cells.off();
         cells.on('click', this, this.cellClicked);
 
+        this.#container.find("button.changeMode").off();
+        this.#container.find("button.changeMode").on('click', this, function (event) {
+            let app = event.data;
+            if (app.#gameMode == 1)
+                app.#gameMode = 2;
+            else
+                app.#gameMode = 1;
+            sessionStorage.setItem(app.InstanceId + 'gameMode', app.#gameMode);
+            app.initialize();
+        });
+
         this.#container.find("button.reset").off();
         this.#container.find("button.reset").on('click', this, function (event) {
             let app = event.data;
@@ -379,16 +394,21 @@
             let cellState = new Number($(event.target).attr("data-state"));
             if (cellState == 0) {
                 $(event.target).attr("data-state", app.#currentPlayer);
-            }
 
-            if (app.#currentPlayer == 1) {
-                app.#currentPlayer = 2;
-            } else {
-                app.#currentPlayer = 1;
-            }
+                if (app.#gameMode == 2) {
+                    if (app.#currentPlayer == 1) {
+                        app.#currentPlayer = 2;
+                    } else {
+                        app.#currentPlayer = 1;
+                    }
+                }
+                else {
+                    app.#currentPlayer = 1;
+                }
 
-            app.checkResult();
-            app.refreshUI.call(app);
+                app.checkResult();
+                app.refreshUI.call(app);
+            }
         }
     }
 
@@ -420,7 +440,7 @@
         let msg = '';
 
         if (this.#state == 0) {
-            msg = '<span>Current Player</span>&nbsp;<label class="currentPlayer">' + this.#currentPlayer + '</label>';
+            msg = '<div class="gameMode"><label>' + this.#gameMode + '</label>&nbsp;Player Mode</div><div class="currentPlayer">Current Player&nbsp;<label>' + this.#currentPlayer + '</label></div>';
         }
         else if (this.#state == 1) {
             msg = '<label>Player 1 wins</label>';
@@ -446,7 +466,7 @@
         {
             InstanceId: "" + this.#gameId,
             GridSize: 3,
-            NumberOfPlayers: 1,
+            NumberOfPlayers: this.#gameMode,
             CellStates: []
         };
 
@@ -474,6 +494,16 @@
                     //debugger;
                     if (resp.WinningCells && Array.isArray(resp.WinningCells)) {
                         app.#winningCells = resp.WinningCells;
+                    }
+
+                    if (app.#gameMode == 1) {
+                        //debugger;
+                        let computerMove = parseInt(resp.ComputerMove);
+                        if (typeof computerMove === 'number' && computerMove >= 0 && computerMove < app.#cells.length) {
+                            let cellToChange = $(app.#cells[computerMove]);
+                            if (cellToChange && cellToChange.length > 0)
+                                cellToChange.attr("data-state", 2);
+                        }
                     }
                 }
             }
