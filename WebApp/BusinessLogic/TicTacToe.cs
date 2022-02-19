@@ -35,33 +35,35 @@ namespace WebApp.BusinessLogic
                 WinningCells = WinningCells
             };
 
+            int moveNumber = request.TotalCellCount - BlankCellCount;
+
             //Store to DB
-            List<Entity.TicTacToeDataEntry> TicTacToeData = new List<Entity.TicTacToeDataEntry>();
-            for (int i = 0; i < request.CellStates.Count; i++)
-            {
-                Entity.TicTacToeDataEntry newEntry = new Entity.TicTacToeDataEntry()
-                {
-                    CreatedDate = DateTime.UtcNow,
-                    InstanceId = request.InstanceId,
-                    GridSize = request.GridSize,
-                    MoveNumber = request.TotalCellCount - BlankCellCount,
-                    CellIndex = i,
-                    CellContent = request.CellStates[i]
-                };
-                TicTacToeData.Add(newEntry);
-            }
-
-            Entity.TicTacToeDataContext dbContext = new Entity.TicTacToeDataContext();
-            dbContext.TicTacToeData.AddRange(TicTacToeData);
-            dbContext.SaveChanges();
-
+            SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, request.CellStates);
+            
             if (request.NumberOfPlayers == 1 && response.Status == Models.TicTacToeGameStatus.InProgress)
             {
                 ITicTacToeComputerPlayer computerPlayer =
                     ComputerPlayerConfig.CreateComputerPlayer();
 
-                response.ComputerMove =
-                    computerPlayer.GetMove(request.InstanceId, request.TotalCellCount - BlankCellCount);
+                int? ComputerMove =
+                    computerPlayer.GetMove(request.InstanceId, moveNumber);
+
+                if (ComputerMove.HasValue && request.CellStates[ComputerMove.Value] == 0)
+                {
+                    var CellStates = request.CellStates.ToList();
+                    CellStates[ComputerMove.Value] = 2;
+
+                    //Store to Computer Move to DB
+                    moveNumber++;
+                    SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, CellStates);
+
+                    int BlankCellCount2 = int.MinValue;
+                    List<int> WinningCells2 = new List<int>();
+                    response.Status = EvaluateResult(request.GridSize, CellStates, out BlankCellCount2, out WinningCells2);
+
+                    response.WinningCells = WinningCells2;
+                    response.ComputerMove = ComputerMove;
+                }
             }
 
             return response;
@@ -96,7 +98,7 @@ namespace WebApp.BusinessLogic
                     blankCellCount++;
             }
 
-            if (blankCellCount > 0)
+            if (blankCellCount >= 0)
                 gameOver = false;
 
             //Check every row
@@ -285,6 +287,28 @@ namespace WebApp.BusinessLogic
                 throw new IndexOutOfRangeException("Cell Indices are not 0 based or contiguous");
 
             return ds;
+        }
+
+        public static void SaveToDatabase(string InstanceId, int GridSize, int MoveNumber, List<int> CellStates)
+        {
+            List<Entity.TicTacToeDataEntry> TicTacToeData = new List<Entity.TicTacToeDataEntry>();
+            for (int i = 0; i < CellStates.Count; i++)
+            {
+                Entity.TicTacToeDataEntry newEntry = new Entity.TicTacToeDataEntry()
+                {
+                    CreatedDate = DateTime.UtcNow,
+                    InstanceId = InstanceId,
+                    GridSize = GridSize,
+                    MoveNumber = MoveNumber,
+                    CellIndex = i,
+                    CellContent = CellStates[i]
+                };
+                TicTacToeData.Add(newEntry);
+            }
+
+            Entity.TicTacToeDataContext dbContext = new Entity.TicTacToeDataContext();
+            dbContext.TicTacToeData.AddRange(TicTacToeData);
+            dbContext.SaveChanges();
         }
     }
 }
