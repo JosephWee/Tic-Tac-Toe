@@ -19,7 +19,8 @@ namespace WebApp.BusinessLogic
         public class CellCollction
         {
             public List<Cell> Cells { get; set; }
-            public int MatchCount { get; set; }
+            public int Player1Count { get; set; }
+            public int Player2Count { get; set; }
         }
 
         public int GetMove(string InstanceId, int LastMoveNumber)
@@ -61,7 +62,7 @@ namespace WebApp.BusinessLogic
                     cells.Add(cell);
                 }
 
-                
+
                 List<CellCollction> parsed = new List<CellCollction>();
 
                 //Check every Row
@@ -73,7 +74,8 @@ namespace WebApp.BusinessLogic
                         CellCollction collection = new CellCollction()
                         {
                             Cells = row.ToList(),
-                            MatchCount = row.Count(x => x.CellState.CellContent == 2)
+                            Player1Count = row.Count(x => x.CellState.CellContent == 1),
+                            Player2Count = row.Count(x => x.CellState.CellContent == 2)
                         };
                         parsed.Add(collection);
                     }
@@ -90,7 +92,8 @@ namespace WebApp.BusinessLogic
                         CellCollction collection = new CellCollction()
                         {
                             Cells = col.ToList(),
-                            MatchCount = col.Count(x => x.CellState.CellContent == 2)
+                            Player1Count = col.Count(x => x.CellState.CellContent == 1),
+                            Player2Count = col.Count(x => x.CellState.CellContent == 2)
                         };
                         parsed.Add(collection);
                     }
@@ -112,7 +115,8 @@ namespace WebApp.BusinessLogic
                     CellCollction diagonal1 = new CellCollction()
                     {
                         Cells = TopToBottomDiagonal.ToList(),
-                        MatchCount = TopToBottomDiagonal.Count(x => x.CellState.CellContent == 2)
+                        Player1Count = TopToBottomDiagonal.Count(x => x.CellState.CellContent == 1),
+                        Player2Count = TopToBottomDiagonal.Count(x => x.CellState.CellContent == 2)
                     };
                     parsed.Add(diagonal1);
                 }
@@ -123,7 +127,7 @@ namespace WebApp.BusinessLogic
                 List<Cell> BottomToTopDiagonal = new List<Cell>();
                 for (int i = 0; i < GridSize; i++)
                 {
-                    Cell mCell = cells.FirstOrDefault(x => x.Row == GridSize -1 - i && x.Col == i);
+                    Cell mCell = cells.FirstOrDefault(x => x.Row == GridSize - 1 - i && x.Col == i);
                     if (mCell != null)
                         BottomToTopDiagonal.Add(mCell);
                 }
@@ -133,7 +137,8 @@ namespace WebApp.BusinessLogic
                     CellCollction diagonal2 = new CellCollction()
                     {
                         Cells = BottomToTopDiagonal.ToList(),
-                        MatchCount = BottomToTopDiagonal.Count(x => x.CellState.CellContent == 2)
+                        Player1Count = BottomToTopDiagonal.Count(x => x.CellState.CellContent == 1),
+                        Player2Count = BottomToTopDiagonal.Count(x => x.CellState.CellContent == 2)
                     };
                     parsed.Add(diagonal2);
                 }
@@ -142,24 +147,59 @@ namespace WebApp.BusinessLogic
                 var blankCells = new List<Entity.TicTacToeDataEntry>();
                 if (parsed.Any())
                 {
-                    int maxCount =
+                    int maxPlayer1Count =
                         parsed
-                        .Max(x => x.MatchCount);
+                        .Max(x => x.Player1Count);
 
-                    blankCells =
+                    int maxPlayer2Count =
                         parsed
-                        .Where(x => x.MatchCount >= maxCount)
-                        .SelectMany(x =>
-                            x.Cells
-                            .Where(y => y.CellState.CellContent == 0)
-                            .Select(y => y.CellState))
-                        .ToList();
+                        .Max(x => x.Player2Count);
+
+                    if (maxPlayer2Count + 1 >= GridSize)
+                    {
+                        //Try to win
+                        blankCells =
+                            parsed
+                            .OrderByDescending(x => x.Player1Count)
+                            .Where(x => x.Player2Count >= maxPlayer2Count)
+                            .Take(1)
+                            .SelectMany(x =>
+                                x.Cells
+                                .Where(y => y.CellState.CellContent == 0)
+                                .Select(y => y.CellState))
+                            .ToList();
+                    }
+                    else if (maxPlayer1Count + 1 >= GridSize)
+                    {
+                        //Try to Block Player 1
+                        blankCells =
+                            parsed
+                            .OrderByDescending(x => x.Player2Count)
+                            .Where(x => x.Player1Count >= maxPlayer1Count)
+                            .Take(1)
+                            .SelectMany(x =>
+                                x.Cells
+                                .Where(y => y.CellState.CellContent == 0)
+                                .Select(y => y.CellState))
+                            .ToList();
+                    }
+                    else
+                    {
+                        blankCells =
+                            parsed
+                            .Where(x => x.Player2Count >= maxPlayer2Count)
+                            .SelectMany(x =>
+                                x.Cells
+                                .Where(y => y.CellState.CellContent == 0)
+                                .Select(y => y.CellState))
+                            .ToList();
+                    }
                 }
                 else
                 {
                     blankCells = ds.Where(x => x.CellContent == 0).ToList();
                 }
-                
+
                 int m = random.Next(0, blankCells.Count - 1);
 
                 return blankCells[m].CellIndex;
