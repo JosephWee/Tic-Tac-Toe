@@ -18,7 +18,7 @@ namespace WebApp
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            ComputerPlayerConfig.RegisterComputerPlayer(new BusinessLogic.ComputerPlayerV1());
+            ComputerPlayerConfig.RegisterComputerPlayer(new BusinessLogic.ComputerPlayerV2());
         }
     }
 }
