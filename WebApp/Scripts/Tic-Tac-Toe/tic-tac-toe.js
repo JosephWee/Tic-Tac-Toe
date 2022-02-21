@@ -333,12 +333,12 @@
             '    </div>' +
             '</div>' +
             '<div>' +
-            '    <div class="display">' +
-            '    </div > ' +
-            '    <div>' +
+            '    <div class="tic-tac-toe-display">' +
+            '    </div> ' +
+            '    <div class="tic-tac-toe-controls">' +
             '        <button type="button" class="btn btn-danger reset">Reset</button>' +
             '        <button type="button" class="btn btn-danger changeMode">Change Mode</button>' +
-            '    </div > ' +
+            '    </div> ' +
             '</div>'
         );
 
@@ -440,19 +440,76 @@
         let msg = '';
 
         if (this.#state == 0) {
-            msg = '<div class="gameMode"><label>' + this.#gameMode + '</label>&nbsp;Player Mode</div><div class="currentPlayer">Current Player&nbsp;<label>' + this.#currentPlayer + '</label></div>';
+            if (this.#gameMode == 1) {
+                msg =
+                    '<div>' +
+                    '   <div class="gameMode">' +
+                    '       <img src="./Images/Tic-Tac-Toe/1P60x40.png" alt="1 Player" />' +
+                    '   </div>' +
+                    '   <div class="player2">' +
+                    '       <div>' +
+                    '           <img src="./Images/Tic-Tac-Toe/Circle40x40.png" alt="O" />' +
+                    '       </div>' +
+                    '       <div>' +
+                    '           Computer' +
+                    '       </div>' +
+                    '   </div>' +
+                    '   <div class="player1">' +
+                    '       <div>' +
+                    '           <img src="./Images/Tic-Tac-Toe/Cross40x40.png" alt="X" />' +
+                    '       </div>' +
+                    '       <div>' +
+                    '           You' +
+                    '       </div>' +
+                    '   </div>' +
+                    '</div>';
+            }
+            else {
+                if (this.#currentPlayer == 1) {
+                    msg =
+                        '<div>' +
+                        '   <div class="gameMode">' +
+                        '       <img src="./Images/Tic-Tac-Toe/2P60x40.png" alt="2 Players" />' +
+                        '   </div>' +
+                        '   <div class="player1">' +
+                        '       <div>' +
+                        '           <img src="./Images/Tic-Tac-Toe/Cross40x40.png" alt="X" />' +
+                        '       </div>' +
+                        '       <div>' +
+                        '           Current Player' +
+                        '       </div>' +
+                        '   </div>' +
+                        '</div>';
+                }
+                else {
+                    msg =
+                        '<div>' +
+                        '   <div class="gameMode">' +
+                        '       <img src="./Images/Tic-Tac-Toe/2P60x40.png" alt="2 Players" />' +
+                        '   </div>' +
+                        '   <div class="player1">' +
+                        '       <div>' +
+                        '           <img src="./Images/Tic-Tac-Toe/Circle40x40.png" alt="O" />' +
+                        '       </div>' +
+                        '       <div>' +
+                        '           Current Player' +
+                        '       </div>' +
+                        '   </div>' +
+                        '</div>';
+                }
+            }
         }
         else if (this.#state == 1) {
-            msg = '<label>Player 1 wins</label>';
+            msg = '<div style="color: red">Player 1 Wins</div>';
         }
         else if (this.#state == 2) {
-            msg = '<label>Player 2 wins</label>';
+            msg = '<div style="color: red">Player 2 Wins</div>';
         }
         else {
-            msg = '<label>Draw</label>';
+            msg = '<div>Draw</div>';
         }
 
-        this.#container.find("div.display").html(msg);
+        this.#container.find("div.tic-tac-toe-display").html(msg);
     }
 
     checkResult() {
