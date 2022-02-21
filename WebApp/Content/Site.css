@@ -27,69 +27,58 @@ div.tic-tac-toe-grid {
 
 div.tic-tac-toe-row-first {
     display: table-row;
-    height: 120px;
 }
 
 div.tic-tac-toe-row {
     display: table-row;
-    height: 120px;
 }
 
 div.tic-tac-toe-row-last {
     display: table-row;
-    height: 120px;
 }
 
 div.tic-tac-toe-cell-first {
     display: table-cell;
     border-right: medium solid black;
-    width: 120px;
+    padding: 2px;
 }
 
 div.tic-tac-toe-cell {
     display: table-cell;
     border-left: medium solid black;
     border-right: medium solid black;
-    width: 120px;
+    padding: 2px;
 }
 
 div.tic-tac-toe-cell-last {
     display: table-cell;
     border-left: medium solid black;
-    width: 120px;
+    padding: 2px;
 }
 
 div.tic-tac-toe-row-first div {
     border-bottom: medium solid black;
-    height: 120px;
 }
 
 div.tic-tac-toe-row div {
     border-top: medium solid black;
     border-bottom: medium solid black;
-    height: 120px;
 }
 
 div.tic-tac-toe-row-last div {
     border-top: medium solid black;
-    height: 120px;
 }
 
 div.tic-tac-toe-display {
-    width: 360px;
     height: 50px;
     padding-top: 5px;
 }
 
 div.tic-tac-toe-display div{
-    font-size: 24px;
-    font-weight: 500;
     vertical-align: middle;
 }
 
 div.tic-tac-toe-display div div{
-    font-size: 24px;
-    font-weight: 500;
     vertical-align: middle;
 }
 
@@ -123,5 +112,4 @@ div.player2 div {
 }
 
 div.tic-tac-toe-controls {
-    width: 360px;
 }

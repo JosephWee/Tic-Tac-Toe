@@ -3,6 +3,7 @@
     #id;
     #detects;
     #container;
+    #rows;
     #cells;
     #gameId;
     #gameMode;
@@ -334,7 +335,9 @@
             '</div>' +
             '<div>' +
             '    <div class="tic-tac-toe-display">' +
-            '    </div> ' +
+            '    </div>' +
+            //'    <div style="clear: both;">' +
+            //'    </div>' +
             '    <div class="tic-tac-toe-controls">' +
             '        <button type="button" class="btn btn-danger reset">Reset</button>' +
             '        <button type="button" class="btn btn-danger changeMode">Change Mode</button>' +
@@ -342,13 +345,25 @@
             '</div>'
         );
 
-        this.#cells = this.#container.find("div.tic-tac-toe-grid").children().children();
+        this.#rows = this.#container.find("div.tic-tac-toe-grid").children("[class*='tic-tac-toe-row']");
+        this.#cells = this.#rows.children("[class*='tic-tac-toe-cell']");
         this.#gameId = (new Date()).valueOf();
         let readGameMode = parseInt(sessionStorage.getItem(this.InstanceId + "gameMode"));
         this.#gameMode = readGameMode === 1 || readGameMode === 2 ? readGameMode : 1;
         this.#currentPlayer = 1;
         this.#state = 0;
         this.#winningCells = [];
+
+        this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/CrossRed120x120.png')");
+        this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/CrossRed60x60.png')");
+        this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/Cross120x120.png')");
+        this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/Cross60x60.png')");
+        this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/CircleRed120x120.png')");
+        this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/CircleRed60x60.png')");
+        this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/Circle120x120.png')");
+        this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/Circle60x60.png')");
+        this.#cells.css("background-image", "");
+        
         this.bindEvents();
         this.refreshUI();
     }
@@ -364,6 +379,12 @@
 
         cells.off();
         cells.on('click', this, this.cellClicked);
+
+        $(window).resize(this, function (event) {
+
+            let app = event.data;
+            app.refreshUI();
+        });
 
         this.#container.find("button.changeMode").off();
         this.#container.find("button.changeMode").on('click', this, function (event) {
@@ -414,41 +435,57 @@
 
     refreshUI() {
 
+        let rows = this.#rows;
         let cells = this.#cells;
+
+        let screenWidth = $(window).width();
+        
+        let height = screenWidth >= 480 ? 120 : 60;
+        let width = screenWidth >= 480 ? 120 : 60;
+        let paddingWidth = 6;
+        let paddingHeight = 6;
+        rows.css("height", height + paddingWidth + "px");
+        cells.css("width", width + paddingHeight + "px");
 
         for (var i = 0; i < cells.length; i++) {
 
             let cell = $(cells[i]);
             let isWinningCell = this.#winningCells.includes(i);
+            let color = isWinningCell ? 'Red' : '';
 
             let cellState = cell.attr("data-state");
             if (cellState == 1) {
-                if (isWinningCell)
-                    cell.css("background-image", "url('./Images/Tic-Tac-Toe/CrossRed120x120.png')");
-                else
-                    cell.css("background-image", "url('./Images/Tic-Tac-Toe/Cross120x120.png')");
+                cell.css("background-image", "url('./Images/Tic-Tac-Toe/Cross" + color + width + "x" + height + ".png')");
             } else if (cellState == 2) {
-                if (isWinningCell)
-                    cell.css("background-image", "url('./Images/Tic-Tac-Toe/CircleRed120x120.png')");
-                else
-                    cell.css("background-image", "url('./Images/Tic-Tac-Toe/Circle120x120.png')");
+                cell.css("background-image", "url('./Images/Tic-Tac-Toe/Circle" + color + width + "x" + height + ".png')");
             } else {
                 cell.css("background-image", "");
             }
         }
 
         let msg = '';
+        let img1Player = '1P30x20.png';
+        let img2Player = '2P30x20.png';
+        let imgPlayer1 = 'Cross20x20.png';
+        let imgPlayer2 = 'Circle20x20.png';
+
+        if (screenWidth >= 480) {
+            img1Player = '1P45x30.png';
+            img2Player = '2P45x30.png';
+            imgPlayer1 = 'Circle30x30.png';
+            imgPlayer2 = 'Cross30x30.png';
+        }
 
         if (this.#state == 0) {
             if (this.#gameMode == 1) {
                 msg =
                     '<div>' +
                     '   <div class="gameMode">' +
-                    '       <img src="./Images/Tic-Tac-Toe/1P60x40.png" alt="1 Player" />' +
+                    '       <img src="./Images/Tic-Tac-Toe/' + img1Player + '" alt="1 Player" />' +
                     '   </div>' +
                     '   <div class="player2">' +
                     '       <div>' +
-                    '           <img src="./Images/Tic-Tac-Toe/Circle40x40.png" alt="O" />' +
+                    '           <img src="./Images/Tic-Tac-Toe/' + imgPlayer2 + '" alt="O" />' +
                     '       </div>' +
                     '       <div>' +
                     '           Computer' +
@@ -456,7 +493,7 @@
                     '   </div>' +
                     '   <div class="player1">' +
                     '       <div>' +
-                    '           <img src="./Images/Tic-Tac-Toe/Cross40x40.png" alt="X" />' +
+                    '           <img src="./Images/Tic-Tac-Toe/' + imgPlayer1 + '" alt="X" />' +
                     '       </div>' +
                     '       <div>' +
                     '           You' +
@@ -465,38 +502,22 @@
                     '</div>';
             }
             else {
-                if (this.#currentPlayer == 1) {
-                    msg =
-                        '<div>' +
-                        '   <div class="gameMode">' +
-                        '       <img src="./Images/Tic-Tac-Toe/2P60x40.png" alt="2 Players" />' +
-                        '   </div>' +
-                        '   <div class="player1">' +
-                        '       <div>' +
-                        '           <img src="./Images/Tic-Tac-Toe/Cross40x40.png" alt="X" />' +
-                        '       </div>' +
-                        '       <div>' +
-                        '           Current Player' +
-                        '       </div>' +
-                        '   </div>' +
-                        '</div>';
-                }
-                else {
-                    msg =
-                        '<div>' +
-                        '   <div class="gameMode">' +
-                        '       <img src="./Images/Tic-Tac-Toe/2P60x40.png" alt="2 Players" />' +
-                        '   </div>' +
-                        '   <div class="player1">' +
-                        '       <div>' +
-                        '           <img src="./Images/Tic-Tac-Toe/Circle40x40.png" alt="O" />' +
-                        '       </div>' +
-                        '       <div>' +
-                        '           Current Player' +
-                        '       </div>' +
-                        '   </div>' +
-                        '</div>';
-                }
+                msg =
+                    '<div>' +
+                    '   <div class="gameMode">' +
+                    '       <img src="./Images/Tic-Tac-Toe/' + img2Player + '" alt="2 Players" />' +
+                    '   </div>' +
+                    '   <div class="player1">' +
+                    '       <div>' +
+                                (this.#currentPlayer == 1
+                                ? '<img src="./Images/Tic-Tac-Toe/' + imgPlayer1 + '" alt="X" />'
+                                : '<img src="./Images/Tic-Tac-Toe/' + imgPlayer2 + '" alt="O" />') +
+                    '       </div>' +
+                    '       <div>' +
+                    '           Current Player' +
+                    '       </div>' +
+                    '   </div>' +
+                    '</div>';
             }
         }
         else if (this.#state == 1) {
@@ -509,7 +530,69 @@
             msg = '<div>Draw</div>';
         }
 
-        this.#container.find("div.tic-tac-toe-display").html(msg);
+        let gridWidth = (width + paddingWidth + paddingWidth) * 3;
+
+        let divTicTacToeDisplay = this.#container.find("div.tic-tac-toe-display");
+        divTicTacToeDisplay.html(msg);
+        divTicTacToeDisplay.width(gridWidth);
+
+        let descendantDivs = divTicTacToeDisplay.find("div");
+        descendantDivs.css('font-size', screenWidth >= 480 ? '24px' : '12px');
+        descendantDivs.css('font-weight', screenWidth >= 480 ? 'bold' : 'bold');
+
+        let divTicTacToeControls = this.#container.find("div.tic-tac-toe-controls");
+        divTicTacToeControls.width(gridWidth);
+
+        //div.tic - tac - toe - display {
+        //    width: 360px;
+        //    height: 50px;
+        //    padding - top: 5px;
+        //}
+
+        //div.tic - tac - toe - display div{
+        //    font - size: 24px;
+        //    font - weight: 500;
+        //    vertical - align: middle;
+        //}
+
+        //div.tic - tac - toe - display div div{
+        //    font - size: 24px;
+        //    font - weight: 500;
+        //    vertical - align: middle;
+        //}
+
+        //div.gameMode {
+        //    float: left;
+        //}
+
+        //div.gameMode div{
+        //    display: inline - block;
+        //    padding: 0px 5px 0px 5px;
+        //}
+
+        //div.player1 {
+        //    float: right;
+        //    padding - left: 10px;
+        //}
+
+        //div.player1 div {
+        //    display: inline - block;
+        //    padding: 0px 5px 0px 5px;
+        //}
+
+        //div.player2 {
+        //    float: right;
+        //    padding - left: 10px;
+        //}
+
+        //div.player2 div {
+        //    display: inline - block;
+        //    padding: 0px 5px 0px 5px;
+        //}
+
+        //div.tic - tac - toe - controls {
+        //    width: 360px;
+        //}
     }
 
     checkResult() {
