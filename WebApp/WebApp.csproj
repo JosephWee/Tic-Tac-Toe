@@ -190,7 +190,7 @@
     <Content Include="Global.asax" />
     <Content Include="Images\Tic-Tac-Toe\1P60x40.png" />
     <Content Include="Images\Tic-Tac-Toe\2P60x40.png" />
-    <Content Include="Images\Tic-Tac-Toe\blackArrow30x30.png" />
+    <Content Include="Images\Tic-Tac-Toe\blueArrow32x32.png" />
     <Content Include="Images\Tic-Tac-Toe\Circle100x100.png" />
     <Content Include="Images\Tic-Tac-Toe\Circle120x120.png" />
     <Content Include="Images\Tic-Tac-Toe\Circle40x40.png" />

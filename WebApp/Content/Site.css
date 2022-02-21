@@ -1,6 +1,7 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    cursor: pointer;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -17,8 +18,7 @@ textarea {
 }
 
 div.tic-tac-toe-page {
-    background-color: seashell;
-    cursor: url('./Images/Tic-Tac-Toe/blueArrow32x32.png'), pointer !important;
+    cursor: url('./../Images/Tic-Tac-Toe/blueArrow32x32.png'), pointer !important;
 }
 
 div.tic-tac-toe-grid {
