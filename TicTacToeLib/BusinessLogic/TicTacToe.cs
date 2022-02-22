@@ -322,7 +322,7 @@ namespace TicTacToe.BusinessLogic
 
             List<string> DestinationInstanceIds =
                 destinationContext
-                .TicTacToeData
+                .TicTacToeClassificationModel01
                 .Select(x => x.InstanceId)
                 .ToList();
 
@@ -341,9 +341,6 @@ namespace TicTacToe.BusinessLogic
             var entriesGroupByInstanceId =
                 entriesToPrep
                 .GroupBy(x => x.InstanceId);
-
-            var entriesToImport =
-                new List<Entity.TicTacToeDataEntry>();
 
             var modelEntries =
                 new List<Entity.TicTacToeClassificationModel01>();
@@ -382,12 +379,6 @@ namespace TicTacToe.BusinessLogic
                     if (gbInstanceMoves.Any(g => g.Count() != CellsPerEntry))
                         continue;
 
-                    entriesToImport.AddRange(
-                        gbInstanceId
-                        .OrderBy(x => x.MoveNumber)
-                        .ThenBy(x => x.CellIndex)
-                        .ToList()
-                    );
                     InstancesImportedCount++;
 
                     foreach (var move in gbInstanceMoves.OrderBy(g => g.Key).ToList())
@@ -401,8 +392,9 @@ namespace TicTacToe.BusinessLogic
                         var modelEntry =
                             new Entity.TicTacToeClassificationModel01()
                             {
+                                CreatedDate = DateTime.UtcNow,
+                                InstanceId = gbInstanceId.Key,
                                 MoveNumber = move.Key,
-                                GameResultCode = (int)Status,
                                 Cell0 = cells[0],
                                 Cell1 = cells[1],
                                 Cell2 = cells[2],
@@ -410,7 +402,11 @@ namespace TicTacToe.BusinessLogic
                                 Cell4 = cells[4],
                                 Cell5 = cells[5],
                                 Cell6 = cells[6],
-                                Cell7 = cells[7]
+                                Cell7 = cells[7],
+                                GameResultCode = (int)Status,
+                                Draw = Status == Models.TicTacToeGameStatus.Draw,
+                                Player1Wins = Status == Models.TicTacToeGameStatus.Player1Wins,
+                                Player2Wins = Status == Models.TicTacToeGameStatus.Player2Wins
                             };
 
                         modelEntries.Add(modelEntry);
@@ -419,12 +415,8 @@ namespace TicTacToe.BusinessLogic
                 }
             }
 
-            if (entriesToImport.Count > 0 || modelEntries.Count > 0)
+            if (modelEntries.Count > 0)
             {
-                destinationContext
-                    .TicTacToeData
-                    .AddRange(entriesToImport);
-
                 destinationContext
                     .TicTacToeClassificationModel01
                     .AddRange(modelEntries);
