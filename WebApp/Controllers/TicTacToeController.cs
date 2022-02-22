@@ -24,21 +24,21 @@ namespace WebApp.Controllers
         //}
 
         // POST api/values
-        public IHttpActionResult Post([FromBody] Models.TicTacToeUpdateRequest value)
+        public IHttpActionResult Post([FromBody] TicTacToe.Models.TicTacToeUpdateRequest value)
         {
-            Models.TicTacToeUpdateResponse tttUpdateResponse = null;
+            TicTacToe.Models.TicTacToeUpdateResponse tttUpdateResponse = null;
 
             try
             {
                  //tttUpdateRequest =
                  //   JsonConvert.DeserializeObject(
-                 //   value.ToObject<Models.TicTacToeUpdateRequest>();
+                 //   value.ToObject<TicTacToe.Models.TicTacToeUpdateRequest>();
 
                 if (value == null)
                     return BadRequest();
 
                 tttUpdateResponse =
-                    BusinessLogic.TicTacToe.EvaluateResult(value);
+                    TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(value);
             }
             catch (ArgumentException argEx)
             {

@@ -68,13 +68,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WebApp\WebApp.csproj">
-      <Project>{2910ce98-9c27-4b0a-946f-c68b08d84b69}</Project>
-      <Name>WebApp</Name>
-    </ProjectReference>
+    <Folder Include="LocalDB\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="LocalDB\" />
+    <ProjectReference Include="..\TicTacToeLib\TicTacToeLib.csproj">
+      <Project>{c6e92e2b-68ce-4433-bfb7-c5dd3f125fac}</Project>
+      <Name>TicTacToeLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
