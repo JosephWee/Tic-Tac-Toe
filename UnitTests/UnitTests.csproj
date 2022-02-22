@@ -59,17 +59,37 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TicTacToeTests.cs" />
+    <Compile Include="MLDataTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
     <Content Include="connectionStrings.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="LocalDB\DestinationTicTacToeData.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LocalDB\DestinationTicTacToeData_log.ldf">
+      <DependentUpon>DestinationTicTacToeData.mdf</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LocalDB\SourceTicTacToeData.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LocalDB\SourceTicTacToeData_log.ldf">
+      <DependentUpon>SourceTicTacToeData.mdf</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LocalDB\TicTacToeData.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LocalDB\TicTacToeData_log.ldf">
+      <DependentUpon>TicTacToeData.mdf</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="LocalDB\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\TicTacToeLib\TicTacToeLib.csproj">
       <Project>{c6e92e2b-68ce-4433-bfb7-c5dd3f125fac}</Project>

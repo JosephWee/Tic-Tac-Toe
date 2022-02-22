@@ -8,12 +8,16 @@ namespace TicTacToe.Entity
 {
     public class TicTacToeDataContext : DbContext
     {
-        private readonly string _connectionString = null;
-
         public TicTacToeDataContext() : base("name=TicTacToeDataConnString")
         {
         }
 
+        public TicTacToeDataContext(string nameOrConnectionString) : base(nameOrConnectionString)
+        {
+        }
+
         public DbSet<TicTacToeDataEntry> TicTacToeData { get; set; }
+
+        public DbSet<TicTacToeClassificationModel01> TicTacToeClassificationModel01 { get; set; }
     }
 }
