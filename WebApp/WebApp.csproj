@@ -298,6 +298,7 @@
     <Content Include="LocalDB\TicTacToeData_log.ldf">
       <DependentUpon>TicTacToeData.mdf</DependentUpon>
     </Content>
+    <Content Include="MLNET_TrainingData\ClassificationModel01Data-2022-02-23-1414.csv" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
@@ -394,6 +395,7 @@
     </None>
     <None Include="MLModel1.zip">
       <DependentUpon>MLModel1.mbconfig</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <PropertyGroup>
