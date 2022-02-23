@@ -92,7 +92,7 @@ div.gameMode div{
 
 div.player1 {
     float: right;
-    padding-left: 10px;
+    padding-left: 3px;
 }
 
 div.player1 div {
@@ -102,7 +102,7 @@ div.player1 div {
 
 div.player2 {
     float: right;
-    padding-left: 10px;
+    padding-left: 3px;
 }
 
 div.player2 div {

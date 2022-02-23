@@ -501,8 +501,8 @@
         if (screenWidth >= 480) {
             img1Player = '1P45x30.png';
             img2Player = '2P45x30.png';
-            imgPlayer1 = 'Circle30x30.png';
-            imgPlayer2 = 'Cross30x30.png';
+            imgPlayer1 = 'Cross30x30.png';
+            imgPlayer2 = 'Circle30x30.png';
         }
 
         if (this.#state == 0) {
