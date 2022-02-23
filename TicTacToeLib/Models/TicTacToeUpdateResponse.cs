@@ -12,6 +12,10 @@ namespace TicTacToe.Models
 
         public int? ComputerMove { get; set; }
 
+        public float Prediction { get; set; }
+
+        public float[] PredictionScore { get; set; }
+
         public TicTacToeUpdateResponse()
         {
             Status = TicTacToeGameStatus.InProgress;

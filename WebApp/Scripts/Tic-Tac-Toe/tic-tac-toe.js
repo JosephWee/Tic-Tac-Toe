@@ -10,6 +10,8 @@
     #currentPlayer;
     #state;
     #winningCells;
+    #aiPrediction;
+    #aiPredictionScore;
 
     constructor(elementId) {
 
@@ -353,6 +355,8 @@
         this.#currentPlayer = 1;
         this.#state = 0;
         this.#winningCells = [];
+        this.#aiPrediction = 0;
+        this.#aiPredictionScore = 0;
 
         this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/CrossRed120x120.png')");
         this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/CrossRed60x60.png')");
@@ -479,7 +483,8 @@
         if (this.#state == 0) {
             if (this.#gameMode == 1) {
                 msg =
-                    '<div>' +
+                    '<div class="clearfix">' +
+                    '   &nbsp;' +
                     '   <div class="gameMode">' +
                     '       <img src="./Images/Tic-Tac-Toe/' + img1Player + '" alt="1 Player" />' +
                     '   </div>' +
@@ -503,7 +508,8 @@
             }
             else {
                 msg =
-                    '<div>' +
+                    '<div class="clearfix">' +
+                    '   &nbsp;' +
                     '   <div class="gameMode">' +
                     '       <img src="./Images/Tic-Tac-Toe/' + img2Player + '" alt="2 Players" />' +
                     '   </div>' +
@@ -518,6 +524,12 @@
                     '       </div>' +
                     '   </div>' +
                     '</div>';
+            }
+
+            if (this.#aiPrediction > 0 && this.#aiPredictionScore > 0) {
+
+                let aiPredictionMsg = '<div>' + (this.#aiPredictionScore * 100).toFixed(2) + '% probability ' + (this.#aiPrediction == 3 ? 'draw' : 'Player ' + this.#aiPrediction + ' wins') + '</div>';
+                msg = msg + aiPredictionMsg;
             }
         }
         else if (this.#state == 1) {
@@ -630,6 +642,8 @@
                     app.log(resp);
                     app.#state = resp.Status;
                     app.#winningCells = [];
+                    app.#aiPrediction = 0;
+                    app.#aiPredictionScore = 0;
 
                     //debugger;
                     if (resp.WinningCells && Array.isArray(resp.WinningCells)) {
@@ -643,6 +657,22 @@
                             let cellToChange = $(app.#cells[computerMove]);
                             if (cellToChange && cellToChange.length > 0)
                                 cellToChange.attr("data-state", 2);
+                        }
+
+                        let prediction = parseInt(resp.Prediction);
+                        let predictionScore = resp.PredictionScore;
+
+                        if (typeof prediction !== 'NaN' && Array.isArray(predictionScore)) {
+                            let tempArray = [];
+                            for (var i = 0; i < predictionScore.length; i++) {
+                                let tempFloat = parseFloat(predictionScore[i]);
+                                if (typeof tempFloat !== NaN) {
+                                    tempArray.push(tempFloat);
+                                }
+                            }
+                            let maxScore = Math.max(...tempArray);
+                            app.#aiPrediction = prediction;
+                            app.#aiPredictionScore = maxScore;
                         }
                     }
                 }

@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.Trainers.LightGbm;
+using Microsoft.ML.Trainers;
 
 namespace WebApp.Controllers
 {
@@ -39,6 +44,44 @@ namespace WebApp.Controllers
 
                 tttUpdateResponse =
                     TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(value);
+
+                if (value.GridSize == 3)
+                {
+                    var cellStates = value.CellStates.ToList();
+
+                    if (!cellStates.Any(x => !TicTacToe.BusinessLogic.TicTacToe.ValidCellStateValues.Contains(x)))
+                    {
+                        int moveNumber = cellStates.Count(x => x != 0);
+
+                        if (tttUpdateResponse.ComputerMove.HasValue)
+                        {
+                            moveNumber++;
+                            cellStates[tttUpdateResponse.ComputerMove.Value] = 2;
+                        }
+
+                        var inputModel =
+                            new MLNET.MLModel1.ModelInput()
+                            {
+                                MoveNumber = moveNumber,
+                                Cell0 = value.CellStates[0],
+                                Cell1 = value.CellStates[1],
+                                Cell2 = value.CellStates[2],
+                                Cell3 = value.CellStates[3],
+                                Cell4 = value.CellStates[4],
+                                Cell5 = value.CellStates[5],
+                                Cell6 = value.CellStates[6],
+                                Cell7 = value.CellStates[7],
+                                Cell8 = value.CellStates[8],
+                                GameResultCode = 0
+                            };
+
+                        //Get Prediction
+                        var prediction = MLNET.MLModel1.Predict(inputModel);
+
+                        tttUpdateResponse.Prediction = prediction.Prediction;
+                        tttUpdateResponse.PredictionScore = prediction.Score;
+                    }
+                }
             }
             catch (ArgumentException argEx)
             {
