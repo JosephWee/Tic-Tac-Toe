@@ -15,15 +15,6 @@ namespace WebApp
         #region model input class
         public class ModelInput
         {
-            [ColumnName(@"id")]
-            public float Id { get; set; }
-
-            [ColumnName(@"sCreatedDate")]
-            public string SCreatedDate { get; set; }
-
-            [ColumnName(@"sInstanceId")]
-            public float SInstanceId { get; set; }
-
             [ColumnName(@"MoveNumber")]
             public float MoveNumber { get; set; }
 
@@ -56,15 +47,6 @@ namespace WebApp
 
             [ColumnName(@"GameResultCode")]
             public float GameResultCode { get; set; }
-
-            [ColumnName(@"Draw")]
-            public float Draw { get; set; }
-
-            [ColumnName(@"Player1Wins")]
-            public float Player1Wins { get; set; }
-
-            [ColumnName(@"Player2Wins")]
-            public float Player2Wins { get; set; }
 
         }
 

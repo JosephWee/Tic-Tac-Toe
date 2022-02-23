@@ -319,8 +319,9 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="connectionStrings.config" />
-    <Content Include="MLModel1.mbconfig" />
     <Content Include="MLNET_TrainingData\ClassificationModel01Data-2022-02-23-0938.csv" />
+    <Content Include="MLNET_TrainingData\ClassificationModel01Data-2022-02-23-1013.csv" />
+    <Content Include="MLModel1.mbconfig" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
