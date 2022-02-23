@@ -11,6 +11,7 @@ using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers.LightGbm;
 using Microsoft.ML.Trainers;
+using TicTacToe.ML;
 
 namespace WebApp.Controllers
 {
@@ -60,7 +61,7 @@ namespace WebApp.Controllers
                         }
 
                         var inputModel =
-                            new MLNET.MLModel1.ModelInput()
+                            new MLModel1.ModelInput()
                             {
                                 MoveNumber = moveNumber,
                                 Cell0 = value.CellStates[0],
@@ -76,7 +77,7 @@ namespace WebApp.Controllers
                             };
 
                         //Get Prediction
-                        var prediction = MLNET.MLModel1.Predict(inputModel);
+                        var prediction = MLModel1.Predict(inputModel);
 
                         tttUpdateResponse.Prediction = prediction.Prediction;
                         tttUpdateResponse.PredictionScore = prediction.Score;

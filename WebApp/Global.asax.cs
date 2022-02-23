@@ -19,6 +19,10 @@ namespace WebApp
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             TicTacToe.BusinessLogic.ComputerPlayerConfig.RegisterComputerPlayer(new TicTacToe.BusinessLogic.ComputerPlayerV2());
+
+            string MLNetModelPath =
+                System.Configuration.ConfigurationManager.AppSettings["MLNetModelPath"];
+            TicTacToe.ML.MLModel1.SetMLNetModelPath(MLNetModelPath);
         }
     }
 }

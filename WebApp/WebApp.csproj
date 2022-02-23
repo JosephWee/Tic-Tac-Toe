@@ -263,7 +263,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="MLNET_Consumption_Model\MLModel1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -298,7 +297,6 @@
     <Content Include="LocalDB\TicTacToeData_log.ldf">
       <DependentUpon>TicTacToeData.mdf</DependentUpon>
     </Content>
-    <Content Include="MLNET_TrainingData\ClassificationModel01Data-2022-02-23-1414.csv" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
@@ -321,9 +319,7 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="connectionStrings.config" />
-    <Content Include="MLNET_TrainingData\ClassificationModel01Data-2022-02-23-0938.csv" />
-    <Content Include="MLNET_TrainingData\ClassificationModel01Data-2022-02-23-1013.csv" />
-    <Content Include="MLModel1.mbconfig" />
+    <Content Include="MLModel1.zip" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -385,18 +381,10 @@
       <Project>{c6e92e2b-68ce-4433-bfb7-c5dd3f125fac}</Project>
       <Name>TicTacToeLib</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup Label="MLModel1">
-    <None Include="MLModel1.consumption.cs">
-      <DependentUpon>MLModel1.mbconfig</DependentUpon>
-    </None>
-    <None Include="MLModel1.training.cs">
-      <DependentUpon>MLModel1.mbconfig</DependentUpon>
-    </None>
-    <None Include="MLModel1.zip">
-      <DependentUpon>MLModel1.mbconfig</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\TicTacToeML\TicTacToeML.csproj">
+      <Project>{760325ca-97cb-48a1-a7ac-7d0645d54007}</Project>
+      <Name>TicTacToeML</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
