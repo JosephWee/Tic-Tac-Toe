@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DBScripts\CreateTicTacToeTable.sql" />
+    <Content Include="DBScripts\FormatClassificationModel01.sql" />
     <Content Include="DBScripts\TicTacToeClassificationModel01.sql" />
   </ItemGroup>
   <ItemGroup>
