@@ -343,6 +343,7 @@
             '    <div class="tic-tac-toe-controls">' +
             '        <button type="button" class="btn btn-danger reset">Reset</button>' +
             '        <button type="button" class="btn btn-danger changeMode">Change Mode</button>' +
+            '        <button type="button" class="btn btn-info aiPrediction">AI Prediction</button>' +
             '    </div> ' +
             '</div>'
         );
@@ -357,6 +358,11 @@
         this.#winningCells = [];
         this.#aiPrediction = 0;
         this.#aiPredictionScore = 0;
+
+        let showPrediction = parseInt(sessionStorage.getItem(this.InstanceId + 'showPrediction'));
+        if (isNaN(showPrediction)) {
+            sessionStorage.setItem(this.InstanceId + 'showPrediction', 1);
+        }
 
         this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/CrossRed120x120.png')");
         this.#cells.css("background-image", "url('./Images/Tic-Tac-Toe/CrossRed60x60.png')");
@@ -387,6 +393,21 @@
         $(window).resize(this, function (event) {
 
             let app = event.data;
+            app.refreshUI();
+        });
+
+        this.#container.find("button.aiPrediction").off();
+        this.#container.find("button.aiPrediction").on('click', this, function (event) {
+            let app = event.data;
+
+            let showPrediction = parseInt(sessionStorage.getItem(app.InstanceId + 'showPrediction'));
+
+            if (showPrediction === 1)
+                showPrediction = 0;
+            else
+                showPrediction = 1;
+
+            sessionStorage.setItem(app.InstanceId + 'showPrediction', showPrediction);
             app.refreshUI();
         });
 
@@ -441,6 +462,10 @@
 
         let rows = this.#rows;
         let cells = this.#cells;
+
+        let showPrediction = parseInt(sessionStorage.getItem(this.InstanceId + 'showPrediction'));
+        if (isNaN(showPrediction))
+            showPrediction = 1;
 
         let screenWidth = $(window).width();
         
@@ -526,7 +551,7 @@
                     '</div>';
             }
 
-            if (this.#aiPrediction > 0 && this.#aiPredictionScore > 0) {
+            if (showPrediction == 1 && this.#aiPrediction > 0 && this.#aiPredictionScore > 0) {
 
                 let aiPredictionMsg = '<div>' + (this.#aiPredictionScore * 100).toFixed(2) + '% probability ' + (this.#aiPrediction == 3 ? 'draw' : 'Player ' + this.#aiPrediction + ' wins') + '</div>';
                 msg = msg + aiPredictionMsg;
@@ -555,6 +580,8 @@
         let divTicTacToeControls = this.#container.find("div.tic-tac-toe-controls");
         divTicTacToeControls.width(gridWidth);
 
+        this.#container.find("button.aiPrediction").text("AI Prediction " + (showPrediction == 1 ? "On" : "Off"));
+        
         //div.tic - tac - toe - display {
         //    width: 360px;
         //    height: 50px;
@@ -662,11 +689,11 @@
                         let prediction = parseInt(resp.Prediction);
                         let predictionScore = resp.PredictionScore;
 
-                        if (typeof prediction !== 'NaN' && Array.isArray(predictionScore)) {
+                        if (!isNaN(prediction) && Array.isArray(predictionScore)) {
                             let tempArray = [];
                             for (var i = 0; i < predictionScore.length; i++) {
                                 let tempFloat = parseFloat(predictionScore[i]);
-                                if (typeof tempFloat !== NaN) {
+                                if (!isNaN(tempFloat)) {
                                     tempArray.push(tempFloat);
                                 }
                             }
