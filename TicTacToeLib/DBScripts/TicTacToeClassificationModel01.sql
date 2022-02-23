@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[TicTacToeClassificationModel01] (
     [Id]                INT            NOT NULL IDENTITY,
-    [CreatedDate]       DATETIME2 (7)  NOT NULL,
+    [CreatedDate]       DATETIME2 (7)  NOT NULL DEFAULT SYSUTCDATETIME(),
     [InstanceId]        NVARCHAR (200) NOT NULL,
     [MoveNumber]        INT            NOT NULL,
     [Cell0]             INT            NOT NULL,
