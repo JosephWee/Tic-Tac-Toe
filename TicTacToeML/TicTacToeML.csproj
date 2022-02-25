@@ -110,6 +110,8 @@
   <ItemGroup>
     <Compile Include="MLNET_Consumption_Model\MLModel1.consumption.cs" />
     <Compile Include="MLNET_Consumption_Model\MLModel1.cs" />
+    <Compile Include="MLNET_Consumption_Model\MLModel2.consumption.cs" />
+    <Compile Include="MLNET_Consumption_Model\MLModel2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +126,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="MLModel1.mbconfig" />
+    <None Include="MLModel2.mbconfig" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup Label="MLModel1">
@@ -135,6 +138,18 @@
     </None>
     <None Include="MLModel1.zip">
       <DependentUpon>MLModel1.mbconfig</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup Label="MLModel2">
+    <None Include="MLModel2.consumption.cs">
+      <DependentUpon>MLModel2.mbconfig</DependentUpon>
+    </None>
+    <None Include="MLModel2.training.cs">
+      <DependentUpon>MLModel2.mbconfig</DependentUpon>
+    </None>
+    <None Include="MLModel2.zip">
+      <DependentUpon>MLModel2.mbconfig</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

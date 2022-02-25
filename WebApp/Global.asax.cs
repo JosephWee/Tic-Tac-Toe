@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -22,7 +23,14 @@ namespace WebApp
 
             string MLNetModelPath =
                 System.Configuration.ConfigurationManager.AppSettings["MLNetModelPath"];
-            TicTacToe.ML.MLModel1.SetMLNetModelPath(MLNetModelPath);
+
+            TicTacToe.ML.MLModel1.SetMLNetModelPath(
+                Path.Combine(MLNetModelPath, "MLModel1.zip")
+            );
+
+            TicTacToe.ML.MLModel2.SetMLNetModelPath(
+                Path.Combine(MLNetModelPath, "MLModel2.zip")
+            );
         }
     }
 }

@@ -60,10 +60,25 @@ namespace WebApp.Controllers
                             cellStates[tttUpdateResponse.ComputerMove.Value] = 2;
                         }
 
-                        var inputModel =
-                            new MLModel1.ModelInput()
+                        //var inputModel1 =
+                        //    new MLModel1.ModelInput()
+                        //    {
+                        //        MoveNumber = moveNumber,
+                        //        Cell0 = value.CellStates[0],
+                        //        Cell1 = value.CellStates[1],
+                        //        Cell2 = value.CellStates[2],
+                        //        Cell3 = value.CellStates[3],
+                        //        Cell4 = value.CellStates[4],
+                        //        Cell5 = value.CellStates[5],
+                        //        Cell6 = value.CellStates[6],
+                        //        Cell7 = value.CellStates[7],
+                        //        Cell8 = value.CellStates[8],
+                        //        GameResultCode = 0
+                        //    };
+
+                        var inputModel2 =
+                            new MLModel2.ModelInput()
                             {
-                                MoveNumber = moveNumber,
                                 Cell0 = value.CellStates[0],
                                 Cell1 = value.CellStates[1],
                                 Cell2 = value.CellStates[2],
@@ -77,10 +92,11 @@ namespace WebApp.Controllers
                             };
 
                         //Get Prediction
-                        var prediction = MLModel1.Predict(inputModel);
+                        //var prediction1 = MLModel1.Predict(inputModel1);
+                        var prediction2 = MLModel2.Predict(inputModel2);
 
-                        tttUpdateResponse.Prediction = prediction.Prediction;
-                        tttUpdateResponse.PredictionScore = prediction.Score;
+                        tttUpdateResponse.Prediction = prediction2.Prediction;
+                        tttUpdateResponse.PredictionScore = prediction2.Score;
                     }
                 }
             }
