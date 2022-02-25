@@ -19,6 +19,15 @@ namespace WebApp
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            var myApiExplorer = new System.Web.Http.Description.MyApiExplorer();
+            myApiExplorer.AllowedApiControllerNames.Add("TicTacToe");
+            myApiExplorer.AllowedApiControllerNames.Add("TestApi");
+
+            config.Services.Replace(
+                typeof(System.Web.Http.Description.IApiExplorer),
+                myApiExplorer
+            );
         }
     }
 }
