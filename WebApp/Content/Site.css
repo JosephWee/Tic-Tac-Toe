@@ -73,42 +73,42 @@ div.tic-tac-toe-display {
     padding-top: 5px;
 }
 
-div.tic-tac-toe-display div{
-    vertical-align: middle;
-}
+    div.tic-tac-toe-display div {
+        vertical-align: middle;
+    }
 
-div.tic-tac-toe-display div div{
-    vertical-align: middle;
-}
+        div.tic-tac-toe-display div div {
+            vertical-align: middle;
+        }
 
 div .gameMode {
     float: left;
 }
 
-div.gameMode div{
-    display: inline-block;
-    padding: 0px 5px 0px 5px;
-}
+    div.gameMode div {
+        display: inline-block;
+        padding: 0px 5px 0px 5px;
+    }
 
 div.player1 {
     float: right;
     padding-left: 3px;
 }
 
-div.player1 div {
-    display: inline-block;
-    padding: 0px 5px 0px 5px;
-}
+    div.player1 div {
+        display: inline-block;
+        padding: 0px 5px 0px 5px;
+    }
 
 div.player2 {
     float: right;
     padding-left: 3px;
 }
 
-div.player2 div {
-    display: inline-block;
-    padding: 0px 5px 0px 5px;
-}
+    div.player2 div {
+        display: inline-block;
+        padding: 0px 5px 0px 5px;
+    }
 
 div.tic-tac-toe-controls {
 }

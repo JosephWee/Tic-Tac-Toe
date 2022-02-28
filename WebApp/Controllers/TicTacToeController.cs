@@ -9,12 +9,12 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.ML;
 using Microsoft.ML.Data;
-using Microsoft.ML.Trainers.LightGbm;
 using Microsoft.ML.Trainers;
 using TicTacToe.ML;
 
 namespace WebApp.Controllers
 {
+    [Authorize]
     public class TicTacToeController : ApiController
     {
         // GET api/values
