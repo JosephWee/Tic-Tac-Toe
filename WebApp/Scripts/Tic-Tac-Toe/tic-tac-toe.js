@@ -437,8 +437,8 @@
         //app.log("cell " + $(event.target).attr("id") + " clicked");
 
         if (app.#state == 0) {
-            let cellState = new Number($(event.target).attr("data-state"));
-            if (cellState == 0) {
+            let cellState = parseInt($(event.target).attr("data-state"));
+            if (isNaN(cellState) === false && cellState === 0) {
                 $(event.target).attr("data-state", app.#currentPlayer);
 
                 if (app.#gameMode == 2) {
@@ -651,7 +651,7 @@
 
         for (var i = 0; i < this.#cells.length; i++) {
             let cell = $(this.#cells[i]);
-            let cellState = new Number(cell.attr("data-state"));
+            let cellState = parseInt(cell.attr("data-state"));
             requestData.CellStates.push(cellState);
         }
 
@@ -680,7 +680,7 @@
                     if (app.#gameMode == 1) {
                         //debugger;
                         let computerMove = parseInt(resp.ComputerMove);
-                        if (typeof computerMove === 'number' && computerMove >= 0 && computerMove < app.#cells.length) {
+                        if (isNaN(computerMove) === false && computerMove >= 0 && computerMove < app.#cells.length) {
                             let cellToChange = $(app.#cells[computerMove]);
                             if (cellToChange && cellToChange.length > 0)
                                 cellToChange.attr("data-state", 2);

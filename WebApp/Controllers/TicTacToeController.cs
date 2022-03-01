@@ -14,7 +14,7 @@ using TicTacToe.ML;
 
 namespace WebApp.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class TicTacToeController : ApiController
     {
         // GET api/values
