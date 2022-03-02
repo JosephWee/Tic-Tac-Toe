@@ -11,6 +11,7 @@
 *.ignore
 *.ignore.*
 *.user
+*.pfx
 connectionString*.config
 appSetting*.config
 smtp*.config

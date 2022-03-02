@@ -64,6 +64,11 @@ namespace WebApp
             //    ClientId = "",
             //    ClientSecret = ""
             //});
+
+            //Load the Self-signed Certificate used for signing the AccessToken Hash
+            string certFilePath = System.Configuration.ConfigurationManager.AppSettings["certFilePath"];
+            string certFilePassword = System.Configuration.ConfigurationManager.AppSettings["certFilePassword"];
+            AccessTokenHelper.LoadCertificate(certFilePath, certFilePassword);
         }
     }
 }

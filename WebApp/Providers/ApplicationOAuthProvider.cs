@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -93,6 +96,60 @@ namespace WebApp.Providers
                 { "userName", userName }
             };
             return new AuthenticationProperties(data);
+        }
+
+        public override Task ValidateTokenRequest(OAuthValidateTokenRequestContext context)
+        {
+            return base.ValidateTokenRequest(context);
+        }
+
+        public override Task TokenEndpointResponse(OAuthTokenEndpointResponseContext context)
+        {
+            if (context.TokenEndpointRequest != null)
+            {
+                System.Net.IPAddress remoteIpAddress = System.Net.IPAddress.Parse(context.Request.RemoteIpAddress);
+                System.Net.IPAddress remoteIpAddressV4 = remoteIpAddress.MapToIPv4();
+
+                string RemoteIpAddress = context.Request.RemoteIpAddress;
+                string RemoteIpAddressV4 = string.Empty;
+                if (remoteIpAddressV4 != null)
+                {
+                    RemoteIpAddressV4 = remoteIpAddressV4.ToString();
+                }
+
+                string GrantType = context.TokenEndpointRequest.GrantType;
+
+                string UserName = String.Empty;
+                if (context.TokenEndpointRequest.IsResourceOwnerPasswordCredentialsGrantType)
+                {
+                    UserName = context.TokenEndpointRequest.Parameters["UserName"];
+                }
+
+                string signedAccessTokenHash = AccessTokenHelper.HashAndSign(context.AccessToken);
+
+                TokenRequest tokenRequest = new TokenRequest()
+                {
+                    GrantType = GrantType,
+                    RemoteIpAddress = RemoteIpAddress,
+                    RemoteIpAddressV4 = RemoteIpAddressV4,
+                    UserName = UserName,
+                    SignedAccessTokenHash = signedAccessTokenHash,
+                    RequestDate = DateTime.UtcNow
+                };
+
+                using (AccessTokenDbContext dbContext = new AccessTokenDbContext())
+                {
+                    dbContext.TokenRequests.Add(tokenRequest);
+                    dbContext.SaveChanges();
+                }
+            }
+
+            return base.TokenEndpointResponse(context);
+        }
+
+        public override Task GrantRefreshToken(OAuthGrantRefreshTokenContext context)
+        {
+            return base.GrantRefreshToken(context);
         }
     }
 }

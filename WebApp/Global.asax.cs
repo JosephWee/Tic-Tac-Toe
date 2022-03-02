@@ -63,6 +63,10 @@ namespace WebApp
 
         protected void CreateBuiltInUsersAndRoles()
         {
+            var owinContext = HttpContext.Current.GetOwinContext();
+            if (owinContext == null)
+                return;
+
             var roleAccountApiUser = new ApplicationRole()
             {
                 Id = new Guid("CD28DE48-583A-43DD-A0F9-308A4C5C8220").ToString(),
@@ -84,8 +88,7 @@ namespace WebApp
             var emailAccountApiUser = "AccountApiUser@example.com".ToLower();
             var emailValuesApiUser = "ValuesApiUser@example.com".ToLower();
 
-            var UserManager =
-                HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var UserManager = owinContext.GetUserManager<ApplicationUserManager>();
 
             CreateBuiltInUser(UserManager, emailAccountApiUser, "P@ssword1", roleAccountApiUser);
             CreateBuiltInUser(UserManager, emailValuesApiUser, "P@ssword1", roleValuesApiUser);
