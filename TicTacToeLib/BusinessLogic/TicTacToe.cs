@@ -512,8 +512,11 @@ namespace TicTacToe.BusinessLogic
                                     GameResultCode = (int)Status
                                 };
 
-                            modelEntries.Add(modelEntry);
-                            MovesImportedCount++;
+                            if (!modelEntries.Any(x => x.InstanceId == modelEntry.InstanceId && x.CellIndex == modelEntry.CellIndex && x.CellContent == modelEntry.CellContent && x.GameResultCode == modelEntry.GameResultCode))
+                            {
+                                modelEntries.Add(modelEntry);
+                                MovesImportedCount++;
+                            }
                         }
                     }
                 }
