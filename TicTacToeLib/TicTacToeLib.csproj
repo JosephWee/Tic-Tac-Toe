@@ -56,6 +56,7 @@
     <Compile Include="BusinessLogic\ComputerPlayerV2.cs" />
     <Compile Include="BusinessLogic\ITicTacToeComputerPlayer.cs" />
     <Compile Include="BusinessLogic\TicTacToe.cs" />
+    <Compile Include="Entity\TicTacToeClassificationModel02.cs" />
     <Compile Include="Entity\TicTacToeClassificationModel01.cs" />
     <Compile Include="Entity\TicTacToeDataContext.cs" />
     <Compile Include="Entity\TicTacToeDataEntry.cs" />
@@ -68,6 +69,7 @@
     <Content Include="DBScripts\CreateTicTacToeTable.sql" />
     <Content Include="DBScripts\FormatClassificationModel01.sql" />
     <Content Include="DBScripts\TicTacToeClassificationModel01.sql" />
+    <Content Include="DBScripts\TicTacToeClassificationModel02.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

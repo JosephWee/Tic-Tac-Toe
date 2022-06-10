@@ -14,5 +14,14 @@ namespace UnitTests
                 .TicTacToe
                 .PrepData("name=SourceConnString", "name=DestinationConnString");
         }
+
+        [TestMethod]
+        public void PrepData2()
+        {
+            TicTacToe
+                .BusinessLogic
+                .TicTacToe
+                .PrepData2("name=SourceConnString", "name=DestinationConnString");
+        }
     }
 }

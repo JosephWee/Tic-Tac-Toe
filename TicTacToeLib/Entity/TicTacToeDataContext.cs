@@ -19,5 +19,7 @@ namespace TicTacToe.Entity
         public DbSet<TicTacToeDataEntry> TicTacToeData { get; set; }
 
         public DbSet<TicTacToeClassificationModel01> TicTacToeClassificationModel01 { get; set; }
+
+        public DbSet<TicTacToeClassificationModel02> TicTacToeClassificationModel02 { get; set; }
     }
 }

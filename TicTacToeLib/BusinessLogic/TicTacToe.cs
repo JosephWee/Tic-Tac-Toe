@@ -424,5 +424,109 @@ namespace TicTacToe.BusinessLogic
                 destinationContext.SaveChanges();
             }
         }
+
+        public static void PrepData2(string SourceNameOrConnectionString, string DestinationNameOrConnectionString)
+        {
+            int GridSize = 3;
+            Entity.TicTacToeDataContext sourceContext = new Entity.TicTacToeDataContext(SourceNameOrConnectionString);
+            Entity.TicTacToeDataContext destinationContext = new Entity.TicTacToeDataContext(DestinationNameOrConnectionString);
+
+            List<string> SourceInstanceIds =
+                sourceContext
+                .TicTacToeData
+                .Where(x => x.GridSize == GridSize)
+                .Select(x => x.InstanceId)
+                .ToList();
+
+            List<string> DestinationInstanceIds =
+                destinationContext
+                .TicTacToeClassificationModel02
+                .Select(x => x.InstanceId)
+                .ToList();
+
+            List<string> instancesToMigrate =
+                SourceInstanceIds.Except(DestinationInstanceIds).ToList();
+
+            List<Entity.TicTacToeDataEntry> entriesToPrep =
+                (from entry in sourceContext.TicTacToeData
+                 where instancesToMigrate.Contains(entry.InstanceId)
+                 select entry)
+                .OrderBy(x => x.InstanceId)
+                .ThenBy(x => x.MoveNumber)
+                .ThenBy(x => x.CellIndex)
+                .ToList();
+
+            var entriesGroupByInstanceId =
+                entriesToPrep
+                .GroupBy(x => x.InstanceId);
+
+            var modelEntries =
+                new List<Entity.TicTacToeClassificationModel02>();
+
+            int InstancesImportedCount = 0;
+            int MovesImportedCount = 0;
+            foreach (var gbInstanceId in entriesGroupByInstanceId)
+            {
+                var gbInstanceMoves =
+                    gbInstanceId
+                    .GroupBy(x => x.MoveNumber);
+
+                int maxMoveNumber =
+                    gbInstanceMoves
+                    .Max(g => g.Key);
+
+                var entriesToEvaluate =
+                    gbInstanceMoves
+                    .First(g => g.Key == maxMoveNumber)
+                    .OrderBy(x => x.CellIndex)
+                    .ToList();
+
+                int CellsPerEntry = GridSize * GridSize;
+                List<int> CellStates = entriesToEvaluate.Select(x => x.CellContent).ToList();
+                int BlankCellCount = int.MinValue;
+                List<int> WinningCells = null;
+
+                var Status =
+                    TicTacToe.EvaluateResult(GridSize, CellStates, out BlankCellCount, out WinningCells);
+
+                if (Status != Models.TicTacToeGameStatus.InProgress)
+                {
+                    //Check if data is complete
+                    int numberOfMoves = gbInstanceMoves.Select(g => g.Key).Count();
+                    if (gbInstanceMoves.Any(g => g.Count() != CellsPerEntry))
+                        continue;
+
+                    InstancesImportedCount++;
+
+                    foreach (var moves in gbInstanceMoves.OrderBy(g => g.Key).ToList())
+                    {
+                        foreach (var move in moves.OrderBy(x => x.CellIndex))
+                        {
+                            var modelEntry =
+                                new Entity.TicTacToeClassificationModel02()
+                                {
+                                    InstanceId = gbInstanceId.Key,
+                                    MoveNumber = move.MoveNumber,
+                                    CellIndex = move.CellIndex,
+                                    CellContent = move.CellContent,
+                                    GameResultCode = (int)Status
+                                };
+
+                            modelEntries.Add(modelEntry);
+                            MovesImportedCount++;
+                        }
+                    }
+                }
+            }
+
+            if (modelEntries.Count > 0)
+            {
+                destinationContext
+                    .TicTacToeClassificationModel02
+                    .AddRange(modelEntries);
+
+                destinationContext.SaveChanges();
+            }
+        }
     }
 }
