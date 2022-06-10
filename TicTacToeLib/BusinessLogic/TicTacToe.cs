@@ -500,7 +500,7 @@ namespace TicTacToe.BusinessLogic
 
                     foreach (var moves in gbInstanceMoves.OrderBy(g => g.Key).ToList())
                     {
-                        foreach (var move in moves.OrderBy(x => x.CellIndex))
+                        foreach (var move in moves.Where(x => x.CellContent != 0).OrderBy(x => x.CellIndex))
                         {
                             var modelEntry =
                                 new Entity.TicTacToeClassificationModel02()
