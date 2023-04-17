@@ -8,8 +8,9 @@ namespace UnitTests
         [Test]
         public void PrepData()
         {
-            var SourceConnString = TestContext.Parameters.Get("SourceConnString", string.Empty);
-            var DestinationConnString = TestContext.Parameters.Get("DestinationConnString", string.Empty);
+            string msbuildDir = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..")).FullName;
+            var SourceConnString = TestContext.Parameters.Get("SourceConnString", string.Empty).Replace("$(MSBuildProjectDirectory)", msbuildDir);
+            var DestinationConnString = TestContext.Parameters.Get("DestinationConnString", string.Empty).Replace("$(MSBuildProjectDirectory)", msbuildDir);
 
             TicTacToe
                 .BusinessLogic
@@ -20,8 +21,9 @@ namespace UnitTests
         [Test]
         public void PrepData2()
         {
-            var SourceConnString = TestContext.Parameters.Get("SourceConnString", string.Empty);
-            var DestinationConnString = TestContext.Parameters.Get("DestinationConnString", string.Empty);
+            string msbuildDir = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..")).FullName;
+            var SourceConnString = TestContext.Parameters.Get("SourceConnString", string.Empty).Replace("$(MSBuildProjectDirectory)", msbuildDir);
+            var DestinationConnString = TestContext.Parameters.Get("DestinationConnString", string.Empty).Replace("$(MSBuildProjectDirectory)", msbuildDir);
 
             TicTacToe
                 .BusinessLogic
