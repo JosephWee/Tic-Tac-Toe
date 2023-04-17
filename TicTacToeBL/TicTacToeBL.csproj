@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="DBScripts\CreateTicTacToeTable.sql" />
+    <None Remove="DBScripts\FormatClassificationModel01.sql" />
+    <None Remove="DBScripts\TicTacToeClassificationModel01.sql" />
+    <None Remove="DBScripts\TicTacToeClassificationModel02.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="DBScripts\CreateTicTacToeTable.sql" />
+    <Content Include="DBScripts\FormatClassificationModel01.sql" />
+    <Content Include="DBScripts\TicTacToeClassificationModel01.sql" />
+    <Content Include="DBScripts\TicTacToeClassificationModel02.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+  </ItemGroup>
+
+</Project>
