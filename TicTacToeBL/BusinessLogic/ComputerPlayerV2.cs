@@ -23,9 +23,9 @@ namespace TicTacToe.BusinessLogic
             public int Player2Count { get; set; }
         }
 
-        public int GetMove(string InstanceId, int LastMoveNumber)
+        public int GetMove(string InstanceId)
         {
-            var ds = TicTacToe.GetAndValidate(InstanceId, LastMoveNumber);
+            var ds = TicTacToe.GetAndValidatePreviousMove(InstanceId);
 
             int GridSize = ds.First().GridSize;
             List<int> CellStates = ds.Select(x => x.CellContent).ToList();

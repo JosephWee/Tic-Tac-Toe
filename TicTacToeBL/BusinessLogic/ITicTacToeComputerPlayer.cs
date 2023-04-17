@@ -7,6 +7,6 @@ namespace TicTacToe.BusinessLogic
 {
     public interface ITicTacToeComputerPlayer
     {
-        int GetMove(string InstanceId, int LastMoveNumber);
+        int GetMove(string InstanceId);
     }
 }

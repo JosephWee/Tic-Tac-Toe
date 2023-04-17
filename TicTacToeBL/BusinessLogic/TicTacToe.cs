@@ -19,12 +19,8 @@ namespace TicTacToe.BusinessLogic
 
         public static Models.TicTacToeUpdateResponse EvaluateResult(Models.TicTacToeUpdateRequest request)
         {
-            if (request == null)
-                throw new ArgumentNullException("Request is null");
-            if (request.CellStates == null)
-                throw new ArgumentNullException("Request.CellStates is null");
-            if (request.CellStates.Count != request.TotalCellCount)
-                throw new ArgumentNullException("Unexpected Request.CellStates count");
+            //Validate TicTacToeUpdateRequest
+            TicTacToe.ValidateTicTacToeUpdateRequest(request);
 
             List<int> WinningCells = null;
             int BlankCellCount = int.MinValue;
@@ -46,7 +42,7 @@ namespace TicTacToe.BusinessLogic
                     ComputerPlayerConfig.CreateComputerPlayer();
 
                 int? ComputerMove =
-                    computerPlayer.GetMove(request.InstanceId, moveNumber);
+                    computerPlayer.GetMove(request.InstanceId);
 
                 if (ComputerMove.HasValue && request.CellStates[ComputerMove.Value] == 0)
                 {
@@ -231,7 +227,7 @@ namespace TicTacToe.BusinessLogic
             return Status;
         }
 
-        public static List<Entity.TicTacToeDataEntry>  GetAndValidate(string InstanceId, int LastMoveNumber)
+        public static List<Entity.TicTacToeDataEntry> GetAndValidatePreviousMove(string InstanceId)
         {
             Entity.TicTacToeDataContext context = new Entity.TicTacToeDataContext();
 
@@ -239,17 +235,17 @@ namespace TicTacToe.BusinessLogic
                 (from dr in context.TicTacToeData
                  where
                      dr.InstanceId == InstanceId
-                     && dr.MoveNumber == LastMoveNumber
                  orderby
+                     dr.MoveNumber,
                      dr.CellIndex
                  select dr).ToList();
-
-
 
             if (ds == null || !ds.Any())
                 return ds;
 
+            int LastMoveNumber = ds.Max(dr => dr.MoveNumber);
 
+            ds = ds.Where(dr => dr.MoveNumber == LastMoveNumber).OrderBy(dr => dr.CellIndex).ToList();
 
             var invalidCellContent =
                 ds.Where(x => !TicTacToe.ValidCellStateValues.Contains(x.CellContent))
@@ -260,15 +256,11 @@ namespace TicTacToe.BusinessLogic
                     string.Format("Cells {0} has invalid cell contents", string.Join(", ", invalidCellContent))
                 );
 
-
-
             int minGridSize = ds.Min(x => x.GridSize);
             int maxGridSize = ds.Max(x => x.GridSize);
 
             if (minGridSize != maxGridSize)
                 throw new ArgumentOutOfRangeException("Data has inconsistent Grid Size");
-
-
 
             bool allCellIndexOkay = true;
             int TotalCellCount = minGridSize * minGridSize;
@@ -285,6 +277,21 @@ namespace TicTacToe.BusinessLogic
                 throw new IndexOutOfRangeException("Cell Indices are not 0 based or contiguous");
 
             return ds;
+        }
+
+        public static void ValidateTicTacToeUpdateRequest(Models.TicTacToeUpdateRequest request)
+        {
+            if (request == null)
+                throw new ArgumentNullException("Request is null");
+            if (request.CellStates == null)
+                throw new ArgumentNullException("Request.CellStates is null");
+            if (request.CellStates.Count != request.TotalCellCount)
+                throw new ArgumentNullException("Unexpected Request.CellStates count");
+
+            //Validate the last entry first
+            var latestMove = TicTacToe.GetAndValidatePreviousMove(request.InstanceId);
+
+            //TO DO: Validate the request is valid
         }
 
         public static void SaveToDatabase(string InstanceId, int GridSize, int MoveNumber, List<int> CellStates)

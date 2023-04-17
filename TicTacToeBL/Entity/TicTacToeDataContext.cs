@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Microsoft.EntityFrameworkCore;
+using TicTacToeBL.Entity;
 
 namespace TicTacToe.Entity
 {
@@ -12,7 +13,7 @@ namespace TicTacToe.Entity
 
         public TicTacToeDataContext()
         {
-            dbNameOrConnectionString = "name=TicTacToeDataConnString";
+            dbNameOrConnectionString = DbContextConfig.Get("TicTacToeData");
         }
 
         public TicTacToeDataContext(string nameOrConnectionString)
