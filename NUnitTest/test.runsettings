@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<TestRunParameters>
+		<Parameter name="TicTacToeDataConnString" value="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=$(MSBuildProjectDirectory)\LocalDB\TicTacToeData.mdf;Integrated Security=True;Connect Timeout=30" />
+		<Parameter name="SourceConnString" value="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=$(MSBuildProjectDirectory)\LocalDB\SourceTicTacToeData.mdf;Integrated Security=True;Connect Timeout=30" />
+		<Parameter name="DestinationConnString" value="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=$(MSBuildProjectDirectory)\LocalDB\DestinationTicTacToeData.mdf;Integrated Security=True;Connect Timeout=30" />
+	</TestRunParameters>
+</RunSettings>

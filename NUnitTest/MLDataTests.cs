@@ -8,19 +8,25 @@ namespace UnitTests
         [Test]
         public void PrepData()
         {
+            var SourceConnString = TestContext.Parameters.Get("SourceConnString", string.Empty);
+            var DestinationConnString = TestContext.Parameters.Get("DestinationConnString", string.Empty);
+
             TicTacToe
                 .BusinessLogic
                 .TicTacToe
-                .PrepData("name=SourceConnString", "name=DestinationConnString");
+                .PrepData(SourceConnString, DestinationConnString);
         }
 
         [Test]
         public void PrepData2()
         {
+            var SourceConnString = TestContext.Parameters.Get("SourceConnString", string.Empty);
+            var DestinationConnString = TestContext.Parameters.Get("DestinationConnString", string.Empty);
+
             TicTacToe
                 .BusinessLogic
                 .TicTacToe
-                .PrepData2("name=SourceConnString", "name=DestinationConnString");
+                .PrepData2(SourceConnString, DestinationConnString);
         }
     }
 }
