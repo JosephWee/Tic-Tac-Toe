@@ -1,496 +1,10112 @@
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Collections.Generic;
+using System.Text;
 
 namespace UnitTests
 {
     public class TicTacToeTests
     {
+        [SetUp]
+        public void TestSetup()
+        {
+            string msbuildDir = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..")).FullName;
+            var TicTacToeDataConnString = TestContext.Parameters.Get("TicTacToeDataConnString", string.Empty).Replace("$(MSBuildProjectDirectory)", msbuildDir);
+            Assert.IsNotEmpty(TicTacToeDataConnString);
+            TicTacToeBL.Entity.DbContextConfig.AddOrReplace("TicTacToeData", TicTacToeDataConnString);
+        }
+
         [Test]
         public void TestPlayer1Wins()
         {
-            string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")}";
-            TicTacToe.Models.TicTacToeUpdateRequest request;
-            TicTacToe.Models.TicTacToeUpdateResponse response;
-            TicTacToe.Models.TicTacToeGameStatus expectedGameStatus = TicTacToe.Models.TicTacToeGameStatus.Player1Wins;
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
+            var games = new List<List<List<int>>>()
             {
-                1, 1, 1,
-                0, 0, 0,
-                0, 0, 0
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,0,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      2,1,0,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      1,0,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      1,0,0,
+                      0,2,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      1,0,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,0,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,2,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,1,2,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      2,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      2,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      2,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,0,
+                      1,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,0,0,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,0,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,0,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,2,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,2,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,0,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,0,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,0,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      1,0,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      2,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      2,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,1,0,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,2,
+                      2,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,0,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,2,
+                      2,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      1,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      1,1,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      1,1,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      1,0,0
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,2,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,2,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,2,
+                      1,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,2,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,2,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,0,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,0,0,
+                      1,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,0,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      0,1,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,0,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,0,
+                      1,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,2,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,2,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,0,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,0,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,0,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      1,2,0
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,0,
+                      1,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,2,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,1,2,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,2,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,2,
+                      1,0,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,2,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,2,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,1,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      2,1,1,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      2,1,1,
+                      0,2,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      2,1,1,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,2,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,2,
+                      1,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,2,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,2,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,2,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,2,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,1,1,
+                      2,2,0,
+                      1,0,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,2,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,2,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,1,
+                      0,2,2,
+                      2,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,0,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,2,
+                      2,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,1,0,
+                      0,0,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,0,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,1,0,
+                      2,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,1,0,
+                      2,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      1,0,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,0,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,0,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,0,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      1,2,0
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,0,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,0,0,
+                      1,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,0,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,0,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      1,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      1,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      1,1,2,
+                      2,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,2,0,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      1,2,0,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,0,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,0,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,0,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,0,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      1,0,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,2,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,1,2,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,2,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,2,
+                      1,0,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,2,
+                      1,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,0,0,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,0,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,0,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,0,2,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      1,1,2,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      1,1,2,
+                      2,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      1,1,2,
+                      2,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,1,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,1,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      0,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,2,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,1,0,
+                      0,1,2,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,1,2,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,1,2,
+                      0,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,0,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      2,1,0,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,0,
+                      1,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,2,
+                      1,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,2,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,2,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,2,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,1,2,
+                      2,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,1,0,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,2,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,1,2,
+                      2,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,2,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,1,
+                      2,0,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,1,0,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,0,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,2,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,1,2,
+                      1,0,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,0,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,0,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,2,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,2,0,
+                      1,0,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,1,0,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,2,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,2,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,1,2,
+                      1,2,1
+                   }
+                }
             };
-            response = null;
 
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 0);
-            Assert.IsTrue(response.WinningCells[1] == 1);
-            Assert.IsTrue(response.WinningCells[2] == 2);
+            int countMoves = 0;
+            int countInProgress = 0;
+            int countPlayer1Wins = 0;
+            int countPlayer2Wins = 0;
+            int countDraws = 0;
 
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
+            foreach (var game in games)
             {
-                0, 0, 0,
-                1, 1, 1,
-                0, 0, 0
-            };
-            response = null;
+                foreach (var move in game)
+                {
+                    string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")} - M{countMoves + 1}";
 
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 3);
-            Assert.IsTrue(response.WinningCells[1] == 4);
-            Assert.IsTrue(response.WinningCells[2] == 5);
+                    TicTacToe.Models.TicTacToeUpdateRequest request =
+                        new TicTacToe.Models.TicTacToeUpdateRequest();
+                    request.InstanceId = InstanceId;
+                    request.GridSize = 3;
+                    request.CellStates = move;
 
+                    TicTacToe.Models.TicTacToeUpdateResponse response = null;
 
+                    response =
+                        TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
 
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                0, 0, 0,
-                0, 0, 0,
-                1, 1, 1
-            };
-            response = null;
+                    Assert.IsNotNull(response);
+                    countMoves++;
 
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 6);
-            Assert.IsTrue(response.WinningCells[1] == 7);
-            Assert.IsTrue(response.WinningCells[2] == 8);
+                    if (response.Status == TicTacToe.Models.TicTacToeGameStatus.InProgress)
+                        countInProgress++;
+                    else if (response.Status == TicTacToe.Models.TicTacToeGameStatus.Draw)
+                        countDraws++;
+                    else if (response.Status == TicTacToe.Models.TicTacToeGameStatus.Player1Wins)
+                        countPlayer1Wins++;
+                    else if (response.Status == TicTacToe.Models.TicTacToeGameStatus.Player2Wins)
+                        countPlayer2Wins++;
+                }
+            }
 
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                1, 0, 0,
-                1, 0, 0,
-                1, 0, 0
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 0);
-            Assert.IsTrue(response.WinningCells[1] == 3);
-            Assert.IsTrue(response.WinningCells[2] == 6);
-
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                0, 1, 0,
-                0, 1, 0,
-                0, 1, 0
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 1);
-            Assert.IsTrue(response.WinningCells[1] == 4);
-            Assert.IsTrue(response.WinningCells[2] == 7);
-
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                0, 0, 1,
-                0, 0, 1,
-                0, 0, 1
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 2);
-            Assert.IsTrue(response.WinningCells[1] == 5);
-            Assert.IsTrue(response.WinningCells[2] == 8);
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                1, 0, 0,
-                0, 1, 0,
-                0, 0, 1
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 0);
-            Assert.IsTrue(response.WinningCells[1] == 4);
-            Assert.IsTrue(response.WinningCells[2] == 8);
-
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                0, 0, 1,
-                0, 1, 0,
-                1, 0, 0
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 6);
-            Assert.IsTrue(response.WinningCells[1] == 4);
-            Assert.IsTrue(response.WinningCells[2] == 2);
+            Assert.AreEqual(games.Sum(g => g.Count), countMoves);
+            Assert.AreEqual(0, countDraws);
+            Assert.AreEqual(games.Count, countPlayer1Wins);
+            Assert.AreEqual(0, countPlayer2Wins);
         }
 
         [Test]
         public void TestPlayer2Wins()
         {
-            string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")}";
-            TicTacToe.Models.TicTacToeUpdateRequest request;
-            TicTacToe.Models.TicTacToeUpdateResponse response;
-            TicTacToe.Models.TicTacToeGameStatus expectedGameStatus = TicTacToe.Models.TicTacToeGameStatus.Player2Wins;
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
+            var games = new List<List<List<int>>>()
             {
-                2, 2, 2,
-                0, 0, 0,
-                0, 0, 0
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,0,0,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      2,1,0,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      2,1,1,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      2,1,1,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      2,1,1,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      2,1,1,
+                      2,1,0
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,2,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,2,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,2,
+                      1,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,2,
+                      1,0,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,0,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,0,
+                      1,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,2,
+                      1,0,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,2,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,2,0,
+                      1,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,2,0,
+                      1,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,2,0,
+                      1,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,2,0,
+                      1,0,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,1,0,
+                      2,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      0,1,0,
+                      2,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      2,1,0,
+                      2,0,0
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,2,1
+                   },
+                   new List<int>()
+                   {
+                      1,1,0,
+                      0,2,0,
+                      0,2,1
+                   },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,2,0,
+                      0,2,1
+                   },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      1,2,0,
+                      0,2,1
+                   },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      1,2,0,
+                      2,2,1
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,1,
+                      2,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      2,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,1,
+                      2,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,1,
+                      2,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,1,0,
+                      2,1,1,
+                      2,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,1,0,
+                      2,1,1,
+                      2,2,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      1,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      1,1,2,
+                      1,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      1,0,0
+                   },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      1,0,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,2,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,2,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,2,0,
+                      0,2,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,2,0,
+                      1,2,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,2,2,
+                      1,2,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      1,2,2,
+                      1,2,1
+                   },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,2,2,
+                      1,2,1
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,2,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,1,
+                      0,2,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,2,1,
+                      0,2,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,2,1,
+                      1,2,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,2,1,
+                      1,2,2
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      1,2,1,
+                      1,2,2
+                   },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,2,1,
+                      1,2,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      0,1,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      2,1,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      1,2,0,
+                      2,1,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      1,2,0,
+                      2,1,1
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,1,2
+                   },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,1,2
+                   },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      1,1,2
+                   },
+                   new List<int>()
+                   {
+                      0,2,2,
+                      0,1,0,
+                      1,1,2
+                   },
+                   new List<int>()
+                   {
+                      0,2,2,
+                      0,1,1,
+                      1,1,2
+                   },
+                   new List<int>()
+                   {
+                      2,2,2,
+                      0,1,1,
+                      1,1,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,1,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      2,1,1,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      2,1,1,
+                      2,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,1,1,
+                      2,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,1,1,
+                      2,2,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,1
+                   },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      2,0,1
+                   },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,1,
+                      2,0,1
+                   },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,1,
+                      2,0,1
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,0,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,1,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,1,
+                      2,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,1,1,
+                      2,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,1,1,
+                      2,2,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,2,0,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,2,2,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      1,2,2,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,2,2,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,2,2,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,2,2,
+                      0,1,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,0,0,
+                      0,2,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      0,2,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      2,2,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      1,1,0,
+                      2,2,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      1,1,0,
+                      2,2,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      2,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,1,0,
+                      0,1,0,
+                      2,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,1,0,
+                      0,1,0,
+                      2,2,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      1,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      1,2,1
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,0,0,
+                      2,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      2,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      2,2,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      2,2,1
+                   },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      0,1,0,
+                      2,2,1
+                   },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      0,1,1,
+                      2,2,1
+                   },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      2,1,1,
+                      2,2,1
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      0,1,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      2,1,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,2,0,
+                      2,1,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      1,2,0,
+                      2,1,1
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,2,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,2,
+                      1,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,2,
+                      1,1,2
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,2,
+                      1,1,2
+                   },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      0,1,2,
+                      1,1,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      0,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      0,1,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      2,1,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,0,
+                      2,1,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,2,
+                      2,1,1
+                   },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,2,2,
+                      2,1,1
+                   },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      2,2,2,
+                      2,1,1
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,0,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,0,
+                      0,1,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,2,
+                      0,1,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      0,1,0,
+                      0,2,0
+                   },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,1,0,
+                      0,2,0
+                   },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,1,0,
+                      0,2,2
+                   },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,1,1,
+                      0,2,2
+                   },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,1,1,
+                      2,2,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,2,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,2,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,1,0,
+                      0,2,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,1,0,
+                      2,2,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,0,0,
+                      1,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,2,0,
+                      1,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,2,0,
+                      1,1,0
+                   },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,2,0,
+                      1,1,2
+                   },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,2,1,
+                      1,1,2
+                   },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,2,1,
+                      1,1,2
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,2,1
+                   },
+                   new List<int>()
+                   {
+                      1,1,0,
+                      0,2,0,
+                      0,2,1
+                   },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,2,0,
+                      0,2,1
+                   },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,2,1,
+                      0,2,1
+                   },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,2,1,
+                      2,2,1
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      0,1,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      2,1,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,1,
+                      2,1,1
+                   },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      0,2,1,
+                      2,1,1
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,2,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,2,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,2,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      1,2,2,
+                      0,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      1,2,2,
+                      2,0,1
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      1,2,2,
+                      2,1,1
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      1,2,2,
+                      2,1,1
+                   }
+               },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                   },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,0,
+                      0,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,0,
+                      1,0,2
+                   },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,2,
+                      1,0,2
+                   }
+                }
             };
-            response = null;
 
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 0);
-            Assert.IsTrue(response.WinningCells[1] == 1);
-            Assert.IsTrue(response.WinningCells[2] == 2);
+            int countMoves = 0;
+            int countInProgress = 0;
+            int countPlayer1Wins = 0;
+            int countPlayer2Wins = 0;
+            int countDraws = 0;
 
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
+            foreach (var game in games)
             {
-                0, 0, 0,
-                2, 2, 2,
-                0, 0, 0
-            };
-            response = null;
+                foreach (var move in game)
+                {
+                    string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")} - M{countMoves + 1}";
 
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 3);
-            Assert.IsTrue(response.WinningCells[1] == 4);
-            Assert.IsTrue(response.WinningCells[2] == 5);
+                    TicTacToe.Models.TicTacToeUpdateRequest request =
+                        new TicTacToe.Models.TicTacToeUpdateRequest();
+                    request.InstanceId = InstanceId;
+                    request.GridSize = 3;
+                    request.CellStates = move;
 
+                    TicTacToe.Models.TicTacToeUpdateResponse response = null;
 
+                    response =
+                        TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
 
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                0, 0, 0,
-                0, 0, 0,
-                2, 2, 2
-            };
-            response = null;
+                    Assert.IsNotNull(response);
+                    countMoves++;
 
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 6);
-            Assert.IsTrue(response.WinningCells[1] == 7);
-            Assert.IsTrue(response.WinningCells[2] == 8);
+                    if (response.Status == TicTacToe.Models.TicTacToeGameStatus.InProgress)
+                        countInProgress++;
+                    else if (response.Status == TicTacToe.Models.TicTacToeGameStatus.Draw)
+                        countDraws++;
+                    else if (response.Status == TicTacToe.Models.TicTacToeGameStatus.Player1Wins)
+                        countPlayer1Wins++;
+                    else if (response.Status == TicTacToe.Models.TicTacToeGameStatus.Player2Wins)
+                        countPlayer2Wins++;
+                }
+            }
 
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                2, 0, 0,
-                2, 0, 0,
-                2, 0, 0
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 0);
-            Assert.IsTrue(response.WinningCells[1] == 3);
-            Assert.IsTrue(response.WinningCells[2] == 6);
-
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                0, 2, 0,
-                0, 2, 0,
-                0, 2, 0
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 1);
-            Assert.IsTrue(response.WinningCells[1] == 4);
-            Assert.IsTrue(response.WinningCells[2] == 7);
-
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                0, 0, 2,
-                0, 0, 2,
-                0, 0, 2
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 2);
-            Assert.IsTrue(response.WinningCells[1] == 5);
-            Assert.IsTrue(response.WinningCells[2] == 8);
-
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                2, 0, 0,
-                0, 2, 0,
-                0, 0, 2
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 0);
-            Assert.IsTrue(response.WinningCells[1] == 4);
-            Assert.IsTrue(response.WinningCells[2] == 8);
-
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                0, 0, 2,
-                0, 2, 0,
-                2, 0, 0
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-            Assert.IsTrue(response.WinningCells.Count == 3);
-            Assert.IsTrue(response.WinningCells[0] == 6);
-            Assert.IsTrue(response.WinningCells[1] == 4);
-            Assert.IsTrue(response.WinningCells[2] == 2);
+            Assert.AreEqual(games.Sum(g => g.Count), countMoves);
+            Assert.AreEqual(0, countDraws);
+            Assert.AreEqual(0, countPlayer1Wins);
+            Assert.AreEqual(games.Count, countPlayer2Wins);
         }
 
         [Test]
         public void TestDraw()
         {
-            string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")}";
-            TicTacToe.Models.TicTacToeUpdateRequest request;
-            TicTacToe.Models.TicTacToeUpdateResponse response;
-            TicTacToe.Models.TicTacToeGameStatus expectedGameStatus = TicTacToe.Models.TicTacToeGameStatus.Draw;
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
+            var games = new List<List<List<int>>>()
             {
-                1, 1, 2,
-                2, 2, 1,
-                1, 1, 2
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,1,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,1,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,1,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,1,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      1,1,2,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      1,1,2,
+                      2,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      1,1,2,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,1,2,
+                      2,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,1,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,2,1,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,1,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,1,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,2,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,2,1,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,2,1,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,2,1,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,2,1,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,2,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,0,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      2,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      0,1,0,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,0,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,2,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,1,2,
+                      2,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      1,2,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,2,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,2,2,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,2,2,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,2,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,2,0,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,2,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,2,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,1,2,
+                      2,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,1,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,1,1,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,0,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,1,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,1,1,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      0,2,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      0,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      0,1,1,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,1,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,1,1,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,2,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,1,2,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,1,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      2,1,1,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      2,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      2,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      2,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,2,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,1,2,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,0,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      0,2,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      0,1,0,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      0,1,1,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,1,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,1,1,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      2,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      2,2,1,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,2,1,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,2,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,2,1,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,2,1,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,2,1,
+                      1,1,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,2,1,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,2,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      2,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,1,0,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      0,1,0,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,0,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,2,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,1,2,
+                      2,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,2,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,2,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,2,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      0,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      0,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,2,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      1,1,2,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      1,1,2,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      1,1,2,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,1,2,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,1,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      2,1,1,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      1,1,2,
+                      2,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,0,
+                      1,1,2,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,2,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,1,2,
+                      2,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      1,1,2,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      1,1,2,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      1,1,2,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,2,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,1,2,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,2,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      0,1,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      0,1,1,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,1,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      2,1,1,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,1,1,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,1,2,
+                      2,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,1,2,
+                      2,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      2,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      2,1,1,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,2,
+                      2,1,1,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,1,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,1,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,1,1,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,1,1,
+                      0,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,1,1,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,0,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,0,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,0,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,1,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,1,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,1,1,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,1,2,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,1,2,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      2,1,1,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      1,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,2,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,2,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,2,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,2,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,2,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,1,2,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      1,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      1,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,0,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,2,0,
+                      1,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,2,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,2,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,2,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      0,2,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,0,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,2,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,2,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,0,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      2,1,1,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      2,1,1,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,0,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,0,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,0,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      0,1,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,0,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,2,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,2,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      0,1,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,2,0,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,0,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,2,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,2,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,0,
+                      0,2,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,2,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,2,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,2,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,1,2,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      1,1,2,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,0,
+                      0,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      0,1,0,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,0,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,0
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,1,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      1,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      1,1,2,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,1,2,
+                      1,1,2,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,1,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,2,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,1,2,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      2,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      0,1,1,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      1,2,2,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      1,2,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,1,
+                      1,2,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,2,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,2,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,0,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,0,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,0,
+                      0,2,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,2,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      0,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,2,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,2,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,2,0,
+                      1,1,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,2,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,2,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,2,0,
+                      1,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,2,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      0,2,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,1,
+                      1,2,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,2,2,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,2,2,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,1,
+                      1,2,2,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,2,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,2,1,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,2,1,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,2,1,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,2,1,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,2,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,2,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,2,1,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,2,1,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,2,1,
+                      1,0,1
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,2,1,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,2,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,0,0,
+                      0,1,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,0,0,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,0,0,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      1,0,0,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,0,0,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,0,2,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      0,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,0,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,2,
+                      2,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,1,
+                      1,1,2,
+                      2,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,0,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,2,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,2,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      1,1,2,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      1,1,2,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,1,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,1,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,1,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      2,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      2,1,1,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      2,1,1,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      0,1,0,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      0,1,1,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      0,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,2,
+                      2,1,1,
+                      1,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      0,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,0,2
+                    },
+                   new List<int>()
+                   {
+                      1,0,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      0,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      1,1,0,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,0,
+                      1,1,2,
+                      2,1,2
+                    },
+                   new List<int>()
+                   {
+                      1,2,1,
+                      1,1,2,
+                      2,1,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      1,1,2,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      0,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      0,2,1,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,0,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      2,0,1
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      1,1,2,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,0,
+                      1,1,2,
+                      2,1,1
+                    },
+                   new List<int>()
+                   {
+                      2,2,1,
+                      1,1,2,
+                      2,1,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,0,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      0,1,1,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,1,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,0,
+                      2,1,1,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      0,0,2,
+                      2,1,1,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      1,2,0
+                    },
+                   new List<int>()
+                   {
+                      1,0,2,
+                      2,1,1,
+                      1,2,2
+                    },
+                   new List<int>()
+                   {
+                      1,1,2,
+                      2,1,1,
+                      1,2,2
+                   }
+                },
+                new List<List<int>>()
+                {
+                   new List<int>()
+                   {
+                      0,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,0,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      0,1,0,
+                      0,0,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      0,1,0,
+                      0,2,0
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      0,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      2,1,0,
+                      0,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,0,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,0,
+                      1,2,1
+                    },
+                   new List<int>()
+                   {
+                      2,1,2,
+                      2,1,1,
+                      1,2,1
+                   }
+                }
             };
-            response = null;
 
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
+            int countMoves = 0;
+            int countInProgress = 0;
+            int countPlayer1Wins = 0;
+            int countPlayer2Wins = 0;
+            int countDraws = 0;
 
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
+            foreach (var game in games)
             {
-                1, 2, 1,
-                1, 2, 2,
-                2, 1, 1
-            };
-            response = null;
+                foreach (var move in game)
+                {
+                    string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")} - M{countMoves + 1}";
+                    
+                    TicTacToe.Models.TicTacToeUpdateRequest request =
+                        new TicTacToe.Models.TicTacToeUpdateRequest();
+                    request.InstanceId = InstanceId;
+                    request.GridSize = 3;
+                    request.CellStates = move;
 
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
+                    TicTacToe.Models.TicTacToeUpdateResponse response = null;
 
+                    response =
+                        TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
 
+                    Assert.IsNotNull(response);
+                    countMoves++;
 
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                2, 1, 1,
-                1, 2, 2,
-                2, 1, 1
-            };
-            response = null;
+                    if (response.Status == TicTacToe.Models.TicTacToeGameStatus.InProgress)
+                        countInProgress++;
+                    else if (response.Status == TicTacToe.Models.TicTacToeGameStatus.Draw)
+                        countDraws++;
+                    else if (response.Status == TicTacToe.Models.TicTacToeGameStatus.Player1Wins)
+                        countPlayer1Wins++;
+                    else if (response.Status == TicTacToe.Models.TicTacToeGameStatus.Player2Wins)
+                        countPlayer2Wins++;
+                }
+            }
 
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-        }
-
-        [Test]
-        public void TestInProgress()
-        {
-            string InstanceId = $"UnitTest @ {DateTime.UtcNow.ToString("o")}";
-            TicTacToe.Models.TicTacToeUpdateRequest request;
-            TicTacToe.Models.TicTacToeUpdateResponse response;
-            TicTacToe.Models.TicTacToeGameStatus expectedGameStatus = TicTacToe.Models.TicTacToeGameStatus.InProgress;
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                1, 1, 2,
-                2, 2, 1,
-                1, 0, 0
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                1, 2, 1,
-                1, 2, 2,
-                0, 0, 1
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
-
-
-
-            request = new TicTacToe.Models.TicTacToeUpdateRequest();
-            request.InstanceId = InstanceId;
-            request.GridSize = 3;
-            request.CellStates = new System.Collections.Generic.List<int>()
-            {
-                2, 0, 1,
-                1, 0, 2,
-                2, 1, 1
-            };
-            response = null;
-
-            response =
-                TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Status == expectedGameStatus);
+            Assert.AreEqual(games.Count * 9, countMoves);
+            Assert.AreEqual(games.Count, countDraws);
+            Assert.AreEqual(0, countPlayer1Wins);
+            Assert.AreEqual(0, countPlayer2Wins);
         }
 
         [Test]
@@ -667,7 +10283,7 @@ namespace UnitTests
 
 
             var ds =
-                TicTacToe.BusinessLogic.TicTacToe.GetAndValidate(InstanceId, MoveNumber);
+                TicTacToe.BusinessLogic.TicTacToe.GetAndValidatePreviousMove(InstanceId);
 
             int FetchedMoveNumber = ds.Max(x => x.MoveNumber);
             Assert.AreEqual(MoveNumber, FetchedMoveNumber);
