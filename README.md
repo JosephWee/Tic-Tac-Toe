@@ -7,4 +7,4 @@ The current implementation has 2 versions of Computer Players (ComputerPlayerV1 
 Both these versions computer players that chooses their moves programatically.
 It is one of my goals to eventually create a Computer Player that chooses their moves based on the probability of winning the game using an AI model.
 
-![Tic-Tac-Toe Project Architectural Overview ](/Documentation/Tic-Tac-Toe-Overview.jpeg)
+![Tic-Tac-Toe Project Architectural Overview ](/Documentation/Tic-Tac-Toe-Overview-compact.jpeg)
