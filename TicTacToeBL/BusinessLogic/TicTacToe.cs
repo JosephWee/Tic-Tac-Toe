@@ -291,7 +291,31 @@ namespace TicTacToe.BusinessLogic
             //Validate the last entry first
             var latestMove = TicTacToe.GetAndValidatePreviousMove(request.InstanceId);
 
-            //TO DO: Validate the request is valid
+            //Check that the request is valid
+            bool validInstanceId = latestMove.All(x => x.InstanceId == request.InstanceId);
+            bool validGridSize = latestMove.All(x => x.GridSize == request.GridSize);
+            bool validCellCount = latestMove.Count() == request.TotalCellCount;
+            bool validCellContents = false;
+            if (validCellCount)
+            {
+                bool hasInvalidState = false;
+                List<bool> compareContents = new List<bool>();
+                for (int i = 0; i < request.TotalCellCount; i++)
+                {
+                    if (!TicTacToe.ValidCellStateValues.Contains(request.CellStates[i]))
+                        hasInvalidState = true;
+
+                    compareContents.Add(
+                        latestMove[i].CellContent == request.CellStates[i]
+                    );
+                }
+                int countTrue = compareContents.Count(x => x == true);
+                int countFalse = compareContents.Count(x => x == false);
+                validCellContents = (countTrue == request.TotalCellCount - 1) && (countFalse == 1) && !hasInvalidState;
+            }
+
+            if (!validInstanceId || !validGridSize || !validCellCount || !validCellContents)
+                throw new ArgumentException("TicTacToeUpdateRequest is invalid.");
         }
 
         public static void SaveToDatabase(string InstanceId, int GridSize, int MoveNumber, List<int> CellStates)
