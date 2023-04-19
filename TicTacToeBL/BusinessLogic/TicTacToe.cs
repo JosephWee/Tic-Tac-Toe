@@ -288,34 +288,39 @@ namespace TicTacToe.BusinessLogic
             if (request.CellStates.Count != request.TotalCellCount)
                 throw new ArgumentNullException("Unexpected Request.CellStates count");
 
+            //Check that the request is valid
+            var exInvalidRquest = new ArgumentException("TicTacToeUpdateRequest is invalid.");
+
+            if (request.CellStates.Count() != request.TotalCellCount)
+                throw exInvalidRquest;
+
+            if (request.CellStates.Any(x => !TicTacToe.ValidCellStateValues.Contains(x)))
+                throw exInvalidRquest;
+
             //Validate the last entry first
             var latestMove = TicTacToe.GetAndValidatePreviousMove(request.InstanceId);
 
-            //Check that the request is valid
-            bool validInstanceId = latestMove.All(x => x.InstanceId == request.InstanceId);
-            bool validGridSize = latestMove.All(x => x.GridSize == request.GridSize);
-            bool validCellCount = latestMove.Count() == request.TotalCellCount;
-            bool validCellContents = false;
-            if (validCellCount)
+            if (request.CellStates.Count(x => x == 1) == 1
+                && request.CellStates.Count(x => x == 0) == request.TotalCellCount - 1
+                && !latestMove.Any())
+                return;
+
+            if (latestMove.Count() != request.TotalCellCount)
+                throw exInvalidRquest;
+
+            int changedCellCount = 0;
+            for (int i = 0; i < latestMove.Count(); i++)
             {
-                bool hasInvalidState = false;
-                List<bool> compareContents = new List<bool>();
-                for (int i = 0; i < request.TotalCellCount; i++)
+                if (request.GridSize != latestMove[i].GridSize)
+                    throw exInvalidRquest;
+
+                if (request.CellStates[i] != latestMove[i].CellContent)
                 {
-                    if (!TicTacToe.ValidCellStateValues.Contains(request.CellStates[i]))
-                        hasInvalidState = true;
-
-                    compareContents.Add(
-                        latestMove[i].CellContent == request.CellStates[i]
-                    );
+                    changedCellCount++;
+                    if (latestMove[i].CellContent != 0 || changedCellCount > 1)
+                        throw exInvalidRquest;
                 }
-                int countTrue = compareContents.Count(x => x == true);
-                int countFalse = compareContents.Count(x => x == false);
-                validCellContents = (countTrue == request.TotalCellCount - 1) && (countFalse == 1) && !hasInvalidState;
             }
-
-            if (!validInstanceId || !validGridSize || !validCellCount || !validCellContents)
-                throw new ArgumentException("TicTacToeUpdateRequest is invalid.");
         }
 
         public static void SaveToDatabase(string InstanceId, int GridSize, int MoveNumber, List<int> CellStates)
