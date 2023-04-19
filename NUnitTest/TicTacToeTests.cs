@@ -14,7 +14,7 @@ namespace UnitTests
             string msbuildDir = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..")).FullName;
             var TicTacToeDataConnString = TestContext.Parameters.Get("TicTacToeDataConnString", string.Empty).Replace("$(MSBuildProjectDirectory)", msbuildDir);
             Assert.IsNotEmpty(TicTacToeDataConnString);
-            TicTacToeBL.Entity.DbContextConfig.AddOrReplace("TicTacToeData", TicTacToeDataConnString);
+            TicTacToe.Entity.DbContextConfig.AddOrReplace("TicTacToeData", TicTacToeDataConnString);
         }
 
         [Test]

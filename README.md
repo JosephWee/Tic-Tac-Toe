@@ -8,3 +8,15 @@ Both these versions computer players that chooses their moves programatically.
 It is one of my goals to eventually create a Computer Player that chooses their moves based on the probability of winning the game using an AI model.
 
 ![Tic-Tac-Toe Project Architectural Overview ](/Documentation/Tic-Tac-Toe-Overview-compact.jpeg)
+
+## Quickstart
+### Web API
+connectionStrings.json
+Replace the connection string named "TicTacToeDataConnString" with the actual value of your connection string.
+
+For example:
+	{
+	  "ConnectionStrings": {
+		"TicTacToeDataConnString": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\DEV\\LocalDB\\TicTacToeData.mdf;Integrated Security=True;Connect Timeout=30"
+	  }
+	}

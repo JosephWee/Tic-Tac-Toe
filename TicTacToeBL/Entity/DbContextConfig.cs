@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace TicTacToeBL.Entity
+namespace TicTacToe.Entity
 {
     public class DbContextConfig
     {

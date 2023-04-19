@@ -1,17 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using Microsoft.Extensions.Configuration;
+using System.Configuration;
+using TicTacToe.Entity;
 
 namespace WebApi.Controllers
 {
     //[Authorize]
+    [ApiController]
+    [Route("[controller]")]
     public class TicTacToeController : ControllerBase
     {
+        private readonly IConfiguration _config;
+
+        public TicTacToeController(IConfiguration config)
+        {
+            _config = config;
+        
+            string TicTacToeDataConnString = config.GetConnectionString("TicTacToeDataConnString") ?? string.Empty;
+            DbContextConfig
+                .AddOrReplace(
+                    "TicTacToeData",
+                    TicTacToeDataConnString);
+        }
+
         // GET api/values
+        [HttpGet]
         public IEnumerable<string> Get()
         {
             return new string[] { "You have reached the TicTacToe Controller", DateTime.UtcNow.ToString("o") };
@@ -24,6 +37,7 @@ namespace WebApi.Controllers
         //}
 
         // POST api/values
+        [HttpPost]
         public ActionResult Post([FromBody] TicTacToe.Models.TicTacToeUpdateRequest value)
         {
             TicTacToe.Models.TicTacToeUpdateResponse tttUpdateResponse = null;
