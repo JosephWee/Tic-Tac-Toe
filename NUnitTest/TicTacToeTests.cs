@@ -226,6 +226,32 @@ namespace UnitTests
             catch (Exception ex)
             {
             }
+
+            try
+            {
+                //Test Invalid CellStates Array Size
+                request.CellStates = new List<int>();
+                request.CellStates.AddRange(backupCellStates.ToList());
+                request.CellStates.AddRange(new List<int>{ 0,0,0,0,0,0,0 });
+                request.GridSize = (int)Math.Sqrt(request.CellStates.Count());
+
+                //Make a move
+                List<int> validMoves = new List<int>();
+                for (int c = 0; c < request.CellStates.Count; c++)
+                {
+                    if (request.CellStates[c] == 0)
+                        validMoves.Add(c);
+                }
+
+                int index = random.Next(validMoves.Count);
+                request.CellStates[validMoves[index]] = 1;
+
+                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
+                Assert.Fail();
+            }
+            catch (Exception ex)
+            {
+            }
         }
     }
 }
