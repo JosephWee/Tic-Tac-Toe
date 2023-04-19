@@ -1,0 +1,20 @@
+﻿@page "/tictactoe"
+
+<PageTitle>Tic-Tac-Toe</PageTitle>
+
+@using BlazorServerApp.Data
+@inject TicTacToeService tictactoesvc
+
+<h1>Tic-Tac-Toe</h1>
+<p>The Tic-Tac-Toe project was started in 16 Feb 2022 as a way to learn about Machine Learning.</p>
+<div>Current Timestamp (UTC): @currentTimestamp</div>
+<button class="btn btn-primary" @onclick="FetchTimestamp">Fetch Timestamp</button>
+@code {
+    private string currentTimestamp = string.Empty;
+
+    private void FetchTimestamp()
+    {
+        var awaiter = tictactoesvc.GetTimestampAsync().GetAwaiter();
+        currentTimestamp = awaiter.GetResult();
+    }
+}
