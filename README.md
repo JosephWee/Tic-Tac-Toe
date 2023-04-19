@@ -11,15 +11,17 @@ It is one of my goals to eventually create a Computer Player that chooses their 
 
 ## Quickstart
 ### Web API
-**connectionStrings.json**
+#### connectionStrings.json
 Replace the connection string named "TicTacToeDataConnString" with the actual value of your connection string.
 
 For example:
-> {
->     "ConnectionStrings": {
->         "TicTacToeDataConnString": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\DEV\\LocalDB\\TicTacToeData.mdf;Integrated Security=True;Connect Timeout=30"
->     }
-> }
+```json
+{
+  "ConnectionStrings": {
+    "TicTacToeDataConnString": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\DEV\\LocalDB\\TicTacToeData.mdf;Integrated Security=True;Connect Timeout=30"
+  }
+}
+```
 
 For more information see:
 - https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-strings
