@@ -23,12 +23,20 @@
                 else
                     cssClasses.Add("midcol");
 
-                string imgUrl = "/Tic-Tac-Toe/Cross120x120.png";
+                int CellState = CellStates[i];
+
+                string imgUrl = "/Tic-Tac-Toe/Blank120x120.png";
+                string symbolColor = WinningCells.Contains(i) ? "Red" : string.Empty;
+                
+                if (CellState == 1)
+                    imgUrl = $"/Tic-Tac-Toe/Cross{symbolColor}120x120.png";
+                else if (CellState == 2)
+                    imgUrl = $"/Tic-Tac-Toe/Circle{symbolColor}120x120.png";
 
                 List<string> contentCssClasses = new List<string>() { "gamecellcontent" };
 
                 <div id="cell@(i)" class="@(string.Join(" ", cssClasses))">
-                    <img class="@(string.Join(" ", contentCssClasses))" src="@imgUrl" />
+                    <img class="@(string.Join(" ", contentCssClasses))" src="@imgUrl" @onclick="e => imgOnClick(e, i)" />
                 </div>
             }
         </div>
@@ -42,4 +50,27 @@
 
     [Parameter]
     public int GridSize { get; set; }
+
+    private List<int> CellStates = new List<int>();
+    private List<int> WinningCells = new List<int>();
+
+    protected override void OnParametersSet()
+    {
+        int arraySize = GridSize * GridSize;
+        var array = new int[arraySize];
+        CellStates.AddRange(array);
+
+        base.OnParametersSet();
+    }
+
+    public void imgOnClick(MouseEventArgs e, int cellIndex)
+    {
+        var CellState = CellStates[cellIndex];
+        if (CellState == 0)
+        {
+            CellStates[cellIndex] = 1;
+            //TO DO: Call TicTacToeService here
+            StateHasChanged();
+        }
+    }
 }
