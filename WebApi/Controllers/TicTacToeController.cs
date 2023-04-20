@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
 using TicTacToe.Entity;
+using TicTacToe.ML;
 
 namespace WebApi.Controllers
 {
@@ -15,12 +16,22 @@ namespace WebApi.Controllers
         public TicTacToeController(IConfiguration config)
         {
             _config = config;
-        
-            string TicTacToeDataConnString = config.GetConnectionString("TicTacToeDataConnString") ?? string.Empty;
+
+            string msbuildDir = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, @"..\..\..")).FullName;
+
+            string connectionString = config.GetConnectionString("TicTacToeDataConnString") ?? string.Empty;
+            string TicTacToeDataConnString = connectionString.Replace("$(MSBuildProjectDirectory)", msbuildDir);
+
             DbContextConfig
                 .AddOrReplace(
                     "TicTacToeData",
                     TicTacToeDataConnString);
+
+            string MLModel1Path = Path.Combine(msbuildDir, "MLModels", "MLModel1.zip");
+            MLModelConfig
+                .AddOrReplace(
+                    "MLModel1Path",
+                    MLModel1Path);
         }
 
         // GET api/values
@@ -72,21 +83,21 @@ namespace WebApi.Controllers
                             cellStates[tttUpdateResponse.ComputerMove.Value] = 2;
                         }
 
-                        //var inputModel1 =
-                        //    new MLModel1.ModelInput()
-                        //    {
-                        //        MoveNumber = moveNumber,
-                        //        Cell0 = value.CellStates[0],
-                        //        Cell1 = value.CellStates[1],
-                        //        Cell2 = value.CellStates[2],
-                        //        Cell3 = value.CellStates[3],
-                        //        Cell4 = value.CellStates[4],
-                        //        Cell5 = value.CellStates[5],
-                        //        Cell6 = value.CellStates[6],
-                        //        Cell7 = value.CellStates[7],
-                        //        Cell8 = value.CellStates[8],
-                        //        GameResultCode = 0
-                        //    };
+                        var inputModel1 =
+                            new MLModel1.ModelInput()
+                            {
+                                MoveNumber = moveNumber,
+                                Cell0 = value.CellStates[0],
+                                Cell1 = value.CellStates[1],
+                                Cell2 = value.CellStates[2],
+                                Cell3 = value.CellStates[3],
+                                Cell4 = value.CellStates[4],
+                                Cell5 = value.CellStates[5],
+                                Cell6 = value.CellStates[6],
+                                Cell7 = value.CellStates[7],
+                                Cell8 = value.CellStates[8],
+                                GameResultCode = 0
+                            };
 
                         //var inputModel2 =
                         //    new MLModel2.ModelInput()
@@ -103,12 +114,12 @@ namespace WebApi.Controllers
                         //        GameResultCode = 0
                         //    };
 
-                        ////Get Prediction
-                        ////var prediction1 = MLModel1.Predict(inputModel1);
+                        // Get Prediction
+                        var prediction1 = MLModel1.Predict(inputModel1);
                         //var prediction2 = MLModel2.Predict(inputModel2);
 
-                        tttUpdateResponse.Prediction = float.MinValue; //prediction2.Prediction;
-                        tttUpdateResponse.PredictionScore = new float[0]; //prediction2.Score;
+                        tttUpdateResponse.Prediction = prediction1.PredictedLabel;
+                        tttUpdateResponse.PredictionScore = prediction1.Score;
                     }
                 }
             }

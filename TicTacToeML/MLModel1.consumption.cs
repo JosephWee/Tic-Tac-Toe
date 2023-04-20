@@ -58,10 +58,48 @@ namespace TicTacToeML
         #region model output class
         public class ModelOutput
         {
-            [ColumnName("PredictedLabel")]
-            public float Prediction { get; set; }
+            [ColumnName(@"MoveNumber")]
+            public float MoveNumber { get; set; }
 
+            [ColumnName(@"Cell0")]
+            public float Cell0 { get; set; }
+
+            [ColumnName(@"Cell1")]
+            public float Cell1 { get; set; }
+
+            [ColumnName(@"Cell2")]
+            public float Cell2 { get; set; }
+
+            [ColumnName(@"Cell3")]
+            public float Cell3 { get; set; }
+
+            [ColumnName(@"Cell4")]
+            public float Cell4 { get; set; }
+
+            [ColumnName(@"Cell5")]
+            public float Cell5 { get; set; }
+
+            [ColumnName(@"Cell6")]
+            public float Cell6 { get; set; }
+
+            [ColumnName(@"Cell7")]
+            public float Cell7 { get; set; }
+
+            [ColumnName(@"Cell8")]
+            public float Cell8 { get; set; }
+
+            [ColumnName(@"GameResultCode")]
+            public uint GameResultCode { get; set; }
+
+            [ColumnName(@"Features")]
+            public float[] Features { get; set; }
+
+            [ColumnName(@"PredictedLabel")]
+            public float PredictedLabel { get; set; }
+
+            [ColumnName(@"Score")]
             public float[] Score { get; set; }
+
         }
 
         #endregion

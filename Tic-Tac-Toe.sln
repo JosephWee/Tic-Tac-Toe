@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTest", "NUnitTest\NUni
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{4033DA58-FFC6-4D29-A367-EDBD5E442F69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorServerApp", "BlazorServerApp\BlazorServerApp.csproj", "{CCFDDB0C-6D7A-48EA-B098-3CA209031878}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorServerApp", "BlazorServerApp\BlazorServerApp.csproj", "{CCFDDB0C-6D7A-48EA-B098-3CA209031878}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
