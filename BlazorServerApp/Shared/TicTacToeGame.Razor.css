@@ -1,0 +1,42 @@
+﻿div.game
+{
+    display: table;
+}
+div.gamerow {
+    display: table-row;
+}
+div.gamecell {
+    display: table-cell;
+    width: 125px !important;
+    height: 125px !important;
+}
+div.firstcol {
+    border-right: 1px solid black;
+    position: relative;
+}
+div.midcol {
+    border-right: 1px solid black;
+    position: relative;
+}
+div.lastcol {
+    position: relative;
+}
+div.firstrow {
+    border-bottom: 1px solid black;
+    position: relative;
+}
+div.midrow {
+    border-bottom: 1px solid black;
+    position: relative;
+}
+div.lastrow {
+    position: relative;
+}
+img.gamecellcontent {
+    position: absolute;
+    margin-left: 50%;
+    margin-right: 50%;
+    margin-top: 50%;
+    margin-bottom: 50%;
+    transform: translate(-50%,-50%);
+}

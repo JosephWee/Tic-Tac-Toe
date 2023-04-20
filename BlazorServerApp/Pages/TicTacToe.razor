@@ -7,14 +7,20 @@
 
 <h1>Tic-Tac-Toe</h1>
 <p>The Tic-Tac-Toe project was started in 16 Feb 2022 as a way to learn about Machine Learning.</p>
-<div>Current Timestamp (UTC): @currentTimestamp</div>
-<button class="btn btn-primary" @onclick="FetchTimestamp">Fetch Timestamp</button>
-@code {
-    private string currentTimestamp = string.Empty;
+<p>For more information please visit <a href="https://github.com/JosephWee/Tic-Tac-Toe">https://github.com/JosephWee/Tic-Tac-Toe</a></p>
+@foreach (var GameId in GameIds)
+{
+    <TicTacToeGame InstanceId="@GameId" GridSize="3"></TicTacToeGame>
+}
 
-    private void FetchTimestamp()
+@code {
+    List<string> GameIds = new List<string>();
+    protected override void OnInitialized()
     {
-        var awaiter = tictactoesvc.GetTimestampAsync().GetAwaiter();
-        currentTimestamp = awaiter.GetResult();
+        for (int i = 0; i < 2; i++)
+        {
+            GameIds.Add(DateTime.UtcNow.Ticks.ToString());
+        }
+        base.OnInitialized();
     }
 }

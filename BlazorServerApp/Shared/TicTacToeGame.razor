@@ -1,0 +1,45 @@
+﻿<div>@InstanceId</div>
+<div id="@InstanceId" class="game">
+    @for (int r = 0; r < @GridSize; r++)
+    {
+        <div class="gamerow">
+            @for (int c = 0; c < GridSize; c++)
+            {
+                int i = r * GridSize + c;
+                
+                List<string> cssClasses = new List<string>() { "gamecell" };
+                
+                if (r == 0)
+                    cssClasses.Add("firstrow");
+                else if (r == GridSize -1)
+                    cssClasses.Add("lastrow");
+                else
+                    cssClasses.Add("midrow");
+
+                if (c == 0)
+                    cssClasses.Add("firstcol");
+                else if (c == GridSize - 1)
+                    cssClasses.Add("lastcol");
+                else
+                    cssClasses.Add("midcol");
+
+                string imgUrl = "/Tic-Tac-Toe/Cross120x120.png";
+
+                List<string> contentCssClasses = new List<string>() { "gamecellcontent" };
+
+                <div id="cell@(i)" class="@(string.Join(" ", cssClasses))">
+                    <img class="@(string.Join(" ", contentCssClasses))" src="@imgUrl" />
+                </div>
+            }
+        </div>
+    }
+</div>
+<br/>
+@code {
+    // Demonstrates how a parent component can supply parameters
+    [Parameter]
+    public string InstanceId { get; set; }
+
+    [Parameter]
+    public int GridSize { get; set; }
+}
