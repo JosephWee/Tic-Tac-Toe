@@ -1,4 +1,7 @@
-﻿<div>@InstanceId</div>
+﻿@using BlazorServerApp.Data
+@inject TicTacToeService tictactoesvc
+
+<div>@InstanceId</div>
 <div id="@InstanceId" class="game">
     @for (int r = 0; r < @GridSize; r++)
     {
@@ -70,6 +73,7 @@
         {
             CellStates[cellIndex] = 1;
             //TO DO: Call TicTacToeService here
+            tictactoesvc.UpdateTicTacToeAsync();
             StateHasChanged();
         }
     }

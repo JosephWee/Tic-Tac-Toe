@@ -1,4 +1,5 @@
 using BlazorServerApp.Data;
+using BlazorServerApp.Pages;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -8,7 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddSingleton<TicTacToeService>();
+
+//builder.Services.AddSingleton<TicTacToeService>();
+var ticTacToeService = new TicTacToeService(builder.Configuration);
+builder.Services.AddScoped<TicTacToeService>(sp => ticTacToeService);
 
 var app = builder.Build();
 
