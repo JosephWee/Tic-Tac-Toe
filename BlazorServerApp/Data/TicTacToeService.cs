@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Net.Http;
 using Microsoft.Net.Http.Headers;
+using TicTacToe.Models;
 
 namespace BlazorServerApp.Data
 {
@@ -18,19 +20,42 @@ namespace BlazorServerApp.Data
             return Task.FromResult(DateTime.UtcNow.ToString("O"));
         }
 
-        public Task<string> UpdateTicTacToeAsync()
+        public TicTacToeUpdateResponse UpdateTicTacToe(TicTacToeUpdateRequest request)
         {
-            var client = new HttpClient();
-            var configExternalServices = this._config.GetSection("ExternalServices");
+            var configExternalServices =
+                this._config.GetSection("ExternalServices");
+
             if (configExternalServices != null)
             {
                 var configTicTacToeWebApi = configExternalServices.GetSection("TicTacToeWebApi");
                 if (configTicTacToeWebApi != null)
                 {
-                    var configEndpoint = configTicTacToeWebApi["endpoint"];
+                    var endpoint = configTicTacToeWebApi["endpoint"];
+
+                    var client = new HttpClient();
+                    var httpPostTask =
+                        client.PostAsJsonAsync<TicTacToeUpdateRequest>(
+                            endpoint,
+                            request
+                        );
+
+                    httpPostTask.Wait();
+
+                    var httpResponseMessage = httpPostTask.Result;
+                    
+                    var readJsonTask =
+                        httpResponseMessage
+                        .Content
+                        .ReadFromJsonAsync<TicTacToeUpdateResponse>();
+
+                    readJsonTask.Wait();
+
+                    if (readJsonTask.Result != null)
+                        return readJsonTask.Result;
                 }
             }
-            return Task.FromResult(DateTime.UtcNow.ToString("O"));
+
+            return null;
         }
     }
 }

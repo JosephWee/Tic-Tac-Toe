@@ -1,7 +1,9 @@
-﻿@using BlazorServerApp.Data
+﻿@using Microsoft.AspNetCore.Mvc
+@using TicTacToe.Models
+@using BlazorServerApp.Data
 @inject TicTacToeService tictactoesvc
 
-<div>@InstanceId</div>
+<div>@gameheader</div>
 <div id="@InstanceId" class="game">
     @for (int r = 0; r < @GridSize; r++)
     {
@@ -45,6 +47,7 @@
         </div>
     }
 </div>
+<div>@gamefooter</div>
 <br/>
 @code {
     // Demonstrates how a parent component can supply parameters
@@ -54,11 +57,29 @@
     [Parameter]
     public int GridSize { get; set; }
 
+    protected bool? debugMode = null;
+    [Parameter]
+    public bool? Debug
+    {
+        get
+        {
+            return debugMode;
+        }
+        set
+        {
+            debugMode = value;
+        }
+    }
+
+    protected string gameheader = string.Empty;
+    protected string gamefooter = string.Empty;
     private List<int> CellStates = new List<int>();
     private List<int> WinningCells = new List<int>();
 
     protected override void OnParametersSet()
     {
+        gameheader = $"{(debugMode == true ? InstanceId : string.Empty)}";
+
         int arraySize = GridSize * GridSize;
         var array = new int[arraySize];
         CellStates.AddRange(array);
@@ -71,9 +92,47 @@
         var CellState = CellStates[cellIndex];
         if (CellState == 0)
         {
-            CellStates[cellIndex] = 1;
-            //TO DO: Call TicTacToeService here
-            tictactoesvc.UpdateTicTacToeAsync();
+            var cellstates = CellStates.ToList();
+            cellstates[cellIndex] = 1;
+
+            var request = new TicTacToeUpdateRequest()
+                {
+                    InstanceId = InstanceId,
+                    GridSize = GridSize,
+                    NumberOfPlayers = 1,
+                    CellStates = cellstates
+                };
+            var response = tictactoesvc.UpdateTicTacToe(request);
+
+            if (response == null)
+            {
+                gameheader = $"{(debugMode == true ? InstanceId + " " : string.Empty)}An unknown error has occurred";
+            }
+            else
+            {
+                if (response.WinningCells != null)
+                    WinningCells.AddRange(response.WinningCells);
+
+                if (response.ComputerMove.HasValue && cellstates[response.ComputerMove.Value] == 0)
+                {
+                    cellstates[response.ComputerMove.Value] = 2;
+                }
+
+                CellStates = cellstates.ToList();
+
+                string gameStatus = string.Empty;
+                if (response.Status == TicTacToeGameStatus.InProgress)
+                    gameStatus = "In Progress";
+                else if (response.Status == TicTacToeGameStatus.Player1Wins)
+                    gameStatus = "Player 1 Wins";
+                else if (response.Status == TicTacToeGameStatus.Player2Wins)
+                    gameStatus = "Player 2 Wins";
+                else if (response.Status == TicTacToeGameStatus.Draw)
+                    gameStatus = "Draw";
+
+                gameheader = $"{(debugMode == true ? InstanceId + " " : string.Empty)}{gameStatus}";
+            }
+
             StateHasChanged();
         }
     }
