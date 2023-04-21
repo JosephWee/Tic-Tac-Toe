@@ -5,18 +5,18 @@
 <h1>Tic-Tac-Toe</h1>
 <p>The Tic-Tac-Toe project was started in 16 Feb 2022 as a way to learn about Machine Learning.</p>
 <p>For more information please visit <a href="https://github.com/JosephWee/Tic-Tac-Toe">https://github.com/JosephWee/Tic-Tac-Toe</a></p>
-@foreach (var GameId in GameIds)
+@foreach (var componentID in componentIDs)
 {
-    <TicTacToeGame InstanceId="@GameId" GridSize="3"></TicTacToeGame>
+    <TicTacToeGame ID="@componentID" GridSize="3"></TicTacToeGame>
 }
 
 @code {
-    List<string> GameIds = new List<string>();
+    List<string> componentIDs = new List<string>();
     protected override void OnInitialized()
     {
         for (int i = 0; i < 2; i++)
         {
-            GameIds.Add(DateTime.UtcNow.Ticks.ToString());
+            componentIDs.Add(DateTime.UtcNow.Ticks.ToString());
         }
         base.OnInitialized();
     }

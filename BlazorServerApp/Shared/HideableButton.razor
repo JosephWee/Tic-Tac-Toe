@@ -1,0 +1,53 @@
+﻿@if (_Hidden == null || _Hidden == false)
+{
+    <button class="@CssClass" @onclick="@clickedEventCallback">@Text</button>
+}
+@code {
+    protected string _CssClass = string.Empty;
+    [Parameter]
+    public string CssClass
+    {
+        get
+        {
+            return _CssClass;
+        }
+        set
+        {
+            _CssClass = value;
+            StateHasChanged();
+        }
+    }
+
+    protected string _Text = string.Empty;
+    [Parameter]
+    public string Text
+    {
+        get
+        {
+            return _Text;
+        }
+        set
+        {
+            _Text = value;
+            StateHasChanged();
+        }
+    }
+
+    protected bool? _Hidden = false;
+    [Parameter]
+    public bool? Hidden
+    {
+        get
+        {
+            return _Hidden;
+        }
+        set
+        {
+            _Hidden = value;
+            StateHasChanged();
+        }
+    }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> clickedEventCallback { get; set; }
+}
