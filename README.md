@@ -10,20 +10,46 @@ It is one of my goals to eventually create a Computer Player that chooses their 
 ![Tic-Tac-Toe Project Architectural Overview ](/Documentation/Tic-Tac-Toe-Overview-compact.jpeg)
 
 ## Quickstart
+### Code Entry Point
+Open the `Visual Studio 2022` solution by double clicking on `Tic-Tac-Toe.sln` found at the root directory.
+
+For more information see:
+- https://visualstudio.microsoft.com/vs/
+
+### Database
+The project is currently implemented to use `SQL Server Express LocalDB`.
+The LocalDB files can be found at `\WebApi\LocalDB\`.
+As the current LocalDB files are locked to my Account, they need to be replaced with your own LocalDB files.
+Once you have created your own LocalDB files, you can create the necessary tables using the SQL script `CreateTicTacToeTable.sql` located at `\TicTacToeBL\DBScripts\`
+
+For more information please see:
+- https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16
+- https://learn.microsoft.com/en-us/visualstudio/data-tools/create-a-sql-database-by-using-a-designer?view=vs-2022
+
 ### Web API
 #### connectionStrings.json
-Replace the connection string named "TicTacToeDataConnString" with the actual value of your connection string.
+Replace the connection string named `TicTacToeDataConnString` with the actual value of your connection string.
 
 For example:
 ```json
 {
   "ConnectionStrings": {
-    "TicTacToeDataConnString": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\DEV\\LocalDB\\TicTacToeData.mdf;Integrated Security=True;Connect Timeout=30"
+    "TicTacToeDataConnString": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=$(MSBuildProjectDirectory)\\LocalDB\\TicTacToeData.mdf;Integrated Security=True;Connect Timeout=30"
   }
 }
 ```
+
+Please note that the well-known MSBuild property `$(MSBuildProjectDirectory)` is automatically replaced with the `WebApi` project directory if found in the connection string.
 
 For more information see:
 - https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-strings
 - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-7.0
 - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-7.0#file-configuration-provider
+- https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-reserved-and-well-known-properties?view=vs-2022
+
+### BlazorServerApp
+#### appsettings.json
+Replace the `TicTacToeWebApi` endpoint in the `appsettings.json` file with the actual endpoint of the TicTacToe Web API. The baseaddress can be found in the `launchsettings.json` file found at `\WebApi\Properties`.
+
+### Running the code
+To run the code, make sure you start the `WebApi` project before starting the `BlazorServerApp` project.
