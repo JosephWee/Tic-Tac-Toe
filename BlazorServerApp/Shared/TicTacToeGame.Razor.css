@@ -7,8 +7,8 @@ div.gamerow {
 }
 div.gamecell {
     display: table-cell;
-    width: 125px !important;
-    height: 125px !important;
+    width: 121px !important;
+    height: 121px !important;
 }
 div.firstcol {
     border-right: 1px solid black;

@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc
 @using TicTacToe.Models
+@using TicTacToe.Extensions
 @using BlazorServerApp.Data
 @inject TicTacToeService tictactoesvc
 
@@ -137,17 +138,9 @@
 
                 gameStatus = response.Status;
 
-                string statusString = string.Empty;
-                if (response.Status == TicTacToeGameStatus.InProgress)
-                    statusString = "In Progress";
-                else if (response.Status == TicTacToeGameStatus.Player1Wins)
-                    statusString = "Player 1 Wins";
-                else if (response.Status == TicTacToeGameStatus.Player2Wins)
-                    statusString = "Player 2 Wins";
-                else if (response.Status == TicTacToeGameStatus.Draw)
-                    statusString = "Draw";
+                gamefooter = $"{(debugMode == true ? InstanceId + " " : string.Empty)}Status: {response.Status.ToDisplay()}";
 
-                gameheader = $"{(debugMode == true ? InstanceId + " " : string.Empty)}{statusString}";
+                gameheader = response.PredictionScore.Length > 0 ? $"Predicted Result: {((TicTacToeGameStatus)(int)response.Prediction).ToDisplay()}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Confidence: {(response.PredictionScore[0] * 100f).ToString("F2")}%" : string.Empty;
             }
 
             StateHasChanged();
