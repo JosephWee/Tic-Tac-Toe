@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorServerApp", "BlazorServerApp\BlazorServerApp.csproj", "{CCFDDB0C-6D7A-48EA-B098-3CA209031878}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToe.Distribution", "TicTacToe.Distribution\TicTacToe.Distribution.csproj", "{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{CCFDDB0C-6D7A-48EA-B098-3CA209031878}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCFDDB0C-6D7A-48EA-B098-3CA209031878}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCFDDB0C-6D7A-48EA-B098-3CA209031878}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

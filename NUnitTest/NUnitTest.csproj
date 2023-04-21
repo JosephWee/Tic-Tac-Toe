@@ -50,6 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TicTacToe.Distribution\TicTacToe.Distribution.csproj" />
     <ProjectReference Include="..\TicTacToeBL\TicTacToeBL.csproj" />
   </ItemGroup>
 
