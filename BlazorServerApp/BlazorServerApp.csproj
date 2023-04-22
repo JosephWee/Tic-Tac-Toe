@@ -7,7 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Blazor\**" />
+    <Content Remove="Blazor\**" />
+    <EmbeddedResource Remove="Blazor\**" />
+    <None Remove="Blazor\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TicTacToe.Distribution\TicTacToe.Distribution.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\css\site-blazor.blazor.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
