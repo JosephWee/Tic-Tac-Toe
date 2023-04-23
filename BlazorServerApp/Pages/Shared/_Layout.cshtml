@@ -10,6 +10,13 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BlazorServerApp.styles.css" asp-append-version="true" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/_framework/blazor.server.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
     <title>@ViewData["Title"]</title>
 </head>
@@ -31,7 +38,10 @@
                             <a class="nav-link text-dark" href="/Test">Test</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/TicTacToe">Tic-Tac-Toe</a>
+                            <a class="nav-link text-dark" href="/TicTacToeRz">Tic-Tac-Toe (Razor)</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/TicTacToeJq">Tic-Tac-Toe (jQuery)</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
@@ -52,12 +62,5 @@
             &copy; 2023 - BlazorServerApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/_framework/blazor.server.js"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

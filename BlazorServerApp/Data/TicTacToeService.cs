@@ -15,9 +15,9 @@ namespace BlazorServerApp.Data
             _config = config;
         }
 
-        public Task<string> GetTimestampAsync()
+        public string GetTimestamp()
         {
-            return Task.FromResult(DateTime.UtcNow.ToString("O"));
+            return DateTime.UtcNow.ToString("O");
         }
 
         public TicTacToeUpdateResponse UpdateTicTacToe(TicTacToeUpdateRequest request)

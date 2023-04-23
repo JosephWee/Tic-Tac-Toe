@@ -14,6 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\WeatherForecast.cs" />
+    <Compile Remove="Data\WeatherForecastService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TicTacToe.Distribution\TicTacToe.Distribution.csproj" />
   </ItemGroup>
 
