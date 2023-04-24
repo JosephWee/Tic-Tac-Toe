@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Azure;
+using TicTacToe.BusinessLogic;
 
 namespace UnitTests
 {
@@ -26,9 +27,7 @@ namespace UnitTests
             TicTacToe
                 .BusinessLogic
                 .ComputerPlayerConfig
-                .RegisterComputerPlayer(
-                    new TicTacToe.BusinessLogic.ComputerPlayerV2()
-                );
+                .RegisterComputerPlayer<ComputerPlayerV2>();
         }
 
         [Test]

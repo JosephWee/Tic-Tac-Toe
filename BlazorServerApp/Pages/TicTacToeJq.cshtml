@@ -32,17 +32,17 @@
 
         function OnPostUpdateTicTacToe(requestArgs) {
 
-            if (console && console.log)
-                console.log('OnPostUpdateTicTacToe');
+            //if (console && console.log)
+            //    console.log('OnPostUpdateTicTacToe');
 
-            if (console && console.log)
-                console.log(requestArgs);
+            //if (console && console.log)
+            //    console.log(requestArgs);
 
             let requestData = JSON.stringify(requestArgs);
             let thepromise = DotNet.invokeMethodAsync('BlazorServerApp', 'jsUpdateTicTacToe', requestData);
 
-            if (console && console.log)
-                console.log(thepromise);
+            //if (console && console.log)
+            //    console.log(thepromise);
 
             return thepromise;
         }

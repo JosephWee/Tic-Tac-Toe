@@ -440,13 +440,13 @@
 
         let app = this;
 
-        app.log("checkResult()");
-        app.log(requestData);
+        //app.log("checkResult()");
+        //app.log(requestData);
 
         let thepromise = this.#updateTicTacToeDelegate(requestData);
 
-        app.log("checkResult()");
-        app.log(thepromise);
+        //app.log("checkResult()");
+        //app.log(thepromise);
 
         thepromise.then(responseData => {
 

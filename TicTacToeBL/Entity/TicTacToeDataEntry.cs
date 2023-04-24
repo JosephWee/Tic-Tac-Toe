@@ -33,5 +33,20 @@ namespace TicTacToe.Entity
         [Required]
         public int CellContent { get; set; }
 
+        public TicTacToeDataEntry Copy()
+        {
+            var copy = new Entity.TicTacToeDataEntry()
+            {
+                Id = this.Id,
+                CreatedDate = this.CreatedDate,
+                InstanceId = this.InstanceId,
+                GridSize = this.GridSize,
+                MoveNumber = this.MoveNumber,
+                CellIndex = this.CellIndex,
+                CellContent = this.CellContent
+            };
+
+            return copy;
+        }
     }
 }
