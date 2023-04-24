@@ -61,5 +61,7 @@ This section will be dedicated to cataloguing about my learning observations.
 ### 2023-04-24 12:30pm Mon - ComputerPlayerV3
 I have noticed that when I play against ComputerPlayerV3, it always make the same `first move` based purely on the `ML Model prediction`. While this is easily recitified with manually adding an element of randomness in the code, it highlights an interesting issue:
 ```
-If a business decision is made purely based on ML (Machine Learning) Model Prediction, that decision maker may become predictable.
+If a business decision is made purely based on ML (Machine Learning) Model Prediction,
+that decision may become predictable.
 ```
+For example, if a newbie ML learner like myself, were to design an automobile navigational system that recommends a route purely based on parameters such as `Shortest Distance`, `Best Fuel Economy`, `Lowest Toll`, etc. our customers may all be routed to the same location because we have disregarded real-time information like `current traffic conditions` and `the number of customers that were recommended the same route`.
