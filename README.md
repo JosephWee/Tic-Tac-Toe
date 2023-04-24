@@ -53,3 +53,13 @@ Replace the `TicTacToeWebApi` endpoint in the `appsettings.json` file with the a
 
 ### Running the code
 To run the code, make sure you start the `WebApi` project before starting the `BlazorServerApp` project.
+
+## Observations
+As previously mentioned, the purpose of this project is for learning about ML(Machine Learning).
+This section will be dedicated to cataloguing about my learning observations.
+
+### 2023-04-24 12:30pm Mon - ComputerPlayerV3
+I have noticed that when I play against ComputerPlayerV3, it always make the same `first move` based purely on the `ML Model prediction`. While this is easily recitified with manually adding an element of randomness in the code, it highlights an interesting issue:
+```
+If a business decision is made purely based on ML (Machine Learning) Model Prediction, that decision maker may become predictable.
+```
