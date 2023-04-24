@@ -108,6 +108,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MLModels\MLModel1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +123,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="MLModel1.mbconfig" />
+    <None Include="MLModels\MLModel1.zip" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

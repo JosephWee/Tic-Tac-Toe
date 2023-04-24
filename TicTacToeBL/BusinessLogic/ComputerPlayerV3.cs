@@ -1,73 +1,29 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.ML;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
+using System.Threading.Tasks;
 using TicTacToe.Entity;
+using TicTacToe.ML;
+using static TicTacToe.ML.MLModel1;
 
 namespace TicTacToe.BusinessLogic
 {
-    public class ComputerPlayerV3 : ITicTacToeComputerPlayer
+    public class ComputerPlayerV3: ITicTacToeComputerPlayer
     {
         private static Random random = new Random();
-        public delegate int GetMoveDelegate(GetMoveEventArgs e);
-        public GetMoveDelegate GetMoveHandler = null;
-
+        
         public class Cell
         {
             public int Row { get; set; }
             public int Col { get; set; }
             public Entity.TicTacToeDataEntry CellState { get; set; }
-
-            public ReadonlyCell AsReadonly()
-            {
-                return new ReadonlyCell(
-                    Row,
-                    Col,
-                    CellState
-                );
-            }
-        }
-
-        public class ReadonlyCell
-        {
-            protected int _Row = int.MinValue;
-            public int Row
-            {
-                get
-                {
-                    return _Row;
-                }
-            }
-
-            protected int _Col = int.MinValue;
-            public int Col
-            {
-                get
-                {
-                    return _Col;
-                }
-            }
-
-            protected Entity.TicTacToeDataEntry _CellState = null;
-            public Entity.TicTacToeDataEntry CellState
-            {
-                get
-                {
-                    if (_CellState == null)
-                        return _CellState;
-
-                    return _CellState.Copy();
-                }
-            }
-
-            public ReadonlyCell(int row, int col, Entity.TicTacToeDataEntry cellState)
-            {
-                _Row = row;
-                _Col = col;
-                _CellState = cellState;
-            }
         }
 
         public class CellCollction
@@ -77,31 +33,10 @@ namespace TicTacToe.BusinessLogic
             public int Player2Count { get; set; }
         }
 
-        public class GetMoveEventArgs
+        private string _MLNetModelPath = string.Empty;
+        public ComputerPlayerV3(string MLNetModelPath)
         {
-            protected IReadOnlyCollection<ReadonlyCell> _Cells = null;
-            public IReadOnlyCollection<ReadonlyCell> Cells
-            {
-                get
-                {
-                    return _Cells;
-                }
-            }
-
-            protected IReadOnlyCollection<TicTacToeDataEntry> _BlankCells = null;
-            public IReadOnlyCollection<TicTacToeDataEntry> BlankCells
-            {
-                get
-                {
-                    return _BlankCells;
-                }
-            }
-
-            public GetMoveEventArgs(ICollection<Cell> cells, ICollection<TicTacToeDataEntry> blankCells)
-            {
-                _Cells = cells.Select(x => x.AsReadonly()).ToList().AsReadOnly();
-                _BlankCells = blankCells.Select(x => x.Copy()).ToList().AsReadOnly();
-            }
+            _MLNetModelPath = MLNetModelPath;
         }
 
         public int GetMove(string InstanceId)
@@ -282,17 +217,84 @@ namespace TicTacToe.BusinessLogic
                 }
 
                 // Choose the most strategic cell instead of choosing randomly
-                if (GetMoveHandler == null)
-                    throw new InvalidOperationException("GetMoveHandler must be assigned for this computer type to ");
-                
-                var getMoveEventArgs = new GetMoveEventArgs(cells, blankCells);
-                if (GetMoveHandler != null)
+                Dictionary<float, List<int>> winningMoves = new Dictionary<float, List<int>>();
+                Dictionary<float, List<int>> blockingMoves = new Dictionary<float, List<int>>();
+                blankCells = blankCells.Distinct().ToList();
+
+                var mlContext = new MLContext();
+                ITransformer mlModel = mlContext.Model.Load(_MLNetModelPath, out var _);
+                var predEngine = mlContext.Model.CreatePredictionEngine<MLModel1.ModelInput,MLModel1.ModelOutput>(mlModel);
+
+                for (int i = 0; i < blankCells.Count; i++)
                 {
-                    return GetMoveHandler(getMoveEventArgs);
+                    var blankCell = blankCells[i];
+                    int ci = blankCell.CellIndex;
+                    var inputModel1 =
+                        new MLModel1.ModelInput()
+                        {
+                            MoveNumber = cells.Count - blankCells.Count + 1,
+                            Cell0 = ci == 0 ? 2 : cells[0].CellState.CellContent,
+                            Cell1 = ci == 1 ? 2 : cells[1].CellState.CellContent,
+                            Cell2 = ci == 2 ? 2 : cells[2].CellState.CellContent,
+                            Cell3 = ci == 3 ? 2 : cells[3].CellState.CellContent,
+                            Cell4 = ci == 4 ? 2 : cells[4].CellState.CellContent,
+                            Cell5 = ci == 5 ? 2 : cells[5].CellState.CellContent,
+                            Cell6 = ci == 6 ? 2 : cells[6].CellState.CellContent,
+                            Cell7 = ci == 7 ? 2 : cells[7].CellState.CellContent,
+                            Cell8 = ci == 8 ? 2 : cells[8].CellState.CellContent,
+                            GameResultCode = 0
+                        };
+
+                    var prediction1 = predEngine.Predict(inputModel1);
+
+                    var PredictionLabel = prediction1.PredictedLabel;
+                    var PredictionScore = prediction1.Score;
+
+                    if (PredictionLabel == 1)
+                    {
+                        if (blockingMoves.ContainsKey(PredictionScore[0]))
+                            blockingMoves[PredictionScore[0]].Add(ci);
+                        else
+                        {
+                            blockingMoves.Add(
+                                PredictionScore[0],
+                                new List<int>() { ci }
+                            );
+                        }
+                    }
+                    else if (PredictionLabel == 2)
+                    {
+                        if (winningMoves.ContainsKey(PredictionScore[0]))
+                            winningMoves[PredictionScore[0]].Add(ci);
+                        else
+                        {
+                            winningMoves.Add(
+                                PredictionScore[0],
+                                new List<int>() { ci }
+                            );
+                        }
+                    }
                 }
 
-                int m = random.Next(0, blankCells.Count - 1);
-                return blankCells[m].CellIndex;
+                int cellIndex = int.MinValue;
+
+                if (winningMoves.Keys.Count > 0)
+                {
+                    var key = winningMoves.Keys.Max();
+                    cellIndex = winningMoves[key].FirstOrDefault();
+                }
+                else if (blockingMoves.Keys.Count > 0)
+                {
+                    var key = blockingMoves.Keys.Max();
+                    cellIndex = blockingMoves[key].FirstOrDefault();
+                }
+                else
+                {
+                    int m = random.Next(0, blankCells.Count - 1);
+                    cellIndex = blankCells[m].CellIndex;
+                }
+
+                return cellIndex;
             }
 
             return -1;

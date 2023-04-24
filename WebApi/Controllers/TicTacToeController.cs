@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.ML;
 using System.Configuration;
 using TicTacToe.Entity;
 using TicTacToe.ML;
@@ -12,6 +13,7 @@ namespace WebApi.Controllers
     public class TicTacToeController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private string _MLNetModelPath = string.Empty;
 
         public TicTacToeController(IConfiguration config)
         {
@@ -27,11 +29,7 @@ namespace WebApi.Controllers
                     "TicTacToeData",
                     TicTacToeDataConnString);
 
-            string MLModel1Path = Path.Combine(msbuildDir, "MLModels", "MLModel1.zip");
-            MLModelConfig
-                .AddOrReplace(
-                    "MLModel1Path",
-                    MLModel1Path);
+            _MLNetModelPath = Path.Combine(msbuildDir, "MLModels", "MLModel1.zip");
         }
 
         // GET api/values
@@ -83,6 +81,10 @@ namespace WebApi.Controllers
                             cellStates[tttUpdateResponse.ComputerMove.Value] = 2;
                         }
 
+                        var mlContext = new MLContext();
+                        ITransformer mlModel = mlContext.Model.Load(_MLNetModelPath, out var _);
+                        var predEngine = mlContext.Model.CreatePredictionEngine<MLModel1.ModelInput, MLModel1.ModelOutput>(mlModel);
+
                         var inputModel1 =
                             new MLModel1.ModelInput()
                             {
@@ -115,8 +117,7 @@ namespace WebApi.Controllers
                         //    };
 
                         // Get Prediction
-                        var prediction1 = MLModel1.Predict(inputModel1);
-                        //var prediction2 = MLModel2.Predict(inputModel2);
+                        var prediction1 = predEngine.Predict(inputModel1);
 
                         tttUpdateResponse.Prediction = prediction1.PredictedLabel;
                         tttUpdateResponse.PredictionScore = prediction1.Score;
