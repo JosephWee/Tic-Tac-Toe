@@ -1,13 +1,20 @@
 # Tick-Tac-Toe
-## Objectives
+## Background
 The Tic-Tac-Toe project was started in 16 Feb 2022 as a way to learn about Machine Learning.
 
-## Overview
-The current implementation has 2 versions of Computer Players (ComputerPlayerV1 & ComputerPlayerV2).
-Both these versions computer players that chooses their moves programatically.
-It is one of my goals to eventually create a Computer Player that chooses their moves based on the probability of winning the game using an AI model.
+The current implementation has 3 versions of Computer Players.
+- ComputerPlayerV1 chooses it's moves randomly.
+- ComputerPlayerV2 chooses it's moves programatically.
+- ComputerPlayerV3 chooses it's moves based on the probability of winning the game using an AI model.
 
 ![Tic-Tac-Toe Project Architectural Overview ](/Documentation/Tic-Tac-Toe-Overview-compact.jpeg)
+
+## Objectives
+1. Create a Web App that allows human players to play against a Computer Player.
+2. Create a Computer Player that can choose it's moves based on the probability of winning the game using an AI model.
+3. Create an architecture that supports Computer versus Computer games.
+4. Collect game data using the Computer versus Computer games.
+5. Explore the possibility of setting up data pipelines which can later be used to learn about ML Ops.
 
 ## Quickstart
 ### Code Entry Point
