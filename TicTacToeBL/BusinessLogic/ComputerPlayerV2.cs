@@ -35,6 +35,9 @@ namespace TicTacToe.BusinessLogic
         {
             var ds = TicTacToe.GetAndValidatePreviousMove(InstanceId);
 
+            if (!ds.Any())
+                return -1;
+
             int GridSize = ds.First().GridSize;
             List<int> CellStates = ds.Select(x => x.CellContent).ToList();
             int BlankCellCount = int.MinValue;

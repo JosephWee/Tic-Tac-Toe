@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Microsoft.ML;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using TicTacToe.Entity;
+using T3Ent = TicTacToe.Entity;
+using T3ML = TicTacToe.ML;
+using T3Mod = TicTacToe.Models;
 
 namespace TicTacToe.BusinessLogic
 {
@@ -18,10 +22,124 @@ namespace TicTacToe.BusinessLogic
             }
         }
 
+        public static T3Mod.TicTacToeUpdateResponse ProcessRequest(T3Mod.TicTacToeUpdateRequest request, ComputerPlayerBase computerPlayer, string MLNetModelPath)
+        {
+            T3Mod.TicTacToeUpdateResponse response = null;
+
+            var latestMove = new List<T3Ent.TicTacToeDataEntry>();
+            TicTacToe.ValidateTicTacToeUpdateRequest(request, computerPlayer, out latestMove);
+
+            int moveNumber = latestMove.Any() ? latestMove.Max(x => x.MoveNumber) : 0;
+            int cellsChanged = 0;
+            latestMove.ForEach(
+            x =>
+            {
+                if (x.CellContent != request.CellStates[x.CellIndex])
+                    cellsChanged++;
+            });
+
+            if (!latestMove.Any() || cellsChanged == 1)
+            {
+                // Save: New Game or New Move
+                moveNumber++;
+                TicTacToe.SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, request.CellStates);
+            }
+
+            // Evaluate Current Game Outcome
+            var response1 =
+            TicTacToe.EvaluateResult(request, computerPlayer);
+            response = response1;
+
+            if (request.NumberOfPlayers == 1
+                && (!latestMove.Any() || cellsChanged == 1)
+                && response1.Status == T3Mod.TicTacToeGameStatus.InProgress)
+            {
+                // Computer Player Moves
+                int? ComputerMove =
+                    computerPlayer.GetMove(request.InstanceId);
+
+                if (ComputerMove.HasValue && request.CellStates[ComputerMove.Value] == 0)
+                {
+                    var CellStates = request.CellStates.ToList();
+                    CellStates[ComputerMove.Value] = computerPlayer.PlayerSymbolSelf;
+
+                    //Save Computer Player's move
+                    moveNumber++;
+                    TicTacToe.SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, CellStates);
+
+                    int BlankCellCount2 = int.MinValue;
+                    List<int> WinningCells2 = new List<int>();
+
+                    var response2 =
+                        new T3Mod.TicTacToeUpdateResponse()
+                        {
+                            Status = TicTacToe.EvaluateResult(computerPlayer, request.GridSize, CellStates, out BlankCellCount2, out WinningCells2),
+                            ComputerMove = ComputerMove,
+                            WinningCells = WinningCells2
+                        };
+
+                    response = response2;
+                }
+            }
+
+            var cellStates = request.CellStates.ToList();
+
+            if (!cellStates.Any(x => !TicTacToe.ValidCellStateValues.Contains(x)))
+            {
+                if (response.ComputerMove.HasValue)
+                {
+                    cellStates[response.ComputerMove.Value] = computerPlayer.PlayerSymbolSelf;
+                }
+
+                var mlContext = new MLContext();
+                ITransformer mlModel = mlContext.Model.Load(MLNetModelPath, out var _);
+                var predEngine = mlContext.Model.CreatePredictionEngine<T3ML.MLModel1.ModelInput, T3ML.MLModel1.ModelOutput>(mlModel);
+
+                var inputModel1 =
+                    new T3ML.MLModel1.ModelInput()
+                    {
+                        MoveNumber = moveNumber,
+                        Cell0 = request.CellStates[0],
+                        Cell1 = request.CellStates[1],
+                        Cell2 = request.CellStates[2],
+                        Cell3 = request.CellStates[3],
+                        Cell4 = request.CellStates[4],
+                        Cell5 = request.CellStates[5],
+                        Cell6 = request.CellStates[6],
+                        Cell7 = request.CellStates[7],
+                        Cell8 = request.CellStates[8],
+                        GameResultCode = 0
+                    };
+
+                //var inputModel2 =
+                //    new MLModel2.ModelInput()
+                //    {
+                //        Cell0 = value.CellStates[0],
+                //        Cell1 = value.CellStates[1],
+                //        Cell2 = value.CellStates[2],
+                //        Cell3 = value.CellStates[3],
+                //        Cell4 = value.CellStates[4],
+                //        Cell5 = value.CellStates[5],
+                //        Cell6 = value.CellStates[6],
+                //        Cell7 = value.CellStates[7],
+                //        Cell8 = value.CellStates[8],
+                //        GameResultCode = 0
+                //    };
+
+                // Get Prediction
+                var prediction1 = predEngine.Predict(inputModel1);
+
+                response.Prediction = prediction1.PredictedLabel;
+                response.PredictionScore = prediction1.Score;
+            }
+
+            return response;
+        }
+
         public static Models.TicTacToeUpdateResponse EvaluateResult(Models.TicTacToeUpdateRequest request, ComputerPlayerBase computerPlayer)
         {
             //Validate TicTacToeUpdateRequest
-            var latestMove = new List<TicTacToeDataEntry>();
+            var latestMove = new List<T3Ent.TicTacToeDataEntry>();
             TicTacToe.ValidateTicTacToeUpdateRequest(request, computerPlayer, out latestMove);
 
             List<int> WinningCells = null;

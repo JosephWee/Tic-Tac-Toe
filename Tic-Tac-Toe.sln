@@ -7,13 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToeML", "TicTacToeML\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicTacToeBL", "TicTacToeBL\TicTacToeBL.csproj", "{D722A0C3-1CD7-47ED-BEAF-9428BC2F3AC5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTest", "NUnitTest\NUnitTest.csproj", "{E3DDE56F-39E3-4D7C-9C97-039F5E77BF19}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{4033DA58-FFC6-4D29-A367-EDBD5E442F69}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorServerApp", "BlazorServerApp\BlazorServerApp.csproj", "{CCFDDB0C-6D7A-48EA-B098-3CA209031878}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicTacToe.Distribution", "TicTacToe.Distribution\TicTacToe.Distribution.csproj", "{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTest", "NUnitTest\NUnitTest.csproj", "{5E66F398-F3F4-4AB7-BC7F-7A2187CD73FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,6 @@ Global
 		{D722A0C3-1CD7-47ED-BEAF-9428BC2F3AC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D722A0C3-1CD7-47ED-BEAF-9428BC2F3AC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D722A0C3-1CD7-47ED-BEAF-9428BC2F3AC5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E3DDE56F-39E3-4D7C-9C97-039F5E77BF19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3DDE56F-39E3-4D7C-9C97-039F5E77BF19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E3DDE56F-39E3-4D7C-9C97-039F5E77BF19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3DDE56F-39E3-4D7C-9C97-039F5E77BF19}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4033DA58-FFC6-4D29-A367-EDBD5E442F69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4033DA58-FFC6-4D29-A367-EDBD5E442F69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4033DA58-FFC6-4D29-A367-EDBD5E442F69}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E66F398-F3F4-4AB7-BC7F-7A2187CD73FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E66F398-F3F4-4AB7-BC7F-7A2187CD73FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E66F398-F3F4-4AB7-BC7F-7A2187CD73FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E66F398-F3F4-4AB7-BC7F-7A2187CD73FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
