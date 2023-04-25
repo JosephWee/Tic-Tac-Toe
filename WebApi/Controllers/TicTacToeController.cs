@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Azure;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.ML;
 using System.Configuration;
-using TicTacToe.BusinessLogic;
-using TicTacToe.Entity;
-using TicTacToe.ML;
+using T3BL = TicTacToe.BusinessLogic;
+using T3Ent = TicTacToe.Entity;
+using T3ML = TicTacToe.ML;
+using T3Mod = TicTacToe.Models;
+using System.Reflection.Metadata.Ecma335;
 
 namespace WebApi.Controllers
 {
@@ -25,7 +29,7 @@ namespace WebApi.Controllers
             string connectionString = config.GetConnectionString("TicTacToeDataConnString") ?? string.Empty;
             string TicTacToeDataConnString = connectionString.Replace("$(MSBuildProjectDirectory)", msbuildDir);
 
-            DbContextConfig
+            T3Ent.DbContextConfig
                 .AddOrReplace(
                     "TicTacToeData",
                     TicTacToeDataConnString);
@@ -50,83 +54,125 @@ namespace WebApi.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] TicTacToe.Models.TicTacToeUpdateRequest value)
         {
-            TicTacToe.Models.TicTacToeUpdateResponse tttUpdateResponse = null;
-
             try
             {
-                 //tttUpdateRequest =
-                 //   JsonConvert.DeserializeObject(
-                 //   value.ToObject<TicTacToe.Models.TicTacToeUpdateRequest>();
-
                 if (value == null)
                     return BadRequest();
 
-                // TO DO: Add logic to validate TicTacToeUpdateRequest
-                // Only 1 cell should have been changed
-                // GridSize must remain the same
+                T3Mod.TicTacToeUpdateResponse retVal = null;
 
-                var computerPlayer = new ComputerPlayerV2();
-                //var computerPlayer = new ComputerPlayerV3(_MLNetModelPath);
+                //var computerPlayer = new T3BL.ComputerPlayerV2();
+                var computerPlayer = new T3BL.ComputerPlayerV3(_MLNetModelPath);
 
-                tttUpdateResponse =
-                    TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(value, computerPlayer);
+                var latestMove = new List<T3Ent.TicTacToeDataEntry>();
+                T3BL.TicTacToe.ValidateTicTacToeUpdateRequest(value, computerPlayer, out latestMove);
 
-                if (value.GridSize == 3)
-                {
-                    var cellStates = value.CellStates.ToList();
-
-                    if (!cellStates.Any(x => !TicTacToe.BusinessLogic.TicTacToe.ValidCellStateValues.Contains(x)))
+                int moveNumber = latestMove.Any() ? latestMove.Max(x => x.MoveNumber) : 0;
+                int cellsChanged = 0;
+                latestMove.ForEach(
+                    x =>
                     {
-                        int moveNumber = cellStates.Count(x => x != 0);
+                        if (x.CellContent != value.CellStates[x.CellIndex])
+                            cellsChanged++;
+                    });
 
-                        if (tttUpdateResponse.ComputerMove.HasValue)
-                        {
-                            moveNumber++;
-                            cellStates[tttUpdateResponse.ComputerMove.Value] = computerPlayer.PlayerSymbolSelf;
-                        }
+                if (!latestMove.Any() || cellsChanged == 1)
+                {
+                    // Save: New Game or New Move
+                    moveNumber++;
+                    T3BL.TicTacToe.SaveToDatabase(value.InstanceId, value.GridSize, moveNumber, value.CellStates);
+                }
 
-                        var mlContext = new MLContext();
-                        ITransformer mlModel = mlContext.Model.Load(_MLNetModelPath, out var _);
-                        var predEngine = mlContext.Model.CreatePredictionEngine<MLModel1.ModelInput, MLModel1.ModelOutput>(mlModel);
+                // Evaluate Current Game Outcome
+                var response1 =
+                    T3BL.TicTacToe.EvaluateResult(value, computerPlayer);
 
-                        var inputModel1 =
-                            new MLModel1.ModelInput()
+                retVal = response1;
+
+                if (value.NumberOfPlayers == 1
+                    && (!latestMove.Any() || cellsChanged == 1)
+                    && response1.Status == T3Mod.TicTacToeGameStatus.InProgress)
+                {
+                    // Computer Player Moves
+                    int? ComputerMove =
+                        computerPlayer.GetMove(value.InstanceId);
+
+                    if (ComputerMove.HasValue && value.CellStates[ComputerMove.Value] == 0)
+                    {
+                        var CellStates = value.CellStates.ToList();
+                        CellStates[ComputerMove.Value] = computerPlayer.PlayerSymbolSelf;
+
+                        //Save Computer Player's move
+                        moveNumber++;
+                        T3BL.TicTacToe.SaveToDatabase(value.InstanceId, value.GridSize, moveNumber, CellStates);
+
+                        int BlankCellCount2 = int.MinValue;
+                        List<int> WinningCells2 = new List<int>();
+
+                        var response2 =
+                            new T3Mod.TicTacToeUpdateResponse()
                             {
-                                MoveNumber = moveNumber,
-                                Cell0 = value.CellStates[0],
-                                Cell1 = value.CellStates[1],
-                                Cell2 = value.CellStates[2],
-                                Cell3 = value.CellStates[3],
-                                Cell4 = value.CellStates[4],
-                                Cell5 = value.CellStates[5],
-                                Cell6 = value.CellStates[6],
-                                Cell7 = value.CellStates[7],
-                                Cell8 = value.CellStates[8],
-                                GameResultCode = 0
+                                Status = T3BL.TicTacToe.EvaluateResult(computerPlayer, value.GridSize, CellStates, out BlankCellCount2, out WinningCells2),
+                                ComputerMove = ComputerMove,
+                                WinningCells = WinningCells2
                             };
 
-                        //var inputModel2 =
-                        //    new MLModel2.ModelInput()
-                        //    {
-                        //        Cell0 = value.CellStates[0],
-                        //        Cell1 = value.CellStates[1],
-                        //        Cell2 = value.CellStates[2],
-                        //        Cell3 = value.CellStates[3],
-                        //        Cell4 = value.CellStates[4],
-                        //        Cell5 = value.CellStates[5],
-                        //        Cell6 = value.CellStates[6],
-                        //        Cell7 = value.CellStates[7],
-                        //        Cell8 = value.CellStates[8],
-                        //        GameResultCode = 0
-                        //    };
-
-                        // Get Prediction
-                        var prediction1 = predEngine.Predict(inputModel1);
-
-                        tttUpdateResponse.Prediction = prediction1.PredictedLabel;
-                        tttUpdateResponse.PredictionScore = prediction1.Score;
+                        retVal = response2;
                     }
                 }
+
+                var cellStates = value.CellStates.ToList();
+
+                if (!cellStates.Any(x => !T3BL.TicTacToe.ValidCellStateValues.Contains(x)))
+                {
+                    if (retVal.ComputerMove.HasValue)
+                    {
+                        cellStates[retVal.ComputerMove.Value] = computerPlayer.PlayerSymbolSelf;
+                    }
+
+                    var mlContext = new MLContext();
+                    ITransformer mlModel = mlContext.Model.Load(_MLNetModelPath, out var _);
+                    var predEngine = mlContext.Model.CreatePredictionEngine<T3ML.MLModel1.ModelInput, T3ML.MLModel1.ModelOutput>(mlModel);
+
+                    var inputModel1 =
+                        new T3ML.MLModel1.ModelInput()
+                        {
+                            MoveNumber = moveNumber,
+                            Cell0 = value.CellStates[0],
+                            Cell1 = value.CellStates[1],
+                            Cell2 = value.CellStates[2],
+                            Cell3 = value.CellStates[3],
+                            Cell4 = value.CellStates[4],
+                            Cell5 = value.CellStates[5],
+                            Cell6 = value.CellStates[6],
+                            Cell7 = value.CellStates[7],
+                            Cell8 = value.CellStates[8],
+                            GameResultCode = 0
+                        };
+
+                    //var inputModel2 =
+                    //    new MLModel2.ModelInput()
+                    //    {
+                    //        Cell0 = value.CellStates[0],
+                    //        Cell1 = value.CellStates[1],
+                    //        Cell2 = value.CellStates[2],
+                    //        Cell3 = value.CellStates[3],
+                    //        Cell4 = value.CellStates[4],
+                    //        Cell5 = value.CellStates[5],
+                    //        Cell6 = value.CellStates[6],
+                    //        Cell7 = value.CellStates[7],
+                    //        Cell8 = value.CellStates[8],
+                    //        GameResultCode = 0
+                    //    };
+
+                    // Get Prediction
+                    var prediction1 = predEngine.Predict(inputModel1);
+
+                    retVal.Prediction = prediction1.PredictedLabel;
+                    retVal.PredictionScore = prediction1.Score;
+                }
+
+                return Ok(retVal);
             }
             catch (ArgumentException argEx)
             {
@@ -136,8 +182,6 @@ namespace WebApi.Controllers
             {
                 return Problem(detail: "Internal Error", statusCode: 500);
             }
-
-            return Ok(tttUpdateResponse);
         }
 
         //// PUT api/values/5

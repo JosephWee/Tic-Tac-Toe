@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using TicTacToe.Entity;
 
 namespace TicTacToe.BusinessLogic
 {
@@ -20,7 +21,8 @@ namespace TicTacToe.BusinessLogic
         public static Models.TicTacToeUpdateResponse EvaluateResult(Models.TicTacToeUpdateRequest request, ComputerPlayerBase computerPlayer)
         {
             //Validate TicTacToeUpdateRequest
-            TicTacToe.ValidateTicTacToeUpdateRequest(request, computerPlayer);
+            var latestMove = new List<TicTacToeDataEntry>();
+            TicTacToe.ValidateTicTacToeUpdateRequest(request, computerPlayer, out latestMove);
 
             List<int> WinningCells = null;
             int BlankCellCount = int.MinValue;
@@ -28,36 +30,11 @@ namespace TicTacToe.BusinessLogic
             Models.TicTacToeUpdateResponse response = new Models.TicTacToeUpdateResponse()
             {
                 Status = EvaluateResult(computerPlayer, request.GridSize, request.CellStates, out BlankCellCount, out WinningCells),
-                WinningCells = WinningCells
+                WinningCells = WinningCells,
+                ComputerMove = null,
+                Prediction = null,
+                PredictionScore = null
             };
-
-            int moveNumber = request.TotalCellCount - BlankCellCount;
-
-            //Store to DB
-            SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, request.CellStates);
-            
-            if (request.NumberOfPlayers == 1 && response.Status == Models.TicTacToeGameStatus.InProgress)
-            {
-                int? ComputerMove =
-                    computerPlayer.GetMove(request.InstanceId);
-
-                if (ComputerMove.HasValue && request.CellStates[ComputerMove.Value] == 0)
-                {
-                    var CellStates = request.CellStates.ToList();
-                    CellStates[ComputerMove.Value] = computerPlayer.PlayerSymbolSelf;
-
-                    //Store to Computer Move to DB
-                    moveNumber++;
-                    SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, CellStates);
-
-                    int BlankCellCount2 = int.MinValue;
-                    List<int> WinningCells2 = new List<int>();
-                    response.Status = EvaluateResult(computerPlayer, request.GridSize, CellStates, out BlankCellCount2, out WinningCells2);
-
-                    response.WinningCells = WinningCells2;
-                    response.ComputerMove = ComputerMove;
-                }
-            }
 
             return response;
         }
@@ -276,7 +253,7 @@ namespace TicTacToe.BusinessLogic
             return ds;
         }
 
-        public static void ValidateTicTacToeUpdateRequest(Models.TicTacToeUpdateRequest request, ComputerPlayerBase computerPlayer)
+        public static void ValidateTicTacToeUpdateRequest(Models.TicTacToeUpdateRequest request, ComputerPlayerBase computerPlayer, out List<Entity.TicTacToeDataEntry> latestMove)
         {
             if (request == null)
                 throw new ArgumentNullException("Request is null");
@@ -295,7 +272,7 @@ namespace TicTacToe.BusinessLogic
                 throw exInvalidRquest;
 
             //Validate the last entry first
-            var latestMove = TicTacToe.GetAndValidatePreviousMove(request.InstanceId);
+            latestMove = TicTacToe.GetAndValidatePreviousMove(request.InstanceId);
 
             if (request.CellStates.Count(x => x == computerPlayer.PlayerSymbolOpponent) == 1
                 && request.CellStates.Count(x => x == 0) == request.TotalCellCount - 1
