@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.ML;
 using System.Configuration;
+using TicTacToe.BusinessLogic;
 using TicTacToe.Entity;
 using TicTacToe.ML;
 
@@ -64,8 +65,11 @@ namespace WebApi.Controllers
                 // Only 1 cell should have been changed
                 // GridSize must remain the same
 
+                var computerPlayer = new ComputerPlayerV2();
+                //var computerPlayer = new ComputerPlayerV3(_MLNetModelPath);
+
                 tttUpdateResponse =
-                    TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(value);
+                    TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(value, computerPlayer);
 
                 if (value.GridSize == 3)
                 {
@@ -78,7 +82,7 @@ namespace WebApi.Controllers
                         if (tttUpdateResponse.ComputerMove.HasValue)
                         {
                             moveNumber++;
-                            cellStates[tttUpdateResponse.ComputerMove.Value] = 2;
+                            cellStates[tttUpdateResponse.ComputerMove.Value] = computerPlayer.PlayerSymbolSelf;
                         }
 
                         var mlContext = new MLContext();

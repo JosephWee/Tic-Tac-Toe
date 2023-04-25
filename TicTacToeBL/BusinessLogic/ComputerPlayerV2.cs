@@ -5,10 +5,8 @@ using System.Web;
 
 namespace TicTacToe.BusinessLogic
 {
-    public class ComputerPlayerV2 : ITicTacToeComputerPlayer
+    public class ComputerPlayerV2 : ComputerPlayerBase
     {
-        private static Random random = new Random();
-
         public class Cell
         {
             public int Row { get; set; }
@@ -19,11 +17,21 @@ namespace TicTacToe.BusinessLogic
         public class CellCollction
         {
             public List<Cell> Cells { get; set; }
-            public int Player1Count { get; set; }
-            public int Player2Count { get; set; }
+            public int OpponentCount { get; set; }
+            public int SelfCount { get; set; }
         }
 
-        public int GetMove(string InstanceId)
+        public ComputerPlayerV2()
+            :base(1, 2)
+        {
+        }
+
+        public ComputerPlayerV2(int playerSymbolOpponent, int playerSymbolSelf)
+            :base(playerSymbolOpponent, playerSymbolSelf)
+        {
+        }
+
+        public override int GetMove(string InstanceId)
         {
             var ds = TicTacToe.GetAndValidatePreviousMove(InstanceId);
 
@@ -32,7 +40,7 @@ namespace TicTacToe.BusinessLogic
             int BlankCellCount = int.MinValue;
             List<int> WinningCells = null;
 
-            var GameStatus = TicTacToe.EvaluateResult(GridSize, CellStates, out BlankCellCount, out WinningCells);
+            var GameStatus = TicTacToe.EvaluateResult(this, GridSize, CellStates, out BlankCellCount, out WinningCells);
 
             if (GameStatus == Models.TicTacToeGameStatus.InProgress && BlankCellCount > 0)
             {
@@ -74,8 +82,8 @@ namespace TicTacToe.BusinessLogic
                         CellCollction collection = new CellCollction()
                         {
                             Cells = row.ToList(),
-                            Player1Count = row.Count(x => x.CellState.CellContent == 1),
-                            Player2Count = row.Count(x => x.CellState.CellContent == 2)
+                            OpponentCount = row.Count(x => x.CellState.CellContent == PlayerSymbolOpponent),
+                            SelfCount = row.Count(x => x.CellState.CellContent == PlayerSymbolSelf)
                         };
                         parsed.Add(collection);
                     }
@@ -92,8 +100,8 @@ namespace TicTacToe.BusinessLogic
                         CellCollction collection = new CellCollction()
                         {
                             Cells = col.ToList(),
-                            Player1Count = col.Count(x => x.CellState.CellContent == 1),
-                            Player2Count = col.Count(x => x.CellState.CellContent == 2)
+                            OpponentCount = col.Count(x => x.CellState.CellContent == PlayerSymbolOpponent),
+                            SelfCount = col.Count(x => x.CellState.CellContent == PlayerSymbolSelf)
                         };
                         parsed.Add(collection);
                     }
@@ -115,8 +123,8 @@ namespace TicTacToe.BusinessLogic
                     CellCollction diagonal1 = new CellCollction()
                     {
                         Cells = TopToBottomDiagonal.ToList(),
-                        Player1Count = TopToBottomDiagonal.Count(x => x.CellState.CellContent == 1),
-                        Player2Count = TopToBottomDiagonal.Count(x => x.CellState.CellContent == 2)
+                        OpponentCount = TopToBottomDiagonal.Count(x => x.CellState.CellContent == PlayerSymbolOpponent),
+                        SelfCount = TopToBottomDiagonal.Count(x => x.CellState.CellContent == PlayerSymbolSelf)
                     };
                     parsed.Add(diagonal1);
                 }
@@ -137,8 +145,8 @@ namespace TicTacToe.BusinessLogic
                     CellCollction diagonal2 = new CellCollction()
                     {
                         Cells = BottomToTopDiagonal.ToList(),
-                        Player1Count = BottomToTopDiagonal.Count(x => x.CellState.CellContent == 1),
-                        Player2Count = BottomToTopDiagonal.Count(x => x.CellState.CellContent == 2)
+                        OpponentCount = BottomToTopDiagonal.Count(x => x.CellState.CellContent == PlayerSymbolOpponent),
+                        SelfCount = BottomToTopDiagonal.Count(x => x.CellState.CellContent == PlayerSymbolSelf)
                     };
                     parsed.Add(diagonal2);
                 }
@@ -147,21 +155,21 @@ namespace TicTacToe.BusinessLogic
                 var blankCells = new List<Entity.TicTacToeDataEntry>();
                 if (parsed.Any())
                 {
-                    int maxPlayer1Count =
+                    int maxOpponentCount =
                         parsed
-                        .Max(x => x.Player1Count);
+                        .Max(x => x.OpponentCount);
 
-                    int maxPlayer2Count =
+                    int maxSelfCount =
                         parsed
-                        .Max(x => x.Player2Count);
+                        .Max(x => x.SelfCount);
 
-                    if (maxPlayer2Count + 1 >= GridSize)
+                    if (maxSelfCount + 1 >= GridSize)
                     {
                         //Try to win
                         blankCells =
                             parsed
-                            .OrderByDescending(x => x.Player1Count)
-                            .Where(x => x.Player2Count >= maxPlayer2Count)
+                            .OrderByDescending(x => x.OpponentCount)
+                            .Where(x => x.SelfCount >= maxSelfCount)
                             .Take(1)
                             .SelectMany(x =>
                                 x.Cells
@@ -169,13 +177,13 @@ namespace TicTacToe.BusinessLogic
                                 .Select(y => y.CellState))
                             .ToList();
                     }
-                    else if (maxPlayer1Count + 1 >= GridSize)
+                    else if (maxOpponentCount + 1 >= GridSize)
                     {
                         //Try to Block Player 1
                         blankCells =
                             parsed
-                            .OrderByDescending(x => x.Player2Count)
-                            .Where(x => x.Player1Count >= maxPlayer1Count)
+                            .OrderByDescending(x => x.SelfCount)
+                            .Where(x => x.OpponentCount >= maxOpponentCount)
                             .Take(1)
                             .SelectMany(x =>
                                 x.Cells
@@ -187,7 +195,7 @@ namespace TicTacToe.BusinessLogic
                     {
                         blankCells =
                             parsed
-                            .Where(x => x.Player2Count >= maxPlayer2Count)
+                            .Where(x => x.SelfCount >= maxSelfCount)
                             .SelectMany(x =>
                                 x.Cells
                                 .Where(y => y.CellState.CellContent == 0)

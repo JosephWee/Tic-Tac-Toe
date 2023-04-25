@@ -5,33 +5,19 @@ namespace TicTacToe.BusinessLogic
     public class ComputerPlayerConfig
     {
         private static System.Type ComputerPlayerType = null;
-        private static Func<ITicTacToeComputerPlayer> funcCreateComputerPlayer = null;
+        private static Func<ComputerPlayerBase> funcCreateComputerPlayer = null;
 
         // For more information on bundling, visit https://go.microsoft.com/fwlink/?LinkId=301862
-        public static void RegisterComputerPlayer<TComputerPlayerType>(Func<ITicTacToeComputerPlayer> FuncCreateComputerPlayer = null) where TComputerPlayerType: ITicTacToeComputerPlayer
+        public static void RegisterComputerPlayer<TComputerPlayerType>(Func<ComputerPlayerBase> FuncCreateComputerPlayer)
+            where TComputerPlayerType: ComputerPlayerBase
         {
             ComputerPlayerType = typeof(TComputerPlayerType);
             funcCreateComputerPlayer = FuncCreateComputerPlayer;
         }
 
-        public static ITicTacToeComputerPlayer CreateComputerPlayer()
+        public static ComputerPlayerBase CreateComputerPlayer()
         {
-            if (funcCreateComputerPlayer == null)
-                return CreateComputerPlayerDefault();
-            else
-                return funcCreateComputerPlayer.Invoke();
-        }
-
-        protected static ITicTacToeComputerPlayer CreateComputerPlayerDefault()
-        {
-            if (ComputerPlayerType == null)
-                return null;
-
-            Assembly assembly = ComputerPlayerType.Assembly;
-            BusinessLogic.ITicTacToeComputerPlayer p =
-                assembly.CreateInstance(ComputerPlayerType.FullName) as BusinessLogic.ITicTacToeComputerPlayer;
-
-            return p;
+            return funcCreateComputerPlayer.Invoke();
         }
     }
 }

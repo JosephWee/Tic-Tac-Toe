@@ -15,7 +15,7 @@ namespace UnitTests
             TicTacToe
                 .BusinessLogic
                 .TicTacToe
-                .PrepData(SourceConnString, DestinationConnString);
+                .PrepData(SourceConnString, DestinationConnString, new TicTacToe.BusinessLogic.ComputerPlayerV1(1,2));
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace UnitTests
             TicTacToe
                 .BusinessLogic
                 .TicTacToe
-                .PrepData2(SourceConnString, DestinationConnString);
+                .PrepData2(SourceConnString, DestinationConnString, new TicTacToe.BusinessLogic.ComputerPlayerV1(1, 2));
         }
     }
 }

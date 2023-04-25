@@ -23,15 +23,6 @@ var app = builder.Build();
 string msbuildDir = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, @"..\..\..")).FullName;
 string MLModel1Path = Path.Combine(msbuildDir, "MLModels", "MLModel1.zip");
 
-TicTacToe.BusinessLogic.ComputerPlayerConfig
-    .RegisterComputerPlayer<ComputerPlayerV3>(
-        () =>
-        {
-            var computerPlayer = new ComputerPlayerV3(MLModel1Path);
-            return computerPlayer;
-        }
-    );
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

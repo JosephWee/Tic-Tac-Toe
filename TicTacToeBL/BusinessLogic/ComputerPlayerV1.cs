@@ -5,29 +5,16 @@ using System.Web;
 
 namespace TicTacToe.BusinessLogic
 {
-    public class ComputerPlayerV1 : ITicTacToeComputerPlayer
+    public class ComputerPlayerV1 : ComputerPlayerBase
     {
-        private static Random random = new Random();
-
-        public int GetMove(string InstanceId)
+        public ComputerPlayerV1()
+            : base(1, 2)
         {
-            var ds = TicTacToe.GetAndValidatePreviousMove(InstanceId);
+        }
 
-            int GridSize = ds.First().GridSize;
-            List<int> CellStates = ds.Select(x => x.CellContent).ToList();
-            int BlankCellCount = int.MinValue;
-            List<int> WinningCells = null;
-
-            var GameStatus = TicTacToe.EvaluateResult(GridSize, CellStates, out BlankCellCount, out WinningCells);
-
-            if (GameStatus == Models.TicTacToeGameStatus.InProgress && BlankCellCount > 0)
-            {
-                int i = random.Next(0, BlankCellCount - 1);
-                var blankCells = ds.Where(x => x.CellContent == 0).ToList();
-                return blankCells[i].CellIndex;
-            }
-
-            return -1;
+        public ComputerPlayerV1(int playerSymbolOpponent, int playerSymbolSelf)
+            : base(playerSymbolOpponent, playerSymbolSelf)
+        {
         }
     }
 }

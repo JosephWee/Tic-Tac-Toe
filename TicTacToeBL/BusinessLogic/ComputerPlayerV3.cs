@@ -15,10 +15,8 @@ using static TicTacToe.ML.MLModel1;
 
 namespace TicTacToe.BusinessLogic
 {
-    public class ComputerPlayerV3: ITicTacToeComputerPlayer
+    public class ComputerPlayerV3: ComputerPlayerBase
     {
-        private static Random random = new Random();
-        
         public class Cell
         {
             public int Row { get; set; }
@@ -35,11 +33,17 @@ namespace TicTacToe.BusinessLogic
 
         private string _MLNetModelPath = string.Empty;
         public ComputerPlayerV3(string MLNetModelPath)
+            :this(1, 2, MLNetModelPath)
+        {
+        }
+
+        public ComputerPlayerV3(int symbolPlayerOpponent, int symbolPlayerSelf, string MLNetModelPath)
+            :base(symbolPlayerOpponent, symbolPlayerSelf)
         {
             _MLNetModelPath = MLNetModelPath;
         }
 
-        public int GetMove(string InstanceId)
+        public override int GetMove(string InstanceId)
         {
             var ds = TicTacToe.GetAndValidatePreviousMove(InstanceId);
 
@@ -48,7 +52,7 @@ namespace TicTacToe.BusinessLogic
             int BlankCellCount = int.MinValue;
             List<int> WinningCells = null;
 
-            var GameStatus = TicTacToe.EvaluateResult(GridSize, CellStates, out BlankCellCount, out WinningCells);
+            var GameStatus = TicTacToe.EvaluateResult(this, GridSize, CellStates, out BlankCellCount, out WinningCells);
 
             if (GameStatus == Models.TicTacToeGameStatus.InProgress && BlankCellCount > 0)
             {
@@ -250,7 +254,7 @@ namespace TicTacToe.BusinessLogic
                     var PredictionLabel = prediction1.PredictedLabel;
                     var PredictionScore = prediction1.Score;
 
-                    if (PredictionLabel == 1)
+                    if (PredictionLabel == PlayerSymbolOpponent)
                     {
                         if (blockingMoves.ContainsKey(PredictionScore[0]))
                             blockingMoves[PredictionScore[0]].Add(ci);
@@ -262,7 +266,7 @@ namespace TicTacToe.BusinessLogic
                             );
                         }
                     }
-                    else if (PredictionLabel == 2)
+                    else if (PredictionLabel == PlayerSymbolSelf)
                     {
                         if (winningMoves.ContainsKey(PredictionScore[0]))
                             winningMoves[PredictionScore[0]].Add(ci);

@@ -7,6 +7,9 @@ namespace TicTacToe.BusinessLogic
 {
     public interface ITicTacToeComputerPlayer
     {
+        int PlayerSymbolOpponent { get; }
+        int PlayerSymbolSelf { get; }
+        void SetPlayerSymbols(int playerSymbolOpponent, int playerSymbolSelf);
         int GetMove(string InstanceId);
     }
 }

@@ -6,6 +6,11 @@ using System.Text;
 using Azure;
 using TicTacToe.BusinessLogic;
 using TicTacToe.Extensions;
+using Microsoft.ML;
+using Newtonsoft.Json.Linq;
+using TicTacToe.ML;
+using TicTacToe.Models;
+using Azure.Core;
 
 namespace UnitTests
 {
@@ -32,31 +37,18 @@ namespace UnitTests
         [Test]
         public void TestValidGamesV2()
         {
-            TicTacToe
-                .BusinessLogic
-                .ComputerPlayerConfig
-                .RegisterComputerPlayer<ComputerPlayerV2>();
-
-            TestValidGames("V2");
+            var computerPlayer = new ComputerPlayerV2();
+            var gameoutcomes = TestValidGames("V2", computerPlayer);
         }
 
         [Test]
         public void TestValidGamesV3()
         {
-            TicTacToe
-                .BusinessLogic
-                .ComputerPlayerConfig
-                .RegisterComputerPlayer<ComputerPlayerV3>(
-                    () =>
-                    {
-                        var computerPlayer = new ComputerPlayerV3(_MLModel1Path);
-                        return computerPlayer;
-                    });
-
-            TestValidGames("V3");
+            var computerPlayer = new ComputerPlayerV3(_MLModel1Path);
+            var gameoutcomes = TestValidGames("V3", computerPlayer);
         }
 
-        public void TestValidGames(string Version)
+        public Dictionary<TicTacToe.Models.TicTacToeGameStatus, int> TestValidGames(string Version, ComputerPlayerBase computerPlayer)
         {
             int gamesCount = 100;
             var gameOutcomes = new Dictionary<TicTacToe.Models.TicTacToeGameStatus, int>();
@@ -89,7 +81,7 @@ namespace UnitTests
                     int index = random.Next(validMoves.Count);
                     request.CellStates[validMoves[index]] = 1;
 
-                    var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
+                    var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request, computerPlayer);
                     
                     gameStatus = response.Status;
 
@@ -103,37 +95,24 @@ namespace UnitTests
                     gameOutcomes.Add(gameStatus,1);
             }
 
-            Assert.IsNotNull(gameOutcomes);
+            return gameOutcomes;
         }
 
         [Test]
         public void TestInvalidGamesV2()
         {
-            TicTacToe
-            .BusinessLogic
-            .ComputerPlayerConfig
-            .RegisterComputerPlayer<ComputerPlayerV2>();
-
-            TestInvalidGames("V2");
+            var computerPlayer = new ComputerPlayerV2();
+            TestInvalidGames("V2", computerPlayer);
         }
 
         [Test]
         public void TestInvalidGamesV3()
         {
-            TicTacToe
-            .BusinessLogic
-            .ComputerPlayerConfig
-            .RegisterComputerPlayer<ComputerPlayerV3>(
-                () =>
-                {
-                    var computerPlayer = new ComputerPlayerV3(_MLModel1Path);
-                    return computerPlayer;
-                });
-
-            TestInvalidGames("V3");
+            var computerPlayer = new ComputerPlayerV3(_MLModel1Path);
+            TestInvalidGames("V3", computerPlayer);
         }
 
-        public void TestInvalidGames(string Version)
+        public void TestInvalidGames(string Version, ComputerPlayerBase computerPlayerBase)
         {
             string InstanceId = $"UnitTest {Version} @ {DateTime.UtcNow.ToString("o")}";
             var request = new TicTacToe.Models.TicTacToeUpdateRequest()
@@ -161,7 +140,7 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = 1;
 
-                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
+                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request, computerPlayerBase);
 
                 if (response.ComputerMove.HasValue)
                     request.CellStates[response.ComputerMove.Value] = 2;
@@ -185,7 +164,7 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = 3; //Invalid value
 
-                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
+                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request, computerPlayerBase);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -210,7 +189,7 @@ namespace UnitTests
                     request.CellStates[validMoves[index]] = 1;
                 }
 
-                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
+                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request, computerPlayerBase);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -232,7 +211,7 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = 1;
 
-                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
+                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request, computerPlayerBase);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -266,7 +245,7 @@ namespace UnitTests
                 index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = 1;
 
-                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
+                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request, computerPlayerBase);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -277,7 +256,7 @@ namespace UnitTests
             {
                 //Test Invalid GridSize
                 request.GridSize = 5;
-                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
+                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request, computerPlayerBase);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -303,12 +282,94 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = 1;
 
-                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request);
+                var response = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request, computerPlayerBase);
                 Assert.Fail();
             }
             catch (Exception ex)
             {
             }
+        }
+
+        [Test]
+        public void TestValidGamesV2vsV2()
+        {
+            var player1 = new ComputerPlayerV2(2, 1);
+            var player2 = new ComputerPlayerV2(1, 2);
+            var gameoutcomes = TestValidGamesP1vsP2("V2-P1", "V2-P2", player1, player2);
+        }
+
+        [Test]
+        public void TestValidGamesV2vsV3()
+        {
+            var player1 = new ComputerPlayerV2(2, 1);
+            var player2 = new ComputerPlayerV3(1, 2, _MLModel1Path);
+            var gameoutcomes = TestValidGamesP1vsP2("V2", "V3", player1, player2);
+        }
+
+        protected Dictionary<TicTacToe.Models.TicTacToeGameStatus, int> TestValidGamesP1vsP2(string P1Ver, string P2Ver, ComputerPlayerBase player1, ComputerPlayerBase player2)
+        {
+            int gamesCount = 100;
+            var gameOutcomes = new Dictionary<TicTacToe.Models.TicTacToeGameStatus, int>();
+            for (int g = 0; g < gamesCount; g++)
+            {
+                var gameStatus = TicTacToe.Models.TicTacToeGameStatus.InProgress;
+                string InstanceId = $"UnitTest {P1Ver} vs {P2Ver} {g} @ {DateTime.UtcNow.ToString("o")}";
+                var request = new TicTacToe.Models.TicTacToeUpdateRequest()
+                {
+                    InstanceId = InstanceId,
+                    GridSize = 3,
+                    NumberOfPlayers = 1,
+                    CellStates = new List<int>()
+                    {
+                        0, 0, 0,
+                        0, 0, 0,
+                        0, 0, 0,
+                    }
+                };
+
+                int firstMove = player1.GetRandomMove(request.CellStates);
+                request.CellStates[firstMove] = player1.PlayerSymbolSelf;
+
+                while (gameStatus == TicTacToeGameStatus.InProgress)
+                {
+                    var response2 = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request, player2);
+                    gameStatus = UpdateGame(player2, request, response2);
+
+                    if (gameStatus != TicTacToeGameStatus.InProgress)
+                        break;
+
+                    var response1 = TicTacToe.BusinessLogic.TicTacToe.EvaluateResult(request, player1);
+                    gameStatus = UpdateGame(player1, request, response1);
+                }
+
+                if (gameOutcomes.ContainsKey(gameStatus))
+                    gameOutcomes[gameStatus] += 1;
+                else
+                    gameOutcomes.Add(gameStatus, 1);
+            }
+
+            return gameOutcomes;
+        }
+
+        protected TicTacToeGameStatus UpdateGame(ComputerPlayerBase player, TicTacToeUpdateRequest request, TicTacToeUpdateResponse response)
+        {
+            if (request.GridSize == 3)
+            {
+                var cellStates = request.CellStates.ToList();
+
+                if (!cellStates.Any(x => !TicTacToe.BusinessLogic.TicTacToe.ValidCellStateValues.Contains(x)))
+                {
+                    int moveNumber = cellStates.Count(x => x != 0);
+
+                    if (response.ComputerMove.HasValue)
+                    {
+                        moveNumber++;
+                        cellStates[response.ComputerMove.Value] = player.PlayerSymbolSelf;
+                    }
+                }
+            }
+
+            return response.Status;
         }
     }
 }

@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BusinessLogic\ComputerPlayerConfig.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="DBScripts\CreateTicTacToeTable.sql" />
     <None Remove="DBScripts\FormatClassificationModel01.sql" />
     <None Remove="DBScripts\TicTacToeClassificationModel01.sql" />
