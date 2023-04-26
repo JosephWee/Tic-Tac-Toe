@@ -62,7 +62,9 @@ namespace WebApi.Controllers
 
                 //var computerPlayer = new T3BL.ComputerPlayerV2();
                 var computerPlayer = new ComputerPlayerV3(_MLNetModelPath);
-                var retVal = T3BL.TicTacToe.ProcessRequest(value, computerPlayer, _MLNetModelPath);
+
+                string Description = $"Web Api - {computerPlayer.GetType().Name}";
+                var retVal = T3BL.TicTacToe.ProcessRequest(value, computerPlayer, _MLNetModelPath, Description);
 
                 return Ok(retVal);
             }

@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorServerApp", "BlazorSe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicTacToe.Distribution", "TicTacToe.Distribution\TicTacToe.Distribution.csproj", "{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTest", "NUnitTest\NUnitTest.csproj", "{5E66F398-F3F4-4AB7-BC7F-7A2187CD73FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTest", "NUnitTest\NUnitTest.csproj", "{83F446FE-25D8-40F9-88FD-40FDC77CF557}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA2FFA93-46F8-43C1-8CF6-B9958FFB9D91}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E66F398-F3F4-4AB7-BC7F-7A2187CD73FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E66F398-F3F4-4AB7-BC7F-7A2187CD73FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E66F398-F3F4-4AB7-BC7F-7A2187CD73FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E66F398-F3F4-4AB7-BC7F-7A2187CD73FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83F446FE-25D8-40F9-88FD-40FDC77CF557}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83F446FE-25D8-40F9-88FD-40FDC77CF557}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83F446FE-25D8-40F9-88FD-40FDC77CF557}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83F446FE-25D8-40F9-88FD-40FDC77CF557}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

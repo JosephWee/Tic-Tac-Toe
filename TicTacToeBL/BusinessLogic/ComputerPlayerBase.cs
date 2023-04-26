@@ -3,11 +3,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using TicTacToe.Entity;
 
 namespace TicTacToe.BusinessLogic
 {
     public class ComputerPlayerBase : ITicTacToeComputerPlayer
     {
+        public class Cell
+        {
+            public int Row { get; set; }
+            public int Col { get; set; }
+            public int CellState { get; set; }
+        }
+
+        public class CellCollction
+        {
+            public List<Cell> Cells { get; set; }
+            public int OpponentCount { get; set; }
+            public int SelfCount { get; set; }
+        }
+
         protected static Random random = new Random();
 
         protected int _PlayerSymbolOpponent = 1;
@@ -41,28 +56,9 @@ namespace TicTacToe.BusinessLogic
             SetPlayerSymbols(playerSymbolOpponent, playerSymbolSelf);
         }
 
-        public virtual int GetMove(string InstanceId)
+        public virtual int GetMove(int GridSize, List<int> CellStates)
         {
-            var ds = TicTacToe.GetAndValidatePreviousMove(InstanceId);
-
-            if (!ds.Any())
-                return -1;
-
-            int GridSize = ds.First().GridSize;
-            List<int> CellStates = ds.Select(x => x.CellContent).ToList();
-            int BlankCellCount = int.MinValue;
-            List<int> WinningCells = null;
-
-            var GameStatus = TicTacToe.EvaluateResult(this, GridSize, CellStates, out BlankCellCount, out WinningCells);
-
-            if (GameStatus == Models.TicTacToeGameStatus.InProgress && BlankCellCount > 0)
-            {
-                int i = random.Next(0, BlankCellCount - 1);
-                var blankCells = ds.Where(x => x.CellContent == 0).ToList();
-                return blankCells[i].CellIndex;
-            }
-
-            return -1;
+            return GetRandomMove(CellStates);
         }
 
         public int GetRandomMove(List<int> CellStates)

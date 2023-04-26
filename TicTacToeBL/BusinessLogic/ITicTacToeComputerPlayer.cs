@@ -10,6 +10,6 @@ namespace TicTacToe.BusinessLogic
         int PlayerSymbolOpponent { get; }
         int PlayerSymbolSelf { get; }
         void SetPlayerSymbols(int playerSymbolOpponent, int playerSymbolSelf);
-        int GetMove(string InstanceId);
+        int GetMove(int GridSize, List<int> CellStates);
     }
 }

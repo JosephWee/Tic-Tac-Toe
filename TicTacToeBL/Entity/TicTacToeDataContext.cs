@@ -26,6 +26,8 @@ namespace TicTacToe.Entity
             optionsBuilder.UseSqlServer(dbNameOrConnectionString);
         }
 
+        public DbSet<TicTacToeGame> TicTacToeGames { get; set; }
+
         public DbSet<TicTacToeDataEntry> TicTacToeData { get; set; }
 
         public DbSet<TicTacToeClassificationModel01> TicTacToeClassificationModel01 { get; set; }

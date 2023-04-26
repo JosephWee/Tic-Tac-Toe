@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="MLDataTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="App.config" />
     <None Remove="connectionStrings.config" />
     <None Remove="LocalDB\DestinationTicTacToeData.mdf" />

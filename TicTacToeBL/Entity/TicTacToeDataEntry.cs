@@ -9,19 +9,15 @@ namespace TicTacToe.Entity
     [Table("TicTacToeData")]
     public class TicTacToeDataEntry
     {
-        public int Id { get; set; }
+        [Key]
+        public long Id { get; set; }
 
         [Required]
         public DateTime CreatedDate { get; set; }
 
-        [Required]
-        [MaxLength(200)]
-        public string InstanceId { get; set; }
-        
-        [Required]
-        [Range(0, int.MaxValue)]
-        public int GridSize { get; set; }
-        
+        [ForeignKey("TicTacToeGame")]
+        public long InstanceId { get; set; }
+
         [Required]
         [Range(0, int.MaxValue)]
         public int MoveNumber { get; set; }
@@ -33,6 +29,9 @@ namespace TicTacToe.Entity
         [Required]
         public int CellContent { get; set; }
 
+        [ForeignKey("InstanceId")]
+        public TicTacToeGame Game { get; set; }
+
         public TicTacToeDataEntry Copy()
         {
             var copy = new Entity.TicTacToeDataEntry()
@@ -40,7 +39,6 @@ namespace TicTacToe.Entity
                 Id = this.Id,
                 CreatedDate = this.CreatedDate,
                 InstanceId = this.InstanceId,
-                GridSize = this.GridSize,
                 MoveNumber = this.MoveNumber,
                 CellIndex = this.CellIndex,
                 CellContent = this.CellContent

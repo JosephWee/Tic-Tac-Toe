@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using T3Ent = TicTacToe.Entity;
@@ -22,12 +23,13 @@ namespace TicTacToe.BusinessLogic
             }
         }
 
-        public static T3Mod.TicTacToeUpdateResponse ProcessRequest(T3Mod.TicTacToeUpdateRequest request, ComputerPlayerBase computerPlayer, string MLNetModelPath)
+        public static T3Mod.TicTacToeUpdateResponse ProcessRequest(T3Mod.TicTacToeUpdateRequest request, ComputerPlayerBase computerPlayer, string MLNetModelPath, string Description)
         {
             T3Mod.TicTacToeUpdateResponse response = null;
 
+            T3Ent.TicTacToeGame game = null;
             var latestMove = new List<T3Ent.TicTacToeDataEntry>();
-            TicTacToe.ValidateTicTacToeUpdateRequest(request, computerPlayer, out latestMove);
+            TicTacToe.ValidateTicTacToeUpdateRequest(request, computerPlayer, out game, out latestMove);
 
             int moveNumber = latestMove.Any() ? latestMove.Max(x => x.MoveNumber) : 0;
             int cellsChanged = 0;
@@ -38,16 +40,17 @@ namespace TicTacToe.BusinessLogic
                     cellsChanged++;
             });
 
+            // Evaluate Game Outcome after Player 1 made a move
+            var response1 =
+                TicTacToe.EvaluateResult(request, computerPlayer);
+
             if (!latestMove.Any() || cellsChanged == 1)
             {
                 // Save: New Game or New Move
                 moveNumber++;
-                TicTacToe.SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, request.CellStates);
+                TicTacToe.SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, T3Mod.TicTacToeGameStatus.InProgress, request.CellStates, Description);
             }
 
-            // Evaluate Current Game Outcome
-            var response1 =
-            TicTacToe.EvaluateResult(request, computerPlayer);
             response = response1;
 
             if (request.NumberOfPlayers == 1
@@ -56,17 +59,14 @@ namespace TicTacToe.BusinessLogic
             {
                 // Computer Player Moves
                 int? ComputerMove =
-                    computerPlayer.GetMove(request.InstanceId);
+                    computerPlayer.GetMove(request.GridSize, request.CellStates.ToList());
 
                 if (ComputerMove.HasValue && request.CellStates[ComputerMove.Value] == 0)
                 {
                     var CellStates = request.CellStates.ToList();
                     CellStates[ComputerMove.Value] = computerPlayer.PlayerSymbolSelf;
 
-                    //Save Computer Player's move
-                    moveNumber++;
-                    TicTacToe.SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, CellStates);
-
+                    // Evaluate Game Outcome after Player 2 made a move
                     int BlankCellCount2 = int.MinValue;
                     List<int> WinningCells2 = new List<int>();
 
@@ -77,6 +77,10 @@ namespace TicTacToe.BusinessLogic
                             ComputerMove = ComputerMove,
                             WinningCells = WinningCells2
                         };
+
+                    //Save Computer Player's move
+                    moveNumber++;
+                    TicTacToe.SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, response2.Status, CellStates, Description);
 
                     response = response2;
                 }
@@ -111,21 +115,6 @@ namespace TicTacToe.BusinessLogic
                         GameResultCode = 0
                     };
 
-                //var inputModel2 =
-                //    new MLModel2.ModelInput()
-                //    {
-                //        Cell0 = value.CellStates[0],
-                //        Cell1 = value.CellStates[1],
-                //        Cell2 = value.CellStates[2],
-                //        Cell3 = value.CellStates[3],
-                //        Cell4 = value.CellStates[4],
-                //        Cell5 = value.CellStates[5],
-                //        Cell6 = value.CellStates[6],
-                //        Cell7 = value.CellStates[7],
-                //        Cell8 = value.CellStates[8],
-                //        GameResultCode = 0
-                //    };
-
                 // Get Prediction
                 var prediction1 = predEngine.Predict(inputModel1);
 
@@ -139,8 +128,9 @@ namespace TicTacToe.BusinessLogic
         public static Models.TicTacToeUpdateResponse EvaluateResult(Models.TicTacToeUpdateRequest request, ComputerPlayerBase computerPlayer)
         {
             //Validate TicTacToeUpdateRequest
+            T3Ent.TicTacToeGame game = null;
             var latestMove = new List<T3Ent.TicTacToeDataEntry>();
-            TicTacToe.ValidateTicTacToeUpdateRequest(request, computerPlayer, out latestMove);
+            TicTacToe.ValidateTicTacToeUpdateRequest(request, computerPlayer, out game, out latestMove);
 
             List<int> WinningCells = null;
             int BlankCellCount = int.MinValue;
@@ -319,9 +309,15 @@ namespace TicTacToe.BusinessLogic
             return Status;
         }
 
-        public static List<Entity.TicTacToeDataEntry> GetAndValidatePreviousMove(string InstanceId)
+        public static List<Entity.TicTacToeDataEntry> GetAndValidatePreviousMove(long InstanceId, out Entity.TicTacToeGame? game)
         {
             Entity.TicTacToeDataContext context = new Entity.TicTacToeDataContext();
+
+            Entity.TicTacToeGame? matchingGame =
+                (from g in context.TicTacToeGames
+                 where
+                     g.InstanceId == InstanceId
+                 select g).FirstOrDefault();
 
             List<Entity.TicTacToeDataEntry> ds =
                 (from dr in context.TicTacToeData
@@ -332,7 +328,12 @@ namespace TicTacToe.BusinessLogic
                      dr.CellIndex
                  select dr).ToList();
 
-            if (ds == null || !ds.Any())
+            game = matchingGame;
+
+            if (game == null && ds.Any())
+                throw new DataException("TicTacToeData has orphaned entries.");
+
+            if (game == null && !ds.Any())
                 return ds;
 
             int LastMoveNumber = ds.Max(dr => dr.MoveNumber);
@@ -348,14 +349,8 @@ namespace TicTacToe.BusinessLogic
                     string.Format("Cells {0} has invalid cell contents", string.Join(", ", invalidCellContent))
                 );
 
-            int minGridSize = ds.Min(x => x.GridSize);
-            int maxGridSize = ds.Max(x => x.GridSize);
-
-            if (minGridSize != maxGridSize)
-                throw new ArgumentOutOfRangeException("Data has inconsistent Grid Size");
-
             bool allCellIndexOkay = true;
-            int TotalCellCount = minGridSize * minGridSize;
+            int TotalCellCount = game.GridSize * game.GridSize;
             for (int i = 0; i < TotalCellCount; i++)
             {
                 if (ds[i].CellIndex != i)
@@ -371,7 +366,7 @@ namespace TicTacToe.BusinessLogic
             return ds;
         }
 
-        public static void ValidateTicTacToeUpdateRequest(Models.TicTacToeUpdateRequest request, ComputerPlayerBase computerPlayer, out List<Entity.TicTacToeDataEntry> latestMove)
+        public static void ValidateTicTacToeUpdateRequest(Models.TicTacToeUpdateRequest request, ComputerPlayerBase computerPlayer, out Entity.TicTacToeGame game, out List<Entity.TicTacToeDataEntry> latestMove)
         {
             if (request == null)
                 throw new ArgumentNullException("Request is null");
@@ -386,16 +381,22 @@ namespace TicTacToe.BusinessLogic
             if (request.CellStates.Count() != request.TotalCellCount)
                 throw exInvalidRquest;
 
+            if (request.CellStates.Count(x => x == 0) == request.TotalCellCount)
+                throw exInvalidRquest;
+
             if (request.CellStates.Any(x => !TicTacToe.ValidCellStateValues.Contains(x)))
                 throw exInvalidRquest;
 
             //Validate the last entry first
-            latestMove = TicTacToe.GetAndValidatePreviousMove(request.InstanceId);
+            latestMove = TicTacToe.GetAndValidatePreviousMove(request.InstanceId, out game);
 
             if (request.CellStates.Count(x => x == computerPlayer.PlayerSymbolOpponent) == 1
                 && request.CellStates.Count(x => x == 0) == request.TotalCellCount - 1
-                && !latestMove.Any())
+                && (game == null || !latestMove.Any()))
                 return;
+
+            if (game.GridSize != request.GridSize)
+                throw exInvalidRquest;
 
             if (latestMove.Count() != request.TotalCellCount)
                 throw exInvalidRquest;
@@ -403,9 +404,6 @@ namespace TicTacToe.BusinessLogic
             int changedCellCount = 0;
             for (int i = 0; i < latestMove.Count(); i++)
             {
-                if (request.GridSize != latestMove[i].GridSize)
-                    throw exInvalidRquest;
-
                 if (request.CellStates[i] != latestMove[i].CellContent)
                 {
                     changedCellCount++;
@@ -415,8 +413,35 @@ namespace TicTacToe.BusinessLogic
             }
         }
 
-        public static void SaveToDatabase(string InstanceId, int GridSize, int MoveNumber, List<int> CellStates)
+        public static void SaveToDatabase(long InstanceId, int GridSize, int MoveNumber, T3Mod.TicTacToeGameStatus? Status, List<int> CellStates, string Description)
         {
+            Entity.TicTacToeDataContext dbContext = new Entity.TicTacToeDataContext();
+            var game = dbContext.TicTacToeGames.Where(g => g.InstanceId == InstanceId).FirstOrDefault();
+
+            if (game == null)
+            {
+                var newGame = new T3Ent.TicTacToeGame()
+                {
+                    InstanceId = InstanceId,
+                    Description = Description,
+                    GridSize = GridSize,
+                    Status = Status,
+                    CreatedDate = DateTime.UtcNow,
+                    CompletedDate = null
+                };
+
+                dbContext.TicTacToeGames.Add(newGame);
+            }
+            else if (Status.HasValue)
+            {
+                game.Status = Status;
+
+                if (Status.Value == T3Mod.TicTacToeGameStatus.Player1Wins
+                    || Status.Value == T3Mod.TicTacToeGameStatus.Player2Wins
+                    || Status.Value == T3Mod.TicTacToeGameStatus.Draw)
+                    game.CompletedDate = DateTime.UtcNow;
+            }
+
             List<Entity.TicTacToeDataEntry> TicTacToeData = new List<Entity.TicTacToeDataEntry>();
             for (int i = 0; i < CellStates.Count; i++)
             {
@@ -424,7 +449,6 @@ namespace TicTacToe.BusinessLogic
                 {
                     CreatedDate = DateTime.UtcNow,
                     InstanceId = InstanceId,
-                    GridSize = GridSize,
                     MoveNumber = MoveNumber,
                     CellIndex = i,
                     CellContent = CellStates[i]
@@ -432,232 +456,231 @@ namespace TicTacToe.BusinessLogic
                 TicTacToeData.Add(newEntry);
             }
 
-            Entity.TicTacToeDataContext dbContext = new Entity.TicTacToeDataContext();
             dbContext.TicTacToeData.AddRange(TicTacToeData);
             dbContext.SaveChanges();
         }
 
-        public static void PrepData(string SourceNameOrConnectionString, string DestinationNameOrConnectionString, ComputerPlayerBase computerPlayer)
-        {
-            Entity.TicTacToeDataContext sourceContext = new Entity.TicTacToeDataContext(SourceNameOrConnectionString);
-            Entity.TicTacToeDataContext destinationContext = new Entity.TicTacToeDataContext(DestinationNameOrConnectionString);
+        //public static void PrepData(string SourceNameOrConnectionString, string DestinationNameOrConnectionString, ComputerPlayerBase computerPlayer)
+        //{
+        //    Entity.TicTacToeDataContext sourceContext = new Entity.TicTacToeDataContext(SourceNameOrConnectionString);
+        //    Entity.TicTacToeDataContext destinationContext = new Entity.TicTacToeDataContext(DestinationNameOrConnectionString);
 
-            List<string> SourceInstanceIds =
-                sourceContext
-                .TicTacToeData
-                .Select(x => x.InstanceId)
-                .ToList();
+        //    List<string> SourceInstanceIds =
+        //        sourceContext
+        //        .TicTacToeData
+        //        .Select(x => x.InstanceId)
+        //        .ToList();
 
-            List<string> DestinationInstanceIds =
-                destinationContext
-                .TicTacToeClassificationModel01
-                .Select(x => x.InstanceId)
-                .ToList();
+        //    List<string> DestinationInstanceIds =
+        //        destinationContext
+        //        .TicTacToeClassificationModel01
+        //        .Select(x => x.InstanceId)
+        //        .ToList();
 
-            List<string> instancesToMigrate =
-                SourceInstanceIds.Except(DestinationInstanceIds).ToList();
+        //    List<string> instancesToMigrate =
+        //        SourceInstanceIds.Except(DestinationInstanceIds).ToList();
 
-            List<Entity.TicTacToeDataEntry> entriesToPrep =
-                (from entry in sourceContext.TicTacToeData
-                where instancesToMigrate.Contains(entry.InstanceId)
-                select entry)
-                .OrderBy(x => x.InstanceId)
-                .ThenBy(x => x.MoveNumber)
-                .ThenBy(x => x.CellIndex)
-                .ToList();
+        //    List<Entity.TicTacToeDataEntry> entriesToPrep =
+        //        (from entry in sourceContext.TicTacToeData
+        //        where instancesToMigrate.Contains(entry.InstanceId)
+        //        select entry)
+        //        .OrderBy(x => x.InstanceId)
+        //        .ThenBy(x => x.MoveNumber)
+        //        .ThenBy(x => x.CellIndex)
+        //        .ToList();
 
-            var entriesGroupByInstanceId =
-                entriesToPrep
-                .GroupBy(x => x.InstanceId);
+        //    var entriesGroupByInstanceId =
+        //        entriesToPrep
+        //        .GroupBy(x => x.InstanceId);
 
-            var modelEntries =
-                new List<Entity.TicTacToeClassificationModel01>();
+        //    var modelEntries =
+        //        new List<Entity.TicTacToeClassificationModel01>();
 
-            int InstancesImportedCount = 0;
-            int MovesImportedCount = 0;
-            foreach (var gbInstanceId in entriesGroupByInstanceId)
-            {
-                var gbInstanceMoves =
-                    gbInstanceId
-                    .GroupBy(x => x.MoveNumber);
+        //    int InstancesImportedCount = 0;
+        //    int MovesImportedCount = 0;
+        //    foreach (var gbInstanceId in entriesGroupByInstanceId)
+        //    {
+        //        var gbInstanceMoves =
+        //            gbInstanceId
+        //            .GroupBy(x => x.MoveNumber);
 
-                int maxMoveNumber =
-                    gbInstanceMoves
-                    .Max(g => g.Key);
+        //        int maxMoveNumber =
+        //            gbInstanceMoves
+        //            .Max(g => g.Key);
 
-                var entriesToEvaluate =
-                    gbInstanceMoves
-                    .First(g => g.Key == maxMoveNumber)
-                    .OrderBy(x => x.CellIndex)
-                    .ToList();
+        //        var entriesToEvaluate =
+        //            gbInstanceMoves
+        //            .First(g => g.Key == maxMoveNumber)
+        //            .OrderBy(x => x.CellIndex)
+        //            .ToList();
 
-                int GridSize = gbInstanceId.Max(g => g.GridSize);
-                int CellsPerEntry = GridSize * GridSize;
-                List<int> CellStates = entriesToEvaluate.Select(x => x.CellContent).ToList();
-                int BlankCellCount = int.MinValue;
-                List<int> WinningCells = null;
+        //        int GridSize = gbInstanceId.Max(g => g.GridSize);
+        //        int CellsPerEntry = GridSize * GridSize;
+        //        List<int> CellStates = entriesToEvaluate.Select(x => x.CellContent).ToList();
+        //        int BlankCellCount = int.MinValue;
+        //        List<int> WinningCells = null;
 
-                var Status =
-                    TicTacToe.EvaluateResult(computerPlayer, GridSize, CellStates, out BlankCellCount, out WinningCells);
+        //        var Status =
+        //            TicTacToe.EvaluateResult(computerPlayer, GridSize, CellStates, out BlankCellCount, out WinningCells);
 
-                if (Status != Models.TicTacToeGameStatus.InProgress)
-                {
-                    //Check if data is complete
-                    int numberOfMoves = gbInstanceMoves.Select(g => g.Key).Count();
-                    if (gbInstanceMoves.Any(g => g.Count() != CellsPerEntry))
-                        continue;
+        //        if (Status != Models.TicTacToeGameStatus.InProgress)
+        //        {
+        //            //Check if data is complete
+        //            int numberOfMoves = gbInstanceMoves.Select(g => g.Key).Count();
+        //            if (gbInstanceMoves.Any(g => g.Count() != CellsPerEntry))
+        //                continue;
 
-                    InstancesImportedCount++;
+        //            InstancesImportedCount++;
 
-                    foreach (var move in gbInstanceMoves.OrderBy(g => g.Key).ToList())
-                    {
-                        var cells =
-                            move
-                            .OrderBy(x => x.CellIndex)
-                            .Select(x => x.CellContent)
-                            .ToList();
+        //            foreach (var move in gbInstanceMoves.OrderBy(g => g.Key).ToList())
+        //            {
+        //                var cells =
+        //                    move
+        //                    .OrderBy(x => x.CellIndex)
+        //                    .Select(x => x.CellContent)
+        //                    .ToList();
 
-                        var modelEntry =
-                            new Entity.TicTacToeClassificationModel01()
-                            {
-                                CreatedDate = DateTime.UtcNow,
-                                InstanceId = gbInstanceId.Key,
-                                MoveNumber = move.Key,
-                                Cell0 = cells[0],
-                                Cell1 = cells[1],
-                                Cell2 = cells[2],
-                                Cell3 = cells[3],
-                                Cell4 = cells[4],
-                                Cell5 = cells[5],
-                                Cell6 = cells[6],
-                                Cell7 = cells[7],
-                                GameResultCode = (int)Status,
-                                Draw = Status == Models.TicTacToeGameStatus.Draw,
-                                Player1Wins = Status == Models.TicTacToeGameStatus.Player1Wins,
-                                Player2Wins = Status == Models.TicTacToeGameStatus.Player2Wins
-                            };
+        //                var modelEntry =
+        //                    new Entity.TicTacToeClassificationModel01()
+        //                    {
+        //                        CreatedDate = DateTime.UtcNow,
+        //                        InstanceId = gbInstanceId.Key,
+        //                        MoveNumber = move.Key,
+        //                        Cell0 = cells[0],
+        //                        Cell1 = cells[1],
+        //                        Cell2 = cells[2],
+        //                        Cell3 = cells[3],
+        //                        Cell4 = cells[4],
+        //                        Cell5 = cells[5],
+        //                        Cell6 = cells[6],
+        //                        Cell7 = cells[7],
+        //                        GameResultCode = (int)Status,
+        //                        Draw = Status == Models.TicTacToeGameStatus.Draw,
+        //                        Player1Wins = Status == Models.TicTacToeGameStatus.Player1Wins,
+        //                        Player2Wins = Status == Models.TicTacToeGameStatus.Player2Wins
+        //                    };
 
-                        modelEntries.Add(modelEntry);
-                        MovesImportedCount++;
-                    }
-                }
-            }
+        //                modelEntries.Add(modelEntry);
+        //                MovesImportedCount++;
+        //            }
+        //        }
+        //    }
 
-            if (modelEntries.Count > 0)
-            {
-                destinationContext
-                    .TicTacToeClassificationModel01
-                    .AddRange(modelEntries);
+        //    if (modelEntries.Count > 0)
+        //    {
+        //        destinationContext
+        //            .TicTacToeClassificationModel01
+        //            .AddRange(modelEntries);
 
-                destinationContext.SaveChanges();
-            }
-        }
+        //        destinationContext.SaveChanges();
+        //    }
+        //}
 
-        public static void PrepData2(string SourceNameOrConnectionString, string DestinationNameOrConnectionString, ComputerPlayerBase computerPlayer)
-        {
-            int GridSize = 3;
-            Entity.TicTacToeDataContext sourceContext = new Entity.TicTacToeDataContext(SourceNameOrConnectionString);
-            Entity.TicTacToeDataContext destinationContext = new Entity.TicTacToeDataContext(DestinationNameOrConnectionString);
+        //public static void PrepData2(string SourceNameOrConnectionString, string DestinationNameOrConnectionString, ComputerPlayerBase computerPlayer)
+        //{
+        //    int GridSize = 3;
+        //    Entity.TicTacToeDataContext sourceContext = new Entity.TicTacToeDataContext(SourceNameOrConnectionString);
+        //    Entity.TicTacToeDataContext destinationContext = new Entity.TicTacToeDataContext(DestinationNameOrConnectionString);
 
-            List<string> SourceInstanceIds =
-                sourceContext
-                .TicTacToeData
-                .Where(x => x.GridSize == GridSize)
-                .Select(x => x.InstanceId)
-                .ToList();
+        //    List<string> SourceInstanceIds =
+        //        sourceContext
+        //        .TicTacToeData
+        //        .Where(x => x.GridSize == GridSize)
+        //        .Select(x => x.InstanceId)
+        //        .ToList();
 
-            List<string> DestinationInstanceIds =
-                destinationContext
-                .TicTacToeClassificationModel02
-                .Select(x => x.InstanceId)
-                .ToList();
+        //    List<string> DestinationInstanceIds =
+        //        destinationContext
+        //        .TicTacToeClassificationModel02
+        //        .Select(x => x.InstanceId)
+        //        .ToList();
 
-            List<string> instancesToMigrate =
-                SourceInstanceIds.Except(DestinationInstanceIds).ToList();
+        //    List<string> instancesToMigrate =
+        //        SourceInstanceIds.Except(DestinationInstanceIds).ToList();
 
-            List<Entity.TicTacToeDataEntry> entriesToPrep =
-                (from entry in sourceContext.TicTacToeData
-                 where instancesToMigrate.Contains(entry.InstanceId)
-                 select entry)
-                .OrderBy(x => x.InstanceId)
-                .ThenBy(x => x.MoveNumber)
-                .ThenBy(x => x.CellIndex)
-                .ToList();
+        //    List<Entity.TicTacToeDataEntry> entriesToPrep =
+        //        (from entry in sourceContext.TicTacToeData
+        //         where instancesToMigrate.Contains(entry.InstanceId)
+        //         select entry)
+        //        .OrderBy(x => x.InstanceId)
+        //        .ThenBy(x => x.MoveNumber)
+        //        .ThenBy(x => x.CellIndex)
+        //        .ToList();
 
-            var entriesGroupByInstanceId =
-                entriesToPrep
-                .GroupBy(x => x.InstanceId);
+        //    var entriesGroupByInstanceId =
+        //        entriesToPrep
+        //        .GroupBy(x => x.InstanceId);
 
-            var modelEntries =
-                new List<Entity.TicTacToeClassificationModel02>();
+        //    var modelEntries =
+        //        new List<Entity.TicTacToeClassificationModel02>();
 
-            int InstancesImportedCount = 0;
-            int MovesImportedCount = 0;
-            foreach (var gbInstanceId in entriesGroupByInstanceId)
-            {
-                var gbInstanceMoves =
-                    gbInstanceId
-                    .GroupBy(x => x.MoveNumber);
+        //    int InstancesImportedCount = 0;
+        //    int MovesImportedCount = 0;
+        //    foreach (var gbInstanceId in entriesGroupByInstanceId)
+        //    {
+        //        var gbInstanceMoves =
+        //            gbInstanceId
+        //            .GroupBy(x => x.MoveNumber);
 
-                int maxMoveNumber =
-                    gbInstanceMoves
-                    .Max(g => g.Key);
+        //        int maxMoveNumber =
+        //            gbInstanceMoves
+        //            .Max(g => g.Key);
 
-                var entriesToEvaluate =
-                    gbInstanceMoves
-                    .First(g => g.Key == maxMoveNumber)
-                    .OrderBy(x => x.CellIndex)
-                    .ToList();
+        //        var entriesToEvaluate =
+        //            gbInstanceMoves
+        //            .First(g => g.Key == maxMoveNumber)
+        //            .OrderBy(x => x.CellIndex)
+        //            .ToList();
 
-                int CellsPerEntry = GridSize * GridSize;
-                List<int> CellStates = entriesToEvaluate.Select(x => x.CellContent).ToList();
-                int BlankCellCount = int.MinValue;
-                List<int> WinningCells = null;
+        //        int CellsPerEntry = GridSize * GridSize;
+        //        List<int> CellStates = entriesToEvaluate.Select(x => x.CellContent).ToList();
+        //        int BlankCellCount = int.MinValue;
+        //        List<int> WinningCells = null;
 
-                var Status =
-                    TicTacToe.EvaluateResult(computerPlayer, GridSize, CellStates, out BlankCellCount, out WinningCells);
+        //        var Status =
+        //            TicTacToe.EvaluateResult(computerPlayer, GridSize, CellStates, out BlankCellCount, out WinningCells);
 
-                if (Status != Models.TicTacToeGameStatus.InProgress)
-                {
-                    //Check if data is complete
-                    int numberOfMoves = gbInstanceMoves.Select(g => g.Key).Count();
-                    if (gbInstanceMoves.Any(g => g.Count() != CellsPerEntry))
-                        continue;
+        //        if (Status != Models.TicTacToeGameStatus.InProgress)
+        //        {
+        //            //Check if data is complete
+        //            int numberOfMoves = gbInstanceMoves.Select(g => g.Key).Count();
+        //            if (gbInstanceMoves.Any(g => g.Count() != CellsPerEntry))
+        //                continue;
 
-                    InstancesImportedCount++;
+        //            InstancesImportedCount++;
 
-                    foreach (var moves in gbInstanceMoves.OrderBy(g => g.Key).ToList())
-                    {
-                        foreach (var move in moves.Where(x => x.CellContent != 0).OrderBy(x => x.CellIndex))
-                        {
-                            var modelEntry =
-                                new Entity.TicTacToeClassificationModel02()
-                                {
-                                    InstanceId = gbInstanceId.Key,
-                                    MoveNumber = move.MoveNumber,
-                                    CellIndex = move.CellIndex,
-                                    CellContent = move.CellContent,
-                                    GameResultCode = (int)Status
-                                };
+        //            foreach (var moves in gbInstanceMoves.OrderBy(g => g.Key).ToList())
+        //            {
+        //                foreach (var move in moves.Where(x => x.CellContent != 0).OrderBy(x => x.CellIndex))
+        //                {
+        //                    var modelEntry =
+        //                        new Entity.TicTacToeClassificationModel02()
+        //                        {
+        //                            InstanceId = gbInstanceId.Key,
+        //                            MoveNumber = move.MoveNumber,
+        //                            CellIndex = move.CellIndex,
+        //                            CellContent = move.CellContent,
+        //                            GameResultCode = (int)Status
+        //                        };
 
-                            if (!modelEntries.Any(x => x.InstanceId == modelEntry.InstanceId && x.CellIndex == modelEntry.CellIndex && x.CellContent == modelEntry.CellContent && x.GameResultCode == modelEntry.GameResultCode))
-                            {
-                                modelEntries.Add(modelEntry);
-                                MovesImportedCount++;
-                            }
-                        }
-                    }
-                }
-            }
+        //                    if (!modelEntries.Any(x => x.InstanceId == modelEntry.InstanceId && x.CellIndex == modelEntry.CellIndex && x.CellContent == modelEntry.CellContent && x.GameResultCode == modelEntry.GameResultCode))
+        //                    {
+        //                        modelEntries.Add(modelEntry);
+        //                        MovesImportedCount++;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
 
-            if (modelEntries.Count > 0)
-            {
-                destinationContext
-                    .TicTacToeClassificationModel02
-                    .AddRange(modelEntries);
+        //    if (modelEntries.Count > 0)
+        //    {
+        //        destinationContext
+        //            .TicTacToeClassificationModel02
+        //            .AddRange(modelEntries);
 
-                destinationContext.SaveChanges();
-            }
-        }
+        //        destinationContext.SaveChanges();
+        //    }
+        //}
     }
 }

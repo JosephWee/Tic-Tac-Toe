@@ -39,31 +39,33 @@ namespace UnitTests
         public void TestValid1PGamesV1()
         {
             var computerPlayer = new T3BL.ComputerPlayerV1();
-            var gameoutcomes = TestValid1PGames("V1", computerPlayer);
+            var gameoutcomes = TestValid1PGames(computerPlayer);
         }
 
         [Test]
         public void TestValid1PGamesV2()
         {
             var computerPlayer = new T3BL.ComputerPlayerV2();
-            var gameoutcomes = TestValid1PGames("V2", computerPlayer);
+            var gameoutcomes = TestValid1PGames(computerPlayer);
         }
 
         [Test]
         public void TestValid1PGamesV3()
         {
             var computerPlayer = new T3BL.ComputerPlayerV3(_MLModel1Path);
-            var gameoutcomes = TestValid1PGames("V3", computerPlayer);
+            var gameoutcomes = TestValid1PGames(computerPlayer);
         }
 
-        public Dictionary<TicTacToe.Models.TicTacToeGameStatus, int> TestValid1PGames(string Version, T3BL.ComputerPlayerBase computerPlayer)
+        public Dictionary<TicTacToe.Models.TicTacToeGameStatus, int> TestValid1PGames(T3BL.ComputerPlayerBase computerPlayer)
         {
             int gamesCount = 100;
             var gameOutcomes = new Dictionary<TicTacToe.Models.TicTacToeGameStatus, int>();
+            long ticks = DateTime.UtcNow.Ticks;
             for (int g = 0; g < gamesCount; g++)
             {
+                string Description = $"UnitTest 1P Valid Test {g} - {computerPlayer.GetType().Name}";
                 var gameStatus = T3Mod.TicTacToeGameStatus.InProgress;
-                string InstanceId = $"UnitTest {Version} {DateTime.UtcNow.Ticks} @ {DateTime.UtcNow.ToString("o")}";
+                long InstanceId = ticks + g;
                 var request = new T3Mod.TicTacToeUpdateRequest()
                 {
                     InstanceId = InstanceId,
@@ -90,7 +92,7 @@ namespace UnitTests
                     request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
 
                     var response =
-                        T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path);
+                        T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
 
                     gameStatus = response.Status;
 
@@ -111,26 +113,27 @@ namespace UnitTests
         public void TestInvalid1PGamesV1()
         {
             var computerPlayer = new T3BL.ComputerPlayerV1();
-            TestInvalid1PGames("V1", computerPlayer);
+            TestInvalid1PGames(computerPlayer);
         }
 
         [Test]
         public void TestInvalid1PGamesV2()
         {
             var computerPlayer = new T3BL.ComputerPlayerV2();
-            TestInvalid1PGames("V2", computerPlayer);
+            TestInvalid1PGames(computerPlayer);
         }
 
         [Test]
         public void TestInvalid1PGamesV3()
         {
             var computerPlayer = new T3BL.ComputerPlayerV3(_MLModel1Path);
-            TestInvalid1PGames("V3", computerPlayer);
+            TestInvalid1PGames(computerPlayer);
         }
 
-        public void TestInvalid1PGames(string Version, T3BL.ComputerPlayerBase computerPlayer)
+        public void TestInvalid1PGames(T3BL.ComputerPlayerBase computerPlayer)
         {
-            string InstanceId = $"UnitTest {Version} {DateTime.UtcNow.Ticks} @ {DateTime.UtcNow.ToString("o")}";
+            string Description = $"UnitTest 1P Invalid Test - {computerPlayer.GetType().Name}";
+            long InstanceId = DateTime.UtcNow.Ticks;
             var request = new TicTacToe.Models.TicTacToeUpdateRequest()
             {
                 InstanceId = InstanceId,
@@ -156,7 +159,7 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
 
                 if (response.ComputerMove.HasValue)
                     request.CellStates[response.ComputerMove.Value] = computerPlayer.PlayerSymbolSelf;
@@ -180,7 +183,7 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = 3; //Invalid value
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -205,7 +208,7 @@ namespace UnitTests
                     request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
                 }
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -227,7 +230,7 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -261,7 +264,7 @@ namespace UnitTests
                 index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -272,7 +275,7 @@ namespace UnitTests
             {
                 //Test Invalid GridSize
                 request.GridSize = 5;
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -298,7 +301,7 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -311,7 +314,7 @@ namespace UnitTests
         {
             var player1 = new T3BL.ComputerPlayerV1(2, 1);
             var player2 = new T3BL.ComputerPlayerV1(1, 2);
-            var gameoutcomes = TestValidGamesComVsCom("V1-P1", "V1-P2", player1, player2);
+            var gameoutcomes = TestValidGamesComVsCom(player1, player2);
         }
 
         [Test]
@@ -319,7 +322,7 @@ namespace UnitTests
         {
             var player1 = new T3BL.ComputerPlayerV1(2, 1);
             var player2 = new T3BL.ComputerPlayerV2(1, 2);
-            var gameoutcomes = TestValidGamesComVsCom("V1-P1", "V2-P2", player1, player2);
+            var gameoutcomes = TestValidGamesComVsCom(player1, player2);
         }
 
         [Test]
@@ -327,7 +330,7 @@ namespace UnitTests
         {
             var player1 = new T3BL.ComputerPlayerV2(2, 1);
             var player2 = new T3BL.ComputerPlayerV1(1, 2);
-            var gameoutcomes = TestValidGamesComVsCom("V2-P1", "V1-P2", player1, player2);
+            var gameoutcomes = TestValidGamesComVsCom(player1, player2);
         }
 
         [Test]
@@ -335,7 +338,7 @@ namespace UnitTests
         {
             var player1 = new T3BL.ComputerPlayerV2(2, 1);
             var player2 = new T3BL.ComputerPlayerV2(1, 2);
-            var gameoutcomes = TestValidGamesComVsCom("V2-P1", "V2-P2", player1, player2);
+            var gameoutcomes = TestValidGamesComVsCom(player1, player2);
         }
 
         [Test]
@@ -343,7 +346,7 @@ namespace UnitTests
         {
             var player1 = new T3BL.ComputerPlayerV2(2, 1);
             var player2 = new T3BL.ComputerPlayerV3(1, 2, _MLModel1Path);
-            var gameoutcomes = TestValidGamesComVsCom("V2-P1", "V3-P2", player1, player2);
+            var gameoutcomes = TestValidGamesComVsCom(player1, player2);
         }
 
         [Test]
@@ -351,7 +354,7 @@ namespace UnitTests
         {
             var player1 = new T3BL.ComputerPlayerV3(2, 1, _MLModel1Path);
             var player2 = new T3BL.ComputerPlayerV2(1, 2);
-            var gameoutcomes = TestValidGamesComVsCom("V3-P1", "V2-P2", player1, player2);
+            var gameoutcomes = TestValidGamesComVsCom(player1, player2);
         }
 
         [Test]
@@ -359,17 +362,19 @@ namespace UnitTests
         {
             var player1 = new T3BL.ComputerPlayerV3(2, 1, _MLModel1Path);
             var player2 = new T3BL.ComputerPlayerV3(1, 2, _MLModel1Path);
-            var gameoutcomes = TestValidGamesComVsCom("V3-P1", "V3-P2", player1, player2);
+            var gameoutcomes = TestValidGamesComVsCom(player1, player2);
         }
 
-        public Dictionary<TicTacToe.Models.TicTacToeGameStatus, int> TestValidGamesComVsCom(string P1Ver, string P2Ver, T3BL.ComputerPlayerBase computerPlayer1, T3BL.ComputerPlayerBase computerPlayer2)
+        public Dictionary<TicTacToe.Models.TicTacToeGameStatus, int> TestValidGamesComVsCom(T3BL.ComputerPlayerBase computerPlayer1, T3BL.ComputerPlayerBase computerPlayer2)
         {
             int gamesCount = 100;
             var gameOutcomes = new Dictionary<TicTacToe.Models.TicTacToeGameStatus, int>();
+            long ticks = DateTime.UtcNow.Ticks;
             for (int g = 0; g < gamesCount; g++)
             {
+                string Description = $"UnitTest 2P Valid Test {g} - P1: {computerPlayer1.GetType().Name} P2: {computerPlayer2.GetType().Name}";
                 var gameStatus = T3Mod.TicTacToeGameStatus.InProgress;
-                string InstanceId = $"UnitTest {P1Ver} vs {P2Ver} {DateTime.UtcNow.Ticks} @ {DateTime.UtcNow.ToString("o")}";
+                long InstanceId = ticks + g;
                 var request = new T3Mod.TicTacToeUpdateRequest()
                 {
                     InstanceId = InstanceId,
@@ -384,7 +389,7 @@ namespace UnitTests
                 };
 
                 // Player 1 makes first move
-                int p1FirstMove = computerPlayer1.GetMove(InstanceId);
+                int p1FirstMove = computerPlayer1.GetMove(request.GridSize, request.CellStates.ToList());
                 if (p1FirstMove < 0)
                     p1FirstMove = computerPlayer1.GetRandomMove(request.CellStates.ToList());
                 if (request.CellStates[p1FirstMove] == 0)
@@ -394,7 +399,7 @@ namespace UnitTests
                 while (gameStatus == T3Mod.TicTacToeGameStatus.InProgress)
                 {
                     var response2 =
-                        T3BL.TicTacToe.ProcessRequest(request, computerPlayer2, _MLModel1Path);
+                        T3BL.TicTacToe.ProcessRequest(request, computerPlayer2, _MLModel1Path, Description);
 
                     gameStatus = response2.Status;
                     response = response2;
@@ -405,7 +410,7 @@ namespace UnitTests
                     if (gameStatus != T3Mod.TicTacToeGameStatus.InProgress)
                         break;
 
-                    int p1Move = computerPlayer1.GetMove(InstanceId);
+                    int p1Move = computerPlayer1.GetMove(request.GridSize, request.CellStates.ToList());
                     if (request.CellStates[p1Move] == 0)
                         request.CellStates[p1Move] = computerPlayer1.PlayerSymbolSelf;
 

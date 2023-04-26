@@ -74,7 +74,7 @@
         }
     }
 
-    protected string InstanceId = string.Empty;
+    protected long InstanceId = Int64.MinValue;
     protected TicTacToeGameStatus? gameStatus = null;
     protected string gameheader = string.Empty;
     protected string gamefooter = string.Empty;
@@ -83,7 +83,7 @@
 
     protected void InitVariables()
     {
-        InstanceId = DateTime.UtcNow.Ticks.ToString();
+        InstanceId = DateTime.UtcNow.Ticks;
         gameStatus = null;
         gameheader = string.Empty;
         gamefooter = string.Empty;

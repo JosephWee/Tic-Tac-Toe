@@ -8,8 +8,8 @@ namespace TicTacToe.Models
 {
     public class TicTacToeUpdateRequest
     {
-        [MaxLength(200)]
-        public string InstanceId { get; set; }
+        [Range(0, Int64.MaxValue)]
+        public long InstanceId { get; set; }
         
         [Range(3, 5)]
         public int GridSize { get; set; }

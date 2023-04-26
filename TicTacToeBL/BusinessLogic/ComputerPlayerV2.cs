@@ -7,20 +7,7 @@ namespace TicTacToe.BusinessLogic
 {
     public class ComputerPlayerV2 : ComputerPlayerBase
     {
-        public class Cell
-        {
-            public int Row { get; set; }
-            public int Col { get; set; }
-            public Entity.TicTacToeDataEntry CellState { get; set; }
-        }
-
-        public class CellCollction
-        {
-            public List<Cell> Cells { get; set; }
-            public int OpponentCount { get; set; }
-            public int SelfCount { get; set; }
-        }
-
+        
         public ComputerPlayerV2()
             :base(1, 2)
         {
@@ -31,15 +18,12 @@ namespace TicTacToe.BusinessLogic
         {
         }
 
-        public override int GetMove(string InstanceId)
+        public override int GetMove(int GridSize, List<int> CellStates)
         {
-            var ds = TicTacToe.GetAndValidatePreviousMove(InstanceId);
+            int ExpectedCellCount = GridSize * GridSize;
+            if (CellStates.Count != ExpectedCellCount)
+                throw new ArgumentException("GridSize and CellStates length do not match.");
 
-            if (!ds.Any())
-                return -1;
-
-            int GridSize = ds.First().GridSize;
-            List<int> CellStates = ds.Select(x => x.CellContent).ToList();
             int BlankCellCount = int.MinValue;
             List<int> WinningCells = null;
 
@@ -49,20 +33,12 @@ namespace TicTacToe.BusinessLogic
             {
                 List<Cell> cells = new List<Cell>();
 
-                for (int i = 0; i < ds.Count; i++)
+                for (int i = 0; i < CellStates.Count; i++)
                 {
                     int row = i / GridSize;
                     int col = i % GridSize;
 
-                    var cellState = ds[i];
-#if DEBUG
-                    if (i != cellState.CellIndex)
-                        throw new ArgumentOutOfRangeException("i != cellState.CellIndex");
-                    int vRow = cellState.CellIndex / GridSize;
-                    int vCol = cellState.CellIndex % GridSize;
-                    if (row != vRow || col != vCol)
-                        throw new ArgumentOutOfRangeException("row != vRow || col != vCol");
-#endif
+                    var cellState = CellStates[i];
                     var cell = new Cell()
                     {
                         Row = row,
@@ -80,13 +56,13 @@ namespace TicTacToe.BusinessLogic
                 var gbRow = cells.GroupBy(x => x.Row);
                 foreach (var row in gbRow)
                 {
-                    if (row.Any(x => x.CellState.CellContent == 0))
+                    if (row.Any(x => x.CellState == 0))
                     {
                         CellCollction collection = new CellCollction()
                         {
                             Cells = row.ToList(),
-                            OpponentCount = row.Count(x => x.CellState.CellContent == PlayerSymbolOpponent),
-                            SelfCount = row.Count(x => x.CellState.CellContent == PlayerSymbolSelf)
+                            OpponentCount = row.Count(x => x.CellState == PlayerSymbolOpponent),
+                            SelfCount = row.Count(x => x.CellState == PlayerSymbolSelf)
                         };
                         parsed.Add(collection);
                     }
@@ -98,13 +74,13 @@ namespace TicTacToe.BusinessLogic
                 var gbCol = cells.GroupBy(x => x.Col);
                 foreach (var col in gbCol)
                 {
-                    if (col.Any(x => x.CellState.CellContent == 0))
+                    if (col.Any(x => x.CellState == 0))
                     {
                         CellCollction collection = new CellCollction()
                         {
                             Cells = col.ToList(),
-                            OpponentCount = col.Count(x => x.CellState.CellContent == PlayerSymbolOpponent),
-                            SelfCount = col.Count(x => x.CellState.CellContent == PlayerSymbolSelf)
+                            OpponentCount = col.Count(x => x.CellState == PlayerSymbolOpponent),
+                            SelfCount = col.Count(x => x.CellState == PlayerSymbolSelf)
                         };
                         parsed.Add(collection);
                     }
@@ -121,13 +97,13 @@ namespace TicTacToe.BusinessLogic
                         TopToBottomDiagonal.Add(mCell);
                 }
 
-                if (TopToBottomDiagonal.Any(x => x.CellState.CellContent == 0))
+                if (TopToBottomDiagonal.Any(x => x.CellState == 0))
                 {
                     CellCollction diagonal1 = new CellCollction()
                     {
                         Cells = TopToBottomDiagonal.ToList(),
-                        OpponentCount = TopToBottomDiagonal.Count(x => x.CellState.CellContent == PlayerSymbolOpponent),
-                        SelfCount = TopToBottomDiagonal.Count(x => x.CellState.CellContent == PlayerSymbolSelf)
+                        OpponentCount = TopToBottomDiagonal.Count(x => x.CellState == PlayerSymbolOpponent),
+                        SelfCount = TopToBottomDiagonal.Count(x => x.CellState == PlayerSymbolSelf)
                     };
                     parsed.Add(diagonal1);
                 }
@@ -143,19 +119,19 @@ namespace TicTacToe.BusinessLogic
                         BottomToTopDiagonal.Add(mCell);
                 }
 
-                if (BottomToTopDiagonal.Any(x => x.CellState.CellContent == 0))
+                if (BottomToTopDiagonal.Any(x => x.CellState == 0))
                 {
                     CellCollction diagonal2 = new CellCollction()
                     {
                         Cells = BottomToTopDiagonal.ToList(),
-                        OpponentCount = BottomToTopDiagonal.Count(x => x.CellState.CellContent == PlayerSymbolOpponent),
-                        SelfCount = BottomToTopDiagonal.Count(x => x.CellState.CellContent == PlayerSymbolSelf)
+                        OpponentCount = BottomToTopDiagonal.Count(x => x.CellState == PlayerSymbolOpponent),
+                        SelfCount = BottomToTopDiagonal.Count(x => x.CellState == PlayerSymbolSelf)
                     };
                     parsed.Add(diagonal2);
                 }
 
 
-                var blankCells = new List<Entity.TicTacToeDataEntry>();
+                var validMoves = new List<CellCollction>();
                 if (parsed.Any())
                 {
                     int maxOpponentCount =
@@ -169,51 +145,35 @@ namespace TicTacToe.BusinessLogic
                     if (maxSelfCount + 1 >= GridSize)
                     {
                         //Try to win
-                        blankCells =
+                        validMoves =
                             parsed
                             .OrderByDescending(x => x.OpponentCount)
                             .Where(x => x.SelfCount >= maxSelfCount)
-                            .Take(1)
-                            .SelectMany(x =>
-                                x.Cells
-                                .Where(y => y.CellState.CellContent == 0)
-                                .Select(y => y.CellState))
                             .ToList();
                     }
                     else if (maxOpponentCount + 1 >= GridSize)
                     {
                         //Try to Block Player 1
-                        blankCells =
+                        validMoves =
                             parsed
                             .OrderByDescending(x => x.SelfCount)
                             .Where(x => x.OpponentCount >= maxOpponentCount)
-                            .Take(1)
-                            .SelectMany(x =>
-                                x.Cells
-                                .Where(y => y.CellState.CellContent == 0)
-                                .Select(y => y.CellState))
                             .ToList();
                     }
                     else
                     {
-                        blankCells =
+                        validMoves =
                             parsed
                             .Where(x => x.SelfCount >= maxSelfCount)
-                            .SelectMany(x =>
-                                x.Cells
-                                .Where(y => y.CellState.CellContent == 0)
-                                .Select(y => y.CellState))
                             .ToList();
                     }
                 }
-                else
-                {
-                    blankCells = ds.Where(x => x.CellContent == 0).ToList();
-                }
-
-                int m = random.Next(0, blankCells.Count - 1);
-
-                return blankCells[m].CellIndex;
+                
+                int moveIndex = random.Next(0, validMoves.Count - 1);
+                var blankCells = validMoves[moveIndex].Cells.Where(x => x.CellState == 0).ToList();
+                int c = random.Next(0, blankCells.Count - 1);
+                var selectedCell = blankCells[c];
+                return ((selectedCell.Row * GridSize) + selectedCell.Col);
             }
 
             return -1;
