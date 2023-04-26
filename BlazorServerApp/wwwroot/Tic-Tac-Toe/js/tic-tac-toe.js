@@ -83,7 +83,7 @@
             sum += parseInt(key) * ua[key];
         }
 
-        let uniqueId = ((new Date()).valueOf() + ((a + b + c + d + e) * sum)) + "";
+        let uniqueId = ((new Date()).valueOf() + ((a + b + c + d + e) * sum));
         //if (console && console.log)
         //    console.log(uniqueId);
 
@@ -426,7 +426,7 @@
 
         let requestData =
         {
-            InstanceId: "" + this.#gameId,
+            InstanceId: this.#gameId,
             GridSize: 3,
             NumberOfPlayers: this.#gameMode,
             CellStates: []

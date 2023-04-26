@@ -144,7 +144,7 @@ namespace TicTacToe.BusinessLogic
                 }
 
 
-                var validMoves = new List<CellCollction>();
+                CellCollction validMoves = null;
                 if (parsed.Any())
                 {
                     int maxOpponentCount =
@@ -162,7 +162,7 @@ namespace TicTacToe.BusinessLogic
                             parsed
                             .OrderByDescending(x => x.OpponentCount)
                             .Where(x => x.SelfCount >= maxSelfCount)
-                            .ToList();
+                            .First();
                     }
                     else if (maxOpponentCount + 1 >= GridSize)
                     {
@@ -171,27 +171,28 @@ namespace TicTacToe.BusinessLogic
                             parsed
                             .OrderByDescending(x => x.SelfCount)
                             .Where(x => x.OpponentCount >= maxOpponentCount)
-                            .ToList();
+                            .First();
                     }
                     else
                     {
                         validMoves =
                             parsed
                             .Where(x => x.SelfCount >= maxSelfCount)
-                            .ToList();
+                            .First();
                     }
                 }
 
                 // Choose the most strategic cell instead of choosing randomly
-                Dictionary<float, List<int>> strategicMoves = new Dictionary<float, List<int>>();
-                
+                Dictionary<float, List<int>> winningMoves = new Dictionary<float, List<int>>();
+                Dictionary<float, List<int>> drawMoves = new Dictionary<float, List<int>>();
+
                 var mlContext = new MLContext();
                 ITransformer mlModel = mlContext.Model.Load(_MLNetModelPath, out var _);
                 var predEngine = mlContext.Model.CreatePredictionEngine<MLModel1.ModelInput, MLModel1.ModelOutput>(mlModel);
 
-                foreach (var validMove in validMoves)
+                if (validMoves != null)
                 {
-                    var validCells = validMove.Cells.Where(x => x.CellState == 0).ToList();
+                    var validCells = validMoves.Cells.Where(x => x.CellState == 0).ToList();
                     foreach (var validCell in validCells)
                     {
                         int validCellIndex = ((validCell.Row * GridSize) + validCell.Col);
@@ -217,14 +218,25 @@ namespace TicTacToe.BusinessLogic
                         var PredictionLabel = prediction1.PredictedLabel;
                         var PredictionScore = prediction1.Score;
 
-                        if (PredictionLabel == PlayerSymbolSelf
-                            || PredictionLabel == (int)TicTacToeGameStatus.Draw)
+                        if (PredictionLabel == PlayerSymbolSelf)
                         {
-                            if (strategicMoves.ContainsKey(PredictionScore[0]))
-                                strategicMoves[PredictionScore[0]].Add(validCellIndex);
+                            if (winningMoves.ContainsKey(PredictionScore[0]))
+                                winningMoves[PredictionScore[0]].Add(validCellIndex);
                             else
                             {
-                                strategicMoves.Add(
+                                winningMoves.Add(
+                                    PredictionScore[0],
+                                    new List<int>() { validCellIndex }
+                                );
+                            }
+                        }
+                        else if (PredictionLabel == (int)TicTacToeGameStatus.Draw)
+                        {
+                            if (drawMoves.ContainsKey(PredictionScore[0]))
+                                drawMoves[PredictionScore[0]].Add(validCellIndex);
+                            else
+                            {
+                                drawMoves.Add(
                                     PredictionScore[0],
                                     new List<int>() { validCellIndex }
                                 );
@@ -233,19 +245,27 @@ namespace TicTacToe.BusinessLogic
                     }
                 }
 
-                if (strategicMoves.Keys.Count > 0)
+                if (winningMoves.Keys.Count > 0)
                 {
-                    var key = strategicMoves.Keys.Max();
-                    var strategicCells = strategicMoves[key];
+                    var key = winningMoves.Keys.Max();
+                    var strategicCells = winningMoves[key];
 
                     int strategicCellIndex = random.Next(0, strategicCells.Count - 1);
                     
                     return strategicCells[strategicCellIndex];
                 }
+                else if (drawMoves.Keys.Count > 0)
+                {
+                    var key = drawMoves.Keys.Max();
+                    var strategicCells = drawMoves[key];
+
+                    int strategicCellIndex = random.Next(0, strategicCells.Count - 1);
+
+                    return strategicCells[strategicCellIndex];
+                }
 
                 // Fall back to ComputerPlayerV2's algorithm
-                int moveIndex = random.Next(0, validMoves.Count - 1);
-                var blankCells = validMoves[moveIndex].Cells.Where(x => x.CellState == 0).ToList();
+                var blankCells = validMoves.Cells.Where(x => x.CellState == 0).ToList();
                 int c = random.Next(0, blankCells.Count - 1);
                 var selectedCell = blankCells[c];
                 return ((selectedCell.Row * GridSize) + selectedCell.Col);

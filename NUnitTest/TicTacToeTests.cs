@@ -58,12 +58,12 @@ namespace UnitTests
 
         public Dictionary<TicTacToe.Models.TicTacToeGameStatus, int> TestValid1PGames(T3BL.ComputerPlayerBase computerPlayer)
         {
+            string Description = $"UnitTest 1P Valid Test - {computerPlayer.GetType().Name}";
             int gamesCount = 100;
             var gameOutcomes = new Dictionary<TicTacToe.Models.TicTacToeGameStatus, int>();
             long ticks = DateTime.UtcNow.Ticks;
             for (int g = 0; g < gamesCount; g++)
             {
-                string Description = $"UnitTest 1P Valid Test {g} - {computerPlayer.GetType().Name}";
                 var gameStatus = T3Mod.TicTacToeGameStatus.InProgress;
                 long InstanceId = ticks + g;
                 var request = new T3Mod.TicTacToeUpdateRequest()
@@ -367,12 +367,12 @@ namespace UnitTests
 
         public Dictionary<TicTacToe.Models.TicTacToeGameStatus, int> TestValidGamesComVsCom(T3BL.ComputerPlayerBase computerPlayer1, T3BL.ComputerPlayerBase computerPlayer2)
         {
+            string Description = $"UnitTest 2P Valid Test - P1: {computerPlayer1.GetType().Name} P2: {computerPlayer2.GetType().Name}";
             int gamesCount = 100;
             var gameOutcomes = new Dictionary<TicTacToe.Models.TicTacToeGameStatus, int>();
             long ticks = DateTime.UtcNow.Ticks;
             for (int g = 0; g < gamesCount; g++)
             {
-                string Description = $"UnitTest 2P Valid Test {g} - P1: {computerPlayer1.GetType().Name} P2: {computerPlayer2.GetType().Name}";
                 var gameStatus = T3Mod.TicTacToeGameStatus.InProgress;
                 long InstanceId = ticks + g;
                 var request = new T3Mod.TicTacToeUpdateRequest()
@@ -388,36 +388,19 @@ namespace UnitTests
                     }
                 };
 
-                // Player 1 makes first move
-                int p1FirstMove = computerPlayer1.GetMove(request.GridSize, request.CellStates.ToList());
-                if (p1FirstMove < 0)
-                    p1FirstMove = computerPlayer1.GetRandomMove(request.CellStates.ToList());
-                if (request.CellStates[p1FirstMove] == 0)
-                    request.CellStates[p1FirstMove] = computerPlayer1.PlayerSymbolSelf;
-
-                T3Mod.TicTacToeUpdateResponse response;
                 while (gameStatus == T3Mod.TicTacToeGameStatus.InProgress)
                 {
-                    var response2 =
-                        T3BL.TicTacToe.ProcessRequest(request, computerPlayer2, _MLModel1Path, Description);
-
-                    gameStatus = response2.Status;
-                    response = response2;
-
-                    if (response2.ComputerMove.HasValue)
-                        request.CellStates[response2.ComputerMove.Value] = computerPlayer2.PlayerSymbolSelf;
-
-                    if (gameStatus != T3Mod.TicTacToeGameStatus.InProgress)
-                        break;
-
                     int p1Move = computerPlayer1.GetMove(request.GridSize, request.CellStates.ToList());
                     if (request.CellStates[p1Move] == 0)
                         request.CellStates[p1Move] = computerPlayer1.PlayerSymbolSelf;
 
-                    var response1 = T3BL.TicTacToe.EvaluateResult(request, computerPlayer2);
+                    var response =
+                        T3BL.TicTacToe.ProcessRequest(request, computerPlayer2, _MLModel1Path, Description);
 
-                    gameStatus = response1.Status;
-                    response = response1;
+                    gameStatus = response.Status;
+
+                    if (response.ComputerMove.HasValue)
+                        request.CellStates[response.ComputerMove.Value] = computerPlayer2.PlayerSymbolSelf;
                 }
 
                 if (gameOutcomes.ContainsKey(gameStatus))

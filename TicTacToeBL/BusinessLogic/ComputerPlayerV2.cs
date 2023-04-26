@@ -131,7 +131,7 @@ namespace TicTacToe.BusinessLogic
                 }
 
 
-                var validMoves = new List<CellCollction>();
+                CellCollction validMoves = null;
                 if (parsed.Any())
                 {
                     int maxOpponentCount =
@@ -149,7 +149,7 @@ namespace TicTacToe.BusinessLogic
                             parsed
                             .OrderByDescending(x => x.OpponentCount)
                             .Where(x => x.SelfCount >= maxSelfCount)
-                            .ToList();
+                            .First();
                     }
                     else if (maxOpponentCount + 1 >= GridSize)
                     {
@@ -158,19 +158,18 @@ namespace TicTacToe.BusinessLogic
                             parsed
                             .OrderByDescending(x => x.SelfCount)
                             .Where(x => x.OpponentCount >= maxOpponentCount)
-                            .ToList();
+                            .First();
                     }
                     else
                     {
                         validMoves =
                             parsed
                             .Where(x => x.SelfCount >= maxSelfCount)
-                            .ToList();
+                            .First();
                     }
                 }
                 
-                int moveIndex = random.Next(0, validMoves.Count - 1);
-                var blankCells = validMoves[moveIndex].Cells.Where(x => x.CellState == 0).ToList();
+                var blankCells = validMoves.Cells.Where(x => x.CellState == 0).ToList();
                 int c = random.Next(0, blankCells.Count - 1);
                 var selectedCell = blankCells[c];
                 return ((selectedCell.Row * GridSize) + selectedCell.Col);

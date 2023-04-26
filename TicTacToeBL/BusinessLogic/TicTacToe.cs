@@ -48,7 +48,7 @@ namespace TicTacToe.BusinessLogic
             {
                 // Save: New Game or New Move
                 moveNumber++;
-                TicTacToe.SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, T3Mod.TicTacToeGameStatus.InProgress, request.CellStates, Description);
+                TicTacToe.SaveToDatabase(request.InstanceId, request.GridSize, moveNumber, response1.Status, request.CellStates, Description);
             }
 
             response = response1;
