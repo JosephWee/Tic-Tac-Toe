@@ -20,6 +20,13 @@ namespace UnitTests
         private static Random random = new Random();
         private static string _MLModel1Path = string.Empty;
 
+        public class GameSetting
+        {
+            public int SymbolPlayerOpponent { get; set; }
+            public int SymbolPlayerSelf { get; set; }
+            public long GameId { get; set; }
+        }
+
         [SetUp]
         public void TestSetup()
         {
@@ -40,6 +47,7 @@ namespace UnitTests
         {
             var computerPlayer = new T3BL.ComputerPlayerV1();
             var gameoutcomes = TestValid1PGames(computerPlayer);
+            VerifyGameOutcomes(gameoutcomes);
         }
 
         [Test]
@@ -47,6 +55,7 @@ namespace UnitTests
         {
             var computerPlayer = new T3BL.ComputerPlayerV2();
             var gameoutcomes = TestValid1PGames(computerPlayer);
+            VerifyGameOutcomes(gameoutcomes);
         }
 
         [Test]
@@ -54,13 +63,14 @@ namespace UnitTests
         {
             var computerPlayer = new T3BL.ComputerPlayerV3(_MLModel1Path);
             var gameoutcomes = TestValid1PGames(computerPlayer);
+            VerifyGameOutcomes(gameoutcomes);
         }
 
-        public Dictionary<TicTacToe.Models.TicTacToeGameStatus, int> TestValid1PGames(T3BL.ComputerPlayerBase computerPlayer)
+        public Dictionary<TicTacToe.Models.TicTacToeGameStatus, List<GameSetting>> TestValid1PGames(T3BL.ComputerPlayerBase computerPlayer)
         {
             string Description = $"UnitTest 1P Valid Test - {computerPlayer.GetType().Name}";
             int gamesCount = 100;
-            var gameOutcomes = new Dictionary<TicTacToe.Models.TicTacToeGameStatus, int>();
+            var gameOutcomes = new Dictionary<TicTacToe.Models.TicTacToeGameStatus, List<GameSetting>>();
             long ticks = DateTime.UtcNow.Ticks;
             for (int g = 0; g < gamesCount; g++)
             {
@@ -100,10 +110,17 @@ namespace UnitTests
                         request.CellStates[response.ComputerMove.Value] = computerPlayer.PlayerSymbolSelf;
                 }
 
+                var gameSetting = new GameSetting()
+                {
+                    SymbolPlayerOpponent = computerPlayer.PlayerSymbolOpponent,
+                    SymbolPlayerSelf = computerPlayer.PlayerSymbolSelf,
+                    GameId = InstanceId
+                };
+
                 if (gameOutcomes.ContainsKey(gameStatus))
-                    gameOutcomes[gameStatus] += 1;
+                    gameOutcomes[gameStatus].Add(gameSetting);
                 else
-                    gameOutcomes.Add(gameStatus,1);
+                    gameOutcomes.Add(gameStatus, new List<GameSetting>() { gameSetting });
             }
 
             return gameOutcomes;
@@ -315,6 +332,7 @@ namespace UnitTests
             var player1 = new T3BL.ComputerPlayerV1(2, 1);
             var player2 = new T3BL.ComputerPlayerV1(1, 2);
             var gameoutcomes = TestValidGamesComVsCom(player1, player2);
+            VerifyGameOutcomes(gameoutcomes);
         }
 
         [Test]
@@ -323,6 +341,7 @@ namespace UnitTests
             var player1 = new T3BL.ComputerPlayerV1(2, 1);
             var player2 = new T3BL.ComputerPlayerV2(1, 2);
             var gameoutcomes = TestValidGamesComVsCom(player1, player2);
+            VerifyGameOutcomes(gameoutcomes);
         }
 
         [Test]
@@ -331,6 +350,7 @@ namespace UnitTests
             var player1 = new T3BL.ComputerPlayerV2(2, 1);
             var player2 = new T3BL.ComputerPlayerV1(1, 2);
             var gameoutcomes = TestValidGamesComVsCom(player1, player2);
+            VerifyGameOutcomes(gameoutcomes);
         }
 
         [Test]
@@ -339,6 +359,7 @@ namespace UnitTests
             var player1 = new T3BL.ComputerPlayerV2(2, 1);
             var player2 = new T3BL.ComputerPlayerV2(1, 2);
             var gameoutcomes = TestValidGamesComVsCom(player1, player2);
+            VerifyGameOutcomes(gameoutcomes);
         }
 
         [Test]
@@ -347,6 +368,7 @@ namespace UnitTests
             var player1 = new T3BL.ComputerPlayerV2(2, 1);
             var player2 = new T3BL.ComputerPlayerV3(1, 2, _MLModel1Path);
             var gameoutcomes = TestValidGamesComVsCom(player1, player2);
+            VerifyGameOutcomes(gameoutcomes);
         }
 
         [Test]
@@ -355,6 +377,7 @@ namespace UnitTests
             var player1 = new T3BL.ComputerPlayerV3(2, 1, _MLModel1Path);
             var player2 = new T3BL.ComputerPlayerV2(1, 2);
             var gameoutcomes = TestValidGamesComVsCom(player1, player2);
+            VerifyGameOutcomes(gameoutcomes);
         }
 
         [Test]
@@ -363,13 +386,14 @@ namespace UnitTests
             var player1 = new T3BL.ComputerPlayerV3(2, 1, _MLModel1Path);
             var player2 = new T3BL.ComputerPlayerV3(1, 2, _MLModel1Path);
             var gameoutcomes = TestValidGamesComVsCom(player1, player2);
+            VerifyGameOutcomes(gameoutcomes);
         }
 
-        public Dictionary<TicTacToe.Models.TicTacToeGameStatus, int> TestValidGamesComVsCom(T3BL.ComputerPlayerBase computerPlayer1, T3BL.ComputerPlayerBase computerPlayer2)
+        public Dictionary<TicTacToe.Models.TicTacToeGameStatus, List<GameSetting>> TestValidGamesComVsCom(T3BL.ComputerPlayerBase computerPlayer1, T3BL.ComputerPlayerBase computerPlayer2)
         {
             string Description = $"UnitTest 2P Valid Test - P1: {computerPlayer1.GetType().Name} P2: {computerPlayer2.GetType().Name}";
             int gamesCount = 100;
-            var gameOutcomes = new Dictionary<TicTacToe.Models.TicTacToeGameStatus, int>();
+            var gameOutcomes = new Dictionary<TicTacToe.Models.TicTacToeGameStatus, List<GameSetting>>();
             long ticks = DateTime.UtcNow.Ticks;
             for (int g = 0; g < gamesCount; g++)
             {
@@ -403,13 +427,98 @@ namespace UnitTests
                         request.CellStates[response.ComputerMove.Value] = computerPlayer2.PlayerSymbolSelf;
                 }
 
+                var gameSetting = new GameSetting()
+                {
+                    SymbolPlayerOpponent = computerPlayer2.PlayerSymbolOpponent,
+                    SymbolPlayerSelf = computerPlayer2.PlayerSymbolSelf,
+                    GameId = InstanceId
+                };
+
                 if (gameOutcomes.ContainsKey(gameStatus))
-                    gameOutcomes[gameStatus] += 1;
+                    gameOutcomes[gameStatus].Add(gameSetting);
                 else
-                    gameOutcomes.Add(gameStatus, 1);
+                {
+                    gameOutcomes.Add(
+                        gameStatus,
+                        new List<GameSetting>() { gameSetting }
+                    );
+                }
             }
 
             return gameOutcomes;
+        }
+
+        public void VerifyGameOutcomes(Dictionary<TicTacToe.Models.TicTacToeGameStatus, List<GameSetting>> gameoutcomes)
+        {
+            T3Ent.TicTacToeDataContext dbContext = new T3Ent.TicTacToeDataContext();
+            var interestedStatus = new List<T3Mod.TicTacToeGameStatus>()
+            {
+                T3Mod.TicTacToeGameStatus.Player1Wins,
+                T3Mod.TicTacToeGameStatus.Player2Wins,
+                T3Mod.TicTacToeGameStatus.Draw
+            };
+
+            foreach (var key in gameoutcomes.Keys)
+            {
+                Assert.IsTrue(interestedStatus.Contains(key));
+            }
+            
+            foreach (var status in interestedStatus)
+            {
+                if (!gameoutcomes.ContainsKey(status))
+                    continue;
+
+                var gameSettings = gameoutcomes[status];
+                foreach (var gameSetting in gameSettings)
+                {
+                    var game =
+                        dbContext
+                        .TicTacToeGames
+                        .FirstOrDefault(x => x.InstanceId == gameSetting.GameId);
+
+                    Assert.IsNotNull(game);
+
+                    var moves =
+                        dbContext
+                        .TicTacToeData
+                        .Where(x => x.InstanceId == game.InstanceId)
+                        .OrderBy(x => x.MoveNumber)
+                        .ThenBy(x => x.CellIndex)
+                        .ToList();
+
+                    var latestMoveNumber =
+                        moves.Max(x => x.MoveNumber);
+
+                    var latestMove =
+                        moves
+                        .Where(x => x.MoveNumber == latestMoveNumber)
+                        .OrderBy(x => x.CellIndex)
+                        .ToList();
+
+                    var computerPlayer =
+                        new T3BL.ComputerPlayerBase(
+                                gameSetting.SymbolPlayerOpponent,
+                                gameSetting.SymbolPlayerSelf
+                            );
+
+                    int BlankCellCount = int.MinValue;
+                    List<int> WinningCells = null;
+
+                    var evaluatedStatus =
+                        T3BL.TicTacToe.EvaluateResult(
+                            computerPlayer,
+                            game.GridSize,
+                            latestMove.OrderBy(x => x.CellIndex).Select(x => x.CellContent).ToList(),
+                            out BlankCellCount,
+                            out WinningCells);
+
+                    if (evaluatedStatus == T3Mod.TicTacToeGameStatus.Player1Wins
+                        || evaluatedStatus == T3Mod.TicTacToeGameStatus.Player2Wins)
+                        Assert.IsTrue(WinningCells.Count == game.GridSize);
+                    Assert.IsTrue(evaluatedStatus == status);
+                    Assert.IsTrue(evaluatedStatus == game.Status);
+                }
+            }
         }
     }
 }
