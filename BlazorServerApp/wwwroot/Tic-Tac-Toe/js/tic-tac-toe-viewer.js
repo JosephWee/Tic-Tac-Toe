@@ -1,17 +1,13 @@
 ﻿class TicTacToeViewerJq {
 
     #id;
-    #detects;
     #container;
     #rows;
     #cells;
     #gameId;
-    #gameMode;
-    #currentPlayer;
+    #description;
     #state;
     #winningCells;
-    #aiPrediction;
-    #aiPredictionScore;
     #getTicTacToeResultSetDelegate;
 
     constructor(elementId) {
@@ -124,6 +120,7 @@
             '                   <div class="tic-tac-toe-cell-last"></div>' +
             '               </div>' +
             '           </div>' +
+            '           <div class="tic-tac-toe-description"></div>' +
             '           <div>' +
             '               <div class="tic-tac-toe-display">' +
             '               </div>' +
@@ -238,6 +235,17 @@
             }
         }
 
+        let gridWidth = ((width + paddingWidth + paddingWidth) * 3);
+
+        let divTicTacToeDescription = this.#container.find("div.tic-tac-toe-description");
+        divTicTacToeDescription.html("<div>" + this.#description + "</div>");
+        divTicTacToeDescription.width(gridWidth);
+
+        let descriptionDescendantDivs = divTicTacToeDescription.find("div");
+        descriptionDescendantDivs.css('color', 'gray');
+        descriptionDescendantDivs.css('font-size', screenWidth >= 480 ? '24px' : '12px');
+        descriptionDescendantDivs.css('font-weight', screenWidth >= 480 ? 'bold' : 'bold');
+
         let msg = '';
         
         if (this.#state == 0) {
@@ -253,11 +261,9 @@
             msg = '<div>Draw</div>';
         }
 
-        let gridWidth = ((width + paddingWidth + paddingWidth) * 3) / 2;
-
         let divTicTacToeDisplay = this.#container.find("div.tic-tac-toe-display");
         divTicTacToeDisplay.html(msg);
-        divTicTacToeDisplay.width(gridWidth);
+        divTicTacToeDisplay.width(gridWidth/2);
 
         let displaDescendantDivs = divTicTacToeDisplay.find("div");
         displaDescendantDivs.css('font-size', screenWidth >= 480 ? '24px' : '12px');
@@ -267,7 +273,7 @@
         let PageCount = parseInt(sessionStorage.getItem(this.InstanceId + "PageCount"));
         let divTicTacToePager = this.#container.find("div.tic-tac-toe-pager");
         divTicTacToePager.html("<div>" + PageNum + " of " + PageCount + "</div>");
-        divTicTacToePager.width(gridWidth);
+        divTicTacToePager.width(gridWidth/2);
 
         let pagerDescendantDivs = divTicTacToePager.find("div");
         pagerDescendantDivs.css('font-size', screenWidth >= 480 ? '24px' : '12px');
@@ -300,6 +306,7 @@
 
                 let result = resultSet.Results[0];
 
+                app.#description = result.Description;
                 app.#state = result.Status;
                 app.#winningCells = [];
 

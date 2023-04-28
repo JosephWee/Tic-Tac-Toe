@@ -74,30 +74,51 @@ div.tic-tac-toe-row-last div {
     border-top: medium solid black;
 }
 
+div.tic-tac-toe-description {
+    padding-top: 5px;
+    text-align: center;
+}
+
+div.tic-tac-toe-description div {
+    vertical-align: middle;
+    text-align: center;
+}
+
+div.tic-tac-toe-description div div {
+    vertical-align: middle;
+    text-align: center;
+}
+
 div.tic-tac-toe-display {
     float: left;
     padding-top: 5px;
+    text-align: left;
 }
 
 div.tic-tac-toe-display div {
     vertical-align: middle;
+    text-align: left;
 }
 
 div.tic-tac-toe-display div div {
     vertical-align: middle;
+    text-align: left;
 }
 
 div.tic-tac-toe-pager {
     float: right;
     padding-top: 5px;
+    text-align: right;
 }
 
 div.tic-tac-toe-pager div {
     display: inline-block;
     vertical-align: middle;
+    text-align: right;
 }
 
 div.tic-tac-toe-pager div div {
     display: inline-block;
     vertical-align: middle;
+    text-align: right;
 }
