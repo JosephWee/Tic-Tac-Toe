@@ -72,3 +72,80 @@ If a business decision is made purely based on ML (Machine Learning) Model Predi
 that decision may become predictable.
 ```
 For example, if a newbie ML learner like myself, were to design an automobile navigational system that recommends a route purely based on parameters such as `Shortest Distance`, `Best Fuel Economy`, `Lowest Toll`, etc. our customers may all be routed to the same location because we have disregarded real-time information like `current traffic conditions` and `the number of customers that were recommended the same route`.
+
+### 2023-04-28 9:59pm Fri - Tic-Tac-Toe Game Stats Part 1
+In this first entry about the Tic-Tac-Toe game data, I wanted to compare the number of Player 1 Wins, Draws and Player 2 Wins for game setup variations.
+
+The game variations are as follows:
+1. Player 1: ComputerPlayerV1  versus  Player 2: ComputerPlayerV1
+2. Player 1: ComputerPlayerV2  versus  Player 2: ComputerPlayerV1
+3. Player 1: ComputerPlayerV1  versus  Player 2: ComputerPlayerV2
+4. Player 1: ComputerPlayerV2  versus  Player 2: ComputerPlayerV2
+5. Player 1: ComputerPlayerV2  versus  Player 2: ComputerPlayerV3
+6. Player 1: ComputerPlayerV3  versus  Player 2: ComputerPlayerV2
+7. Player 1: ComputerPlayerV3  versus  Player 2: ComputerPlayerV3
+
+Player 1 plays `X` while Player 2 plays `O`.
+Player 1 always move first.
+
+
+To recap the difference between ComputerPlayerV1, ComputerPlayerV2 and ComputerPlayerV3:
+- ComputerPlayerV1 chooses it's moves randomly.
+- ComputerPlayerV2 chooses it's moves programatically.
+- ComputerPlayerV3 chooses it's moves based on the probability of winning the game using an AI model.
+
+
+![Tic-Tac-Toe Game Outcome - 2P ComputerPlayerV1 vs ComputerPlayerV1](/Jupyter-Notebook/GameStats/Output/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV1_P2__ComputerPlayerV1.png)
+
+**Game Setup 1:** ComputerPlayerV1 [X] vs ComputerPlayerV1 [O]
+
+The number of Player 1 wins are more than 2 times the number of Player 2 wins and 5 to 6 times that of Draws. Since both Player 1 and Player 2 chooses their moves randomly, it would suggest that moving first has a significant advantage.
+
+
+
+![Tic-Tac-Toe Game Outcome - 2P ComputerPlayerV1 vs ComputerPlayerV2](/Jupyter-Notebook/GameStats/Output/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV1_P2__ComputerPlayerV2.png)
+
+**Game Setup 2:** ComputerPlayerV1 [X] vs ComputerPlayerV2 [O]
+
+The number of Player 2 wins are at least 8 times the number of Player 1 wins and the number of Draws is at least 2 times than the number of Player 1 wins. Since Player 1 chooses it's moves randomly and Player 2 chooses it's moves strategically via an algorithm, it would suggest that choosing one's move strategically has a far greater advantage than moving first.
+
+
+
+![Tic-Tac-Toe Game Outcome - 2P ComputerPlayerV2 vs ComputerPlayerV1](/Jupyter-Notebook/GameStats/Output/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV2_P2__ComputerPlayerV1.png)
+
+**Game Setup 3:** ComputerPlayerV2 [X] vs ComputerPlayerV1 [O]
+
+The number of Player 1 wins is more than 9 times the number of Player 2 wins and Draws. This suggests that choosing one's move strategically and moving first has a very significant advantage.
+
+
+
+![Tic-Tac-Toe Game Outcome - 2P ComputerPlayerV2 vs ComputerPlayerV2](/Jupyter-Notebook/GameStats/Output/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV2_P2__ComputerPlayerV2.png)
+
+**Game Setup 4:** ComputerPlayerV2 [X] vs ComputerPlayerV2 [O]
+
+There are no Player 1 wins and the number of Player 2 wins are slightly higher than the number of Draws. This suggests that when both players are moving strategically, moving second has a slight advantage.
+
+
+
+![Tic-Tac-Toe Game Outcome - 2P ComputerPlayerV2 vs ComputerPlayerV3](/Jupyter-Notebook/GameStats/Output/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV2_P2__ComputerPlayerV3.png)
+
+**Game Setup 5:** ComputerPlayerV2 [X] vs ComputerPlayerV3 [O]
+
+In setup 5, there are no Player 1 or Player 2 wins. It suggests that when both Players move strategically but one Player (P2) has experience (I think of using an AI model which is derived from past data as tapping on one's experience to anticipate the outcome), it results in a no win situation.
+
+
+
+![Tic-Tac-Toe Game Outcome - 2P ComputerPlayerV3 vs ComputerPlayerV2](/Jupyter-Notebook/GameStats/Output/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV3_P2__ComputerPlayerV2.png)
+
+**Game Setup 6:** ComputerPlayerV3 [X] vs ComputerPlayerV2 [O]
+
+In setup 6, there are again no Player 1 or Player 2 wins. It suggests that when both Players move strategically but one Player (P1) has experience (I think of using an AI model which is derived from past data as tapping on one's experience to anticipate the outcome), it results in a no win situation.
+
+
+
+![Tic-Tac-Toe Game Outcome - 2P ComputerPlayerV3 vs ComputerPlayerV3](/Jupyter-Notebook/GameStats/Output/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV3_P2__ComputerPlayerV3.png)
+
+**Game Setup 7:** ComputerPlayerV3 [X] vs ComputerPlayerV3 [O]
+
+In setup 6, there are again no Player 1 or Player 2 wins. It suggests that when both Players move strategically both Players are experienced players (I think of using an AI model which is derived from past data as tapping on one's experience to anticipate the outcome), it results in a no win situation.
+
