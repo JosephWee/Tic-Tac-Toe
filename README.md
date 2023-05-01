@@ -144,3 +144,6 @@ In this entry, I am posting 2 heatmaps showing the distribution of the winning p
 
 #### Distribution (%) of Player 2 moves across the 9 cells
 ![Distribution % of Player 2 moves across the 9 cells](/Jupyter-Notebook/GameStats/Output/P2_Wins_Cells_occupancy_by_percentage.png)
+
+#### Distribution (%) of Winning Player moves across the 9 cells
+![Distribution % of Winning Player moves across the 9 cells](/Jupyter-Notebook/GameStats/Output/Winner_Cells_occupancy_by_percentage.png)
