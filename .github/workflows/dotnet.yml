@@ -29,6 +29,6 @@ jobs:
         echo "# ls /var/lib/postgresql"
         ls /var/lib/postgresql/14
         echo "# ls /etc"
-        ls /etc/postgresql/14
+        ls /etc/postgresql/14/main
     - name: Test
       run: dotnet test --no-build --verbosity normal
