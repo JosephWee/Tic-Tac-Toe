@@ -13,7 +13,27 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    
+    # Service containers to run with `runner-job`
+    # https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+          
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -26,10 +46,10 @@ jobs:
       run: dotnet build --no-restore
     - name: Test Login to Postgres
       run: |
-        echo "# ls /var/lib/postgresql"
-        ls /var/lib/postgresql/14
-        echo "# ls /etc"
-        ls /etc/postgresql/14/main
-        cat /etc/postgresql/14/main/pg_hba.conf
+        export PGPASSWORD=postgres
+        psql -U postgres
+        /c testdb
+        /dt
+        /quit
     - name: Test
       run: dotnet test --no-build --verbosity normal
