@@ -48,6 +48,9 @@ jobs:
       run: |
         export PGPASSWORD=postgres
         echo $PGPASSWORD
+        echo $PGHOSTADDR
+        echo $PGHOST
+        echo $PGUSER
         su -l postgres
         /c testdb
         /dt
