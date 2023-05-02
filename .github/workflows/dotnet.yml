@@ -26,15 +26,9 @@ jobs:
       run: dotnet build --no-restore
     - name: Test Login to Postgres
       run: |
-        #echo "# ls /"
-        #ls /
-        #echo "# ls /etc"
-        #ls /etc
-        #echo "# ls /var"
-        #ls /var
-        #echo "# ls /var/lib"
-        #ls /var/lib
         echo "# ls /var/lib/postgresql"
-        ls /var/lib/postgresql/14/main
+        ls /var/lib/postgresql/14
+        echo "# ls /etc"
+        ls /etc/postgresql
     - name: Test
       run: dotnet test --no-build --verbosity normal
