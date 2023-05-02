@@ -23,7 +23,11 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 43594
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -57,12 +61,6 @@ jobs:
         echo $PGUSER
         export PGPASSWORD=postgres
         echo $PGPASSWORD
-        #export POSTGRES_HOST=localhost
-        #echo $POSTGRES_HOST
-        #export POSTGRES_PORT=43594
-        #echo $POSTGRES_PORT
-        #sudo cat /etc/postgresql/14/main/postgresql.conf
-        ls /etc
         psql -l
         /c testdb
         /dt
