@@ -36,6 +36,6 @@ jobs:
         #ls /var/lib
         echo "# ls /var/lib/postgresql"
         postgresql_ver=$((ls /var/lib/postgresql))
-        ls /var/lib/postgresql/$postgresql_ver
+        echo "ls /var/lib/postgresql/$postgresql_ver"
     - name: Test
       run: dotnet test --no-build --verbosity normal
