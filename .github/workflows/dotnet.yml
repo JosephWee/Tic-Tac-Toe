@@ -24,8 +24,8 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Test Login to Postgres
-      run: su -l postgres
+    #- name: Test Login to Postgres
+    #  run: su -l postgres
     - name: Test Create Postgres User
       run: CREATE USER tictactoeuser PASSWORD tictactoepassword;
     - name: Test Grant Schema test to tictactoeuser
