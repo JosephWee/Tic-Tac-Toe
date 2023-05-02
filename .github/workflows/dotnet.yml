@@ -46,7 +46,7 @@ jobs:
       run: dotnet build --no-restore
     - name: Test Login to Postgres
       run: |
-        export PGHOSTADDR=127.0.0.1 
+        export PGHOSTADDR=127.0.0.1
         echo $PGHOSTADDR
         export PGPORT=43594
         echo $PGPORT
@@ -56,7 +56,7 @@ jobs:
         echo $PGUSER
         export PGPASSWORD=postgres
         echo $PGPASSWORD
-        psql
+        psql -l
         /c testdb
         /dt
         /quit
