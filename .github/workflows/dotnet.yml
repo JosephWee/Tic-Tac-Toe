@@ -31,8 +31,8 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432
+          # Maps tcp port 43594 on service container to the host
+          - 43594:43594
           
     steps:
     - uses: actions/checkout@v3
@@ -46,12 +46,17 @@ jobs:
       run: dotnet build --no-restore
     - name: Test Login to Postgres
       run: |
+        export PGHOSTADDR=127.0.0.1 
+        echo $PGHOSTADDR
+        export PGPORT=43594
+        echo $PGPORT
+        export PGHOST=43594
+        echo $PGHOST
+        export PGUSER=postgres
+        echo $PGUSER
         export PGPASSWORD=postgres
         echo $PGPASSWORD
-        echo $PGHOSTADDR
-        echo $PGHOST
-        echo $PGUSER
-        su -l postgres
+        psql
         /c testdb
         /dt
         /quit
