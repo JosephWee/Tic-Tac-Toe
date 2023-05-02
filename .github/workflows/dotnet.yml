@@ -25,16 +25,9 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test Login to Postgres
-      run: psql
-    - name: Test Create Postgres User
-      run: CREATE USER tictactoeuser PASSWORD tictactoepassword;
-    - name: Test Grant Schema test to tictactoeuser
-      run: GRANT ALL ON SCHEMA test TO tictactoeuser;
-    - name: Test Select TestDB
-      run: \connect testdb;
-    - name: Test List all tables in TestDB
-      run: \dt
-    - name: Test Quit psql
-      run: \quit
+      run: |
+        ls /
+        ls /ect
+        ls /var/lib/pgsql
     - name: Test
       run: dotnet test --no-build --verbosity normal
