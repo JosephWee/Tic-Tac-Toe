@@ -46,6 +46,7 @@ jobs:
       run: dotnet build --no-restore
     - name: Test Login to Postgres
       run: |
+        sudo /etc/init.d/postgresql restart
         export PGHOSTADDR=127.0.0.1
         echo $PGHOSTADDR
         export PGPORT=43594
