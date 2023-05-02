@@ -57,10 +57,11 @@ jobs:
         echo $PGUSER
         export PGPASSWORD=postgres
         echo $PGPASSWORD
-        export POSTGRES_HOST=localhost
-        echo $POSTGRES_HOST
-        export POSTGRES_PORT=43594
-        echo $POSTGRES_PORT
+        #export POSTGRES_HOST=localhost
+        #echo $POSTGRES_HOST
+        #export POSTGRES_PORT=43594
+        #echo $POSTGRES_PORT
+        sudo cat /etc/postgresql/14/main/postgresql.conf
         psql -l
         /c testdb
         /dt
