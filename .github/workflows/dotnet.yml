@@ -27,7 +27,9 @@ jobs:
     - name: Test Login to Postgres
       run: |
         ls /
-        ls /ect
-        ls /var/lib/pgsql
+        ls /etc
+        ls /var
+        ls /var/lib
+        ls /var/lib/postgres
     - name: Test
       run: dotnet test --no-build --verbosity normal
