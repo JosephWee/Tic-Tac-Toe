@@ -48,7 +48,8 @@ jobs:
       run: |
         export PGPASSWORD=postgres
         echo $PGPASSWORD
-        psql -U postgres testdb
+        su -l postgres
+        /c testdb
         /dt
         /quit
     - name: Test
