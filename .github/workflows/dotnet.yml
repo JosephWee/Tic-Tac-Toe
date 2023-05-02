@@ -47,7 +47,7 @@ jobs:
     - name: Test Login to Postgres
       run: |
         sudo /etc/init.d/postgresql restart
-        export PGHOSTADDR=127.0.0.1
+        export PGHOSTADDR=host.docker.internal
         echo $PGHOSTADDR
         export PGPORT=43594
         echo $PGPORT
