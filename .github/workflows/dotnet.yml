@@ -24,7 +24,9 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Test Run Terminal Commands
+    - name: Test Run Terminal Commands 1
       run: pwd
+    - name: Test Run Terminal Commands 2
+      run: ls
     - name: Test
       run: dotnet test --no-build --verbosity normal
