@@ -34,7 +34,7 @@ jobs:
         #ls /var
         #echo "# ls /var/lib"
         #ls /var/lib
-        echo "# ls /var/lib/postgressql"
-        ls /var/lib/postgressql
+        echo "# ls /var/lib/postgresql"
+        ls /var/lib/postgresql
     - name: Test
       run: dotnet test --no-build --verbosity normal
