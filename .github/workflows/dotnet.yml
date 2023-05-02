@@ -24,9 +24,17 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Test Run Terminal Commands 1
-      run: pwd
-    - name: Test Run Terminal Commands 2
-      run: ls
+    - name: Test Login to Postgres
+      run: su - postgres
+    - name: Test Create Postgres User
+      run: CREATE USER tictactoeuser PASSWORD tictactoepassword;
+    - name: Test Grant Schema test to tictactoeuser
+      run: GRANT ALL ON SCHEMA test TO tictactoeuser;
+    - name: Test Select TestDB
+      run: \connect testdb;
+    - name: Test List all tables in TestDB
+      run: \dt
+    - name: Test Quit psql
+      run: \quit
     - name: Test
       run: dotnet test --no-build --verbosity normal
