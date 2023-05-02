@@ -30,5 +30,6 @@ jobs:
         ls /var/lib/postgresql/14
         echo "# ls /etc"
         ls /etc/postgresql/14/main
+        cat /etc/postgresql/14/main/pg_hba.conf
     - name: Test
       run: dotnet test --no-build --verbosity normal
