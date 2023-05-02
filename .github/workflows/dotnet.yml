@@ -61,7 +61,8 @@ jobs:
         #echo $POSTGRES_HOST
         #export POSTGRES_PORT=43594
         #echo $POSTGRES_PORT
-        sudo cat /etc/postgresql/14/main/postgresql.conf
+        #sudo cat /etc/postgresql/14/main/postgresql.conf
+        ls /etc
         psql -l
         /c testdb
         /dt
