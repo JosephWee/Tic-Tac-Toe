@@ -1,6 +1,6 @@
 CREATE DATABASE TicTacToeData;
 
-CREATE USER tictactoeuser PASSWORD tictactoepassword;
+CREATE USER tictactoeuser WITH PASSWORD 'tictactoepassword';
 
 GRANT ALL PRIVILEGES ON TicTacToeData TO tictactoeuser;
 
