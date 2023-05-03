@@ -1,5 +1,5 @@
 {
   "ConnectionStrings": {
-    "TicTacToeDataConnString": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=$(MSBuildProjectDirectory)\\LocalDB\\TicTacToeData.mdf;Integrated Security=True;Connect Timeout=30"
+    "TicTacToeDataConnString": "Server=127.0.0.1;Port=43594;Database=TicTacToeDb;User Id=\"TicTacToeUser\";Password=\"TicTacToePassword\";"
   }
 }

@@ -3,8 +3,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Azure;
-using Azure.Core;
 using Microsoft.ML;
 using Newtonsoft.Json.Linq;
 using TicTacToe.Extensions;

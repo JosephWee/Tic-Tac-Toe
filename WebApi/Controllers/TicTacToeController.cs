@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using Azure;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.ML;
 using System.Configuration;

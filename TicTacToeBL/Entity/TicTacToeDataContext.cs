@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Microsoft.EntityFrameworkCore;
 using TicTacToe.Entity;
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace TicTacToe.Entity
 {
@@ -23,7 +24,7 @@ namespace TicTacToe.Entity
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(dbNameOrConnectionString);
+            optionsBuilder.UseNpgsql(dbNameOrConnectionString);
         }
 
         public DbSet<TicTacToeGame> TicTacToeGames { get; set; }
