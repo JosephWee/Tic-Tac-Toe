@@ -77,7 +77,8 @@ jobs:
         echo $PGUSER
         export PGPASSWORD=postgres
         echo $PGPASSWORD
-        psql -c '\dt'
+        psql -l
+        \dt
         psql -f /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeBL/DBScripts/CreateTicTacToeDb_and_Tables-Postgresql.sql
         psql -f /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeBL/DBScripts/CreateTicTacToe_User-Postgresql.sql
         psql -d "TicTacToeDb" -c '\dt'
