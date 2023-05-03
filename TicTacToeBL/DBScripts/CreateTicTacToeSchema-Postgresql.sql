@@ -24,7 +24,8 @@ CREATE TABLE "TicTacToeData"
     "InstanceId"    bigint          REFERENCES "TicTacToeGames" ON DELETE CASCADE,
     "MoveNumber"    integer         NOT NULL,
     "CellIndex"     integer         NOT NULL,
-    "CellContent"   integer         NOT NULL
+    "CellContent"   integer         NOT NULL,
+    FOREIGN KEY ("InstanceId") REFERENCES "TicTacToeGames" ON DELETE CASCADE
 );
 
 \dt
