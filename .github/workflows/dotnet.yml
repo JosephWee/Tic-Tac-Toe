@@ -77,11 +77,10 @@ jobs:
         echo $PGUSER
         export PGPASSWORD=postgres
         echo $PGPASSWORD
-        pwd
         psql -l
         /c testdb
         /dt
-        /i TicTacToeBL\DBScripts\CreateTicTacToeSchema-Postgresql.sql
+        /i /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeBL/DBScripts/CreateTicTacToeSchema-Postgresql.sql
 
     - name: Test
       run: dotnet test --no-build --verbosity normal
