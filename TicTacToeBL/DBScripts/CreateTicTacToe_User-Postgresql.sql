@@ -1,7 +1,5 @@
-\c "TicTacToeDb"
-
 CREATE USER "TicTacToeUser" WITH PASSWORD 'TicTacToePassword';
 
-GRANT ALL PRIVILEGES ON "TicTacToeDb" TO "TicTacToeUser";
+ALTER DATABASE "TicTacToeDb" OWNER TO "TicTacToeUser";
 
 \quit
