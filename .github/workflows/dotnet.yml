@@ -78,10 +78,10 @@ jobs:
         export PGPASSWORD=postgres
         echo $PGPASSWORD
         psql -l
-        /dt
-        /i /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeBL/DBScripts/CreateTicTacToeSchema-Postgresql.sql
-        /c TicTacToeData
-        /dt
-
+        \dt
+        \i /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeBL/DBScripts/CreateTicTacToeSchema-Postgresql.sql
+        \c TicTacToeData
+        \dt
+        
     - name: Test
       run: dotnet test --no-build --verbosity normal
