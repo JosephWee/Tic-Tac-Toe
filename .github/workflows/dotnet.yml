@@ -28,9 +28,9 @@ jobs:
         #
         # Login Credentials of the Docker Service Container
         # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idservicesservice_idcredentials
-        credentials:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+        #credentials:
+        #  username: ${{ secrets.DOCKER_USER }}
+        #  password: ${{ secrets.DOCKER_PASSWORD }}
         # 
         # Provide the password for postgres
         # https://hub.docker.com/_/postgres
