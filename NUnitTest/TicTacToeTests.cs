@@ -28,7 +28,7 @@ namespace UnitTests
         [SetUp]
         public void TestSetup()
         {
-            string msbuildDir = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..")).FullName;
+            string msbuildDir = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory,"..","..","..")).FullName;
             var TicTacToeDataConnString = TestContext.Parameters.Get("TicTacToeDataConnString", string.Empty).Replace("$(MSBuildProjectDirectory)", msbuildDir);
             Assert.IsNotEmpty(TicTacToeDataConnString);
             
