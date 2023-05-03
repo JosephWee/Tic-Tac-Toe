@@ -78,8 +78,9 @@ jobs:
         export PGPASSWORD=postgres
         echo $PGPASSWORD
         psql -d postgres -c '\dt'
-        psql -f /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeBL/DBScripts/CreateTicTacToeSchema-Postgresql.sql
-        psql -d TicTacToeDb -c '\dt'
+        psql -f /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeBL/DBScripts/CreateTicTacToeDb_and_Tables-Postgresql.sql
+        psql -f /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeBL/DBScripts/CreateTicTacToe_User-Postgresql.sql
+        psql -d "TicTacToeDb" -c '\dt'
 
     - name: Test
       run: dotnet test --no-build --verbosity normal

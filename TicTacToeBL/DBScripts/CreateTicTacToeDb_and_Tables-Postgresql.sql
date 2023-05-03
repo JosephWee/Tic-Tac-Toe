@@ -1,11 +1,6 @@
 CREATE DATABASE "TicTacToeDb";
 
-CREATE USER "TicTacToeUser" WITH PASSWORD 'TicTacToePassword';
-
-GRANT ALL PRIVILEGES ON "TicTacToeDb" TO "TicTacToeUser";
-
 \c "TicTacToeDb"
-\dt
 
 CREATE TABLE "TicTacToeGames"
 (
@@ -31,7 +26,5 @@ CREATE TABLE "TicTacToeData"
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
-
-\dt
 
 \quit
