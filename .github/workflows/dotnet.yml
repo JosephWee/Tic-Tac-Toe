@@ -80,7 +80,7 @@ jobs:
         psql -l
         /c testdb
         /dt
-        /q
+        /i TicTacToeBL\DBScripts\CreateTicTacToeSchema-Postgresql.sql
 
     - name: Test
       run: dotnet test --no-build --verbosity normal
