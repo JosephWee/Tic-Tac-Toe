@@ -79,7 +79,7 @@ jobs:
         echo $PGPASSWORD
         psql -d postgres -c '\dt'
         psql -f /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeBL/DBScripts/CreateTicTacToeSchema-Postgresql.sql
-        psql -d TicTacToeData -c '\dt'
+        psql -d TicTacToeDb -c '\dt'
 
     - name: Test
       run: dotnet test --no-build --verbosity normal

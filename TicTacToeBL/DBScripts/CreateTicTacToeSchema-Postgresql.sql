@@ -1,10 +1,10 @@
-CREATE DATABASE "TicTacToeData";
+CREATE DATABASE "TicTacToeDb";
 
 CREATE USER "TicTacToeUser" WITH PASSWORD 'TicTacToePassword';
 
-GRANT ALL PRIVILEGES ON "TicTacToeData" TO "TicTacToeUser";
+GRANT ALL PRIVILEGES ON "TicTacToeDb" TO "TicTacToeUser";
 
-\c "TicTacToeData"
+\c "TicTacToeDb"
 \dt
 
 CREATE TABLE "TicTacToeGames"
