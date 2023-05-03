@@ -4,6 +4,9 @@ CREATE USER tictactoeuser WITH PASSWORD 'tictactoepassword';
 
 GRANT ALL PRIVILEGES ON TicTacToeData TO tictactoeuser;
 
+\c TicTacToeData
+\dt
+
 CREATE TABLE TicTacToeGames
 (
 	InstanceId    bigint			PRIMARY KEY,
@@ -25,5 +28,7 @@ CREATE TABLE TicTacToeData
     CellIndex   integer			NOT NULL,
     CellContent integer			NOT NULL	
 );
+
+\dt
 
 \quit
