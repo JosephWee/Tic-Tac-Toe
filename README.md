@@ -61,7 +61,7 @@ Replace the `TicTacToeWebApi` endpoint in the `appsettings.json` file with the a
 ### Running the code
 To run the code, make sure you start the `WebApi` project before starting the `BlazorServerApp` project.
 
-## Observations
+## Notes
 As previously mentioned, the purpose of this project is for learning about ML(Machine Learning).
 This section will be dedicated to cataloguing about my learning observations.
 
@@ -147,3 +147,6 @@ In this entry, I am posting 2 heatmaps showing the distribution of the winning p
 
 #### Distribution (%) of Winning Player moves across the 9 cells
 ![Distribution % of Winning Player moves across the 9 cells](/Jupyter-Notebook/GameStats/Output/Winner_Cells_occupancy_by_percentage.png)
+
+### 2023-05-04 4:02pm - Possibility of using GitHub Actions for ML Learning Pipeline
+When working with the `GitHub Actions Workflow` for building and testing my code commits, I noticed that it may be possible to use `GitHub Actions Jobs` with `dotnet test CLI` to create a `ML training pipeline`. It may be a possibility worth exploring for a `Public repository` such as this one, as `GitHub Actions` are `free` for `Public` repositories. If this were to be done, on a `Private repository`, a more careful study of the `costs` involved would need to be carried out.
