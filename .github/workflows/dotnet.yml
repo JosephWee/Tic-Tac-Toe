@@ -82,5 +82,5 @@ jobs:
         psql -d "TicTacToeDb" -c '\dt'
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal --settings /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/NUnitTest/test.runsettings
+      run: dotnet test ./NUnitTest/NUnitTest.csproj --no-build --verbosity normal --settings /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/NUnitTest/test.runsettings
 
