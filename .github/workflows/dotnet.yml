@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  buildJob:
     runs-on: ubuntu-latest
 
     # Service containers to run with `runner-job`
@@ -80,7 +80,9 @@ jobs:
         psql -l -c '\dt'
         psql -f /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeBL/DBScripts/CreateTicTacToeSchema-Postgresql.sql
         psql -d "TicTacToeDb" -c '\dt'
-        ls -A /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe
 
     - name: Test
       run: dotnet test --no-build --verbosity normal --settings /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/NUnitTest/test.runsettings
+
+    - name: TestGit
+      run: git status
