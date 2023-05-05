@@ -77,7 +77,7 @@ jobs:
         echo $HASTRAININGDATA
 
     - name: Try Stop Workflow if No Data
-      if: ${{ env.HASTRAININGDATA == 0 }}
+      if: ${{ env.HASTRAININGDATA == "0" }}
       run: exit 1
 
     - name: Restore dependencies
