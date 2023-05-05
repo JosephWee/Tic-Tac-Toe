@@ -60,7 +60,7 @@ jobs:
         dotnet-version: 6.0.x
     
     - name: Check for input file
-      run: echo "::error::exit1"
+      run: echo "::setFailed"
 
     - name: Restore dependencies
       run: dotnet restore
