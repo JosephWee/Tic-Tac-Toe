@@ -59,8 +59,20 @@ jobs:
       with:
         dotnet-version: 6.0.x
     
-    - name: Try Abort Workflow
-      run: exit 1
+    - name: Check for Unprocessed Training Data
+      run: |
+        if [ -d "./TicTacToeML" ]; then
+            if [ -d "./TicTacToeML/TrainingData" ]; then
+                if [ -d "./TicTacToeML/TrainingData/Queue" ]; then
+                    if [ "$(ls ./TicTacToeML/TrainingData/Queue)" ]; then
+                        echo "There is new Training Data"
+                    else
+                        echo "There is NO new Training Data"
+                        exit 1
+                    fi
+                fi
+            fi
+        fi
 
     - name: Restore dependencies
       run: dotnet restore
