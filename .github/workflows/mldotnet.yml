@@ -59,8 +59,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
     
-    - name: Check for input file
-      run: echo "::setFailed"
+    - name: Try Abort Workflow
+      run: exit 1
 
     - name: Restore dependencies
       run: dotnet restore
