@@ -64,7 +64,7 @@ jobs:
         if [ -d "./TicTacToeML" ]; then
             if [ -d "./TicTacToeML/TrainingData" ]; then
                 if [ -d "./TicTacToeML/TrainingData/Queue" ]; then
-                    if [ "$(ls ./TicTacToeML/TrainingData/Queue)" ]; then
+                    if [ "$(ls ./TicTacToeML/TrainingData/Queue/*.csv)" ]; then
                         echo "There is new Training Data"
                         export HASTRAININGDATA=0
                     else
@@ -105,5 +105,10 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
-    - name: TestGit
-      run: git status
+    - name: Test Git Commit
+      run: |
+          git status
+          mv ./TicTacToeML/TrainingData/Queue/*.csv ./TicTacToeML/TrainingData/Processed
+          git status
+          git add ./TicTacToeML/TrainingData/Processed/*.csv
+          git commit -m "Test Git Commit"
