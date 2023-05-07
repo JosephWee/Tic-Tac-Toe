@@ -105,4 +105,6 @@ jobs:
           git add TicTacToeML/MLModels
           git add TicTacToeML/TrainingData
           git status
+          git config --global user.name 'JosephWee'
+          git config --global user.email 'JosephWee@users.noreply.github.com'
           git commit -m "Test Git Commit"
