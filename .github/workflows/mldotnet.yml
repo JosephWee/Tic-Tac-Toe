@@ -45,7 +45,7 @@ jobs:
     - name: Run ML Pipeline
       run: dotnet test ./MLPipelines/MLPipelines.csproj --no-build --verbosity normal --settings /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/MLPipelines/MLPipeline.runsettings
 
-    - name: Test Git Commit
+    - name: Commit and Push File Changes
       run: |
           git status
           git add TicTacToeML/MLModels
@@ -53,5 +53,5 @@ jobs:
           git status
           git config --global user.name 'JosephWee'
           git config --global user.email 'JosephWee@users.noreply.github.com'
-          git commit -m "$env:GITHUB_WORKFLOW \#$env:GITHUB_RUN_NUMBER - Commit $env:GITHUB_SHA pushed by $env:GITHUB_ACTOR"
+          git commit -m "${{env.GITHUB_WORKFLOW}} \#${{env.GITHUB_RUN_NUMBER}} - Commit ${{env.GITHUB_SHA}} pushed by ${{env.GITHUB_ACTOR}}"
           git push origin
