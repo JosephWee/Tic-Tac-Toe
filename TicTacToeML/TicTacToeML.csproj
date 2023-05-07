@@ -29,6 +29,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TrainingData\Rejected\" />
-    <Folder Include="TrainingData\Queue\" />
   </ItemGroup>
 </Project>
