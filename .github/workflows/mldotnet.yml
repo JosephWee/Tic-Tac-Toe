@@ -66,19 +66,13 @@ jobs:
                 if [ -d "./TicTacToeML/TrainingData/Queue" ]; then
                     if [ "$(ls ./TicTacToeML/TrainingData/Queue/*.csv)" ]; then
                         echo "There is new Training Data"
-                        export HASTRAININGDATA=0
                     else
                         echo "There is NO new Training Data"
-                        export HASTRAININGDATA=1
+                        echo "::exit 1"
                     fi
                 fi
             fi
         fi
-        echo $HASTRAININGDATA
-
-    - name: Try Stop Workflow if No Data
-      if: ${{ env.HASTRAININGDATA==0 }}
-      run: exit 1
 
     - name: Restore dependencies
       run: dotnet restore
