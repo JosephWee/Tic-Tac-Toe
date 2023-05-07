@@ -6,6 +6,9 @@
     <RootNamespace>$(MSBuildProjectName.Replace(" ", "_").Replace("ML",".ML"))</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="MLModels\MLModel1.training.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.ML" Version="1.7.1" />
     <PackageReference Include="Microsoft.ML.FastTree" Version="1.7.1" />
   </ItemGroup>
@@ -20,8 +23,12 @@
       <DependentUpon>MLModel1.mbconfig</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="MLModels\MLModel1.training.cs">
+      <DependentUpon>MLModel1.mbconfig</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="TrainingData\Rejected\" />
     <Folder Include="TrainingData\Queue\" />
   </ItemGroup>
 </Project>

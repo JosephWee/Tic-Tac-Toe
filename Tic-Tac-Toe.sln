@@ -15,10 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTest", "NUnitTest\NUni
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicTacToeML", "TicTacToeML\TicTacToeML.csproj", "{D6C8A225-6E1A-4F60-8A36-C064A909DB9A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{803BD205-6C88-417A-A67E-EEA4775D16BC}"
-	ProjectSection(SolutionItems) = preProject
-		TriggerGitHubActionsWorkflow.txt = TriggerGitHubActionsWorkflow.txt
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLPipelines", "MLPipelines\MLPipelines.csproj", "{7609D087-D652-498B-8702-9CDB83E46BFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +47,10 @@ Global
 		{D6C8A225-6E1A-4F60-8A36-C064A909DB9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6C8A225-6E1A-4F60-8A36-C064A909DB9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6C8A225-6E1A-4F60-8A36-C064A909DB9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7609D087-D652-498B-8702-9CDB83E46BFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7609D087-D652-498B-8702-9CDB83E46BFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7609D087-D652-498B-8702-9CDB83E46BFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7609D087-D652-498B-8702-9CDB83E46BFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
