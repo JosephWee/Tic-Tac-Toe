@@ -102,7 +102,7 @@ jobs:
     - name: Test Git Commit
       run: |
           git status
-          mv ./TicTacToeML/TrainingData/Queue/*.csv ./TicTacToeML/TrainingData/Processed
-          git status
-          git add ./TicTacToeML/TrainingData/Processed/*.csv
+          git add /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeML/MLModels/MLModel*.zip
+          git add /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeML/TrainingData/Processed/*.csv
+          git add /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/TicTacToeML/TrainingData/Rejected/*.csv
           git commit -m "Test Git Commit"
