@@ -30,7 +30,7 @@ jobs:
                         echo "There is new Training Data"
                     else
                         echo "There is NO new Training Data"
-                        echo "::exit 1"
+                        echo "::exit::1"
                     fi
                 fi
             fi
@@ -53,5 +53,5 @@ jobs:
           git status
           git config --global user.name 'JosephWee'
           git config --global user.email 'JosephWee@users.noreply.github.com'
-          git commit -m "${{env.GITHUB_WORKFLOW}} \#${{env.GITHUB_RUN_NUMBER}} - Commit ${{env.GITHUB_SHA}} pushed by ${{env.GITHUB_ACTOR}}"
+          git commit -m "$GITHUB_WORKFLOW \u0023$GITHUB_RUN_NUMBER - Commit $GITHUB_SHA pushed by $GITHUB_ACTOR"
           git push origin
