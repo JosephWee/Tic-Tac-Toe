@@ -161,6 +161,7 @@ namespace MLPipelines
                 
                 try
                 {
+                    bool fileHasError = false;
                     List<MLModel1.ModelInput> fileInputs = new List<MLModel1.ModelInput>();
 
                     using (TextReader textReader = inputFile.OpenText())
@@ -170,7 +171,10 @@ namespace MLPipelines
                         {
                             var fields = line.Split(',').ToList();
                             if (fields.Count != 11)
+                            {
+                                fileHasError = true;
                                 break;
+                            }
 
                             fields = fields.Select(x => x.TrimStart('"').TrimEnd('"')).ToList();
 
@@ -201,8 +205,15 @@ namespace MLPipelines
                         }
                     }
 
-                    inputs.AddRange(fileInputs);
-                    processedFiles.Add(inputFile);
+                    if (fileHasError)
+                    {
+                        rejectedFiles.Add(inputFile);
+                    }
+                    else
+                    {
+                        inputs.AddRange(fileInputs);
+                        processedFiles.Add(inputFile);
+                    }
                 }
                 catch (Exception ex)
                 {
