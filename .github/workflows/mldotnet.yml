@@ -36,7 +36,7 @@ jobs:
                 fi
             fi
         fi
-        echo "::exit::$TRAININGDATA"
+        echo "::exit $TRAININGDATA"
 
     - name: Restore dependencies
       run: dotnet restore
