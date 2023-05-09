@@ -50,7 +50,7 @@ namespace UnitTests
             _MLModel1Path =
                 TestContext
                 .Parameters
-                .Get("MLModelPath", string.Empty)
+                .Get("MLModel1Path", string.Empty)
                 .Replace("$(SolutionDir)", solutionDir)
                 .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }
