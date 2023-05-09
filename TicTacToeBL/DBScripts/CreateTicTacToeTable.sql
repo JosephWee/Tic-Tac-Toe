@@ -1,4 +1,4 @@
-﻿--USE [$(DatabaseName)];
+--USE [$(DatabaseName)];
 
 DECLARE @DO_MIGRATION BIT = (
 	SELECT 1 FROM SYS.COLUMNS

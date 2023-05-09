@@ -1,4 +1,4 @@
-﻿USE [$(DatabaseName)];
+USE [$(DatabaseName)];
 
 CREATE TABLE [dbo].[TicTacToeData] (
     [Id]          INT            NOT NULL IDENTITY,

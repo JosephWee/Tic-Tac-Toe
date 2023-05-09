@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="MLDataTests.cs" />
+    <Compile Remove="MLDataExport.cs" />
   </ItemGroup>
 
   <ItemGroup>

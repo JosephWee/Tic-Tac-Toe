@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[TicTacToeClassificationModel01] (
+CREATE TABLE [dbo].[TicTacToeClassificationModel01] (
     [Id]                INT            NOT NULL IDENTITY,
     [CreatedDate]       DATETIME2 (7)  NOT NULL DEFAULT SYSUTCDATETIME(),
     [InstanceId]        NVARCHAR (200) NOT NULL,

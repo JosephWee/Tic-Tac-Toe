@@ -1,4 +1,4 @@
-﻿select
+select
 	t.id,
 	CONCAT('''', CONVERT(VARCHAR(23), t.CreatedDate, 121), '''') as sCreatedDate,
 	CONCAT('''', t.InstanceId, '''') as sInstanceId,

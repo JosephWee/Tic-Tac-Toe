@@ -28,8 +28,18 @@ namespace UnitTests
         [SetUp]
         public void TestSetup()
         {
-            string msbuildDir = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory,"..","..","..")).FullName;
-            var TicTacToeDataConnString = TestContext.Parameters.Get("TicTacToeDataConnString", string.Empty).Replace("$(MSBuildProjectDirectory)", msbuildDir);
+            string solutionDir =
+                new DirectoryInfo(
+                    Path.Combine(
+                        TestContext.CurrentContext.TestDirectory,
+                        "..", "..", "..", "..")).FullName;
+
+            var TicTacToeDataConnString =
+                TestContext
+                .Parameters
+                .Get("TicTacToeDataConnString", string.Empty)
+                .Replace("$(SolutionDir)", solutionDir);
+
             Assert.IsNotEmpty(TicTacToeDataConnString);
             
             TicTacToe
@@ -37,7 +47,12 @@ namespace UnitTests
                 .DbContextConfig
                 .AddOrReplace("TicTacToeData", TicTacToeDataConnString);
 
-            _MLModel1Path = Path.Combine(msbuildDir, "MLModels", "MLModel1.zip");
+            _MLModel1Path =
+                TestContext
+                .Parameters
+                .Get("MLModelPath", string.Empty)
+                .Replace("$(SolutionDir)", solutionDir)
+                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }
 
         [Test]
