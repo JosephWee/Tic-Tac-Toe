@@ -26,9 +26,6 @@ builder.Configuration.AddJsonFile("connectionStrings.json",
 
 var app = builder.Build();
 
-string msbuildDir = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, @"..\..\..")).FullName;
-string MLModel1Path = Path.Combine(msbuildDir, "MLModels", "MLModel1.zip");
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
