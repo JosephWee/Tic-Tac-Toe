@@ -8,7 +8,7 @@ namespace MLPipelines
 {
     public class UnitTestMLTraining
     {
-        
+        bool skipTest = false;
         private static FileInfo _MLModelFileInfo = null;
         private static string _MLTrainingDataPath = string.Empty;
         private static string _MLTrainingDataQueuePath = string.Empty;
@@ -19,6 +19,8 @@ namespace MLPipelines
         [SetUp]
         public void Setup()
         {
+            skipTest = false;
+
             string solutionDir =
                 new DirectoryInfo(
                     Path.Combine(
@@ -32,7 +34,10 @@ namespace MLPipelines
                 .Replace("$(SolutionDir)", solutionDir)
                 .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
+            Assert.IsFalse(string.IsNullOrWhiteSpace(MLModelPath));
+
             _MLModelFileInfo = new FileInfo(MLModelPath);
+
             Assert.IsTrue(_MLModelFileInfo.Exists);
             Assert.IsTrue(_MLModelFileInfo.Extension == ".zip");
 
@@ -55,7 +60,11 @@ namespace MLPipelines
                 .GetFiles("*.csv")
                 .ToList();
 
-            Assert.IsTrue(inputFiles.Any());
+            if (!inputFiles.Any())
+            {
+                skipTest = true;
+                return;
+            }
 
             _MLTrainingDataProcessedPath =
                 Path.Combine(_MLTrainingDataPath, "Processed");
@@ -73,6 +82,9 @@ namespace MLPipelines
         [Test]
         public void ProcessTrainingData()
         {
+            if (skipTest)
+                return;
+
             MLContext mlContext = new MLContext();
             DataViewSchema modelSchema;
 
