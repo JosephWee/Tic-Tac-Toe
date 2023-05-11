@@ -36,10 +36,7 @@ jobs:
     - name: Commit and Push File Changes
       run: |
           gitstatusafter=$(git status)
-          if [ "$gitstatusafter" = "$gitstatusbefore" ]; then
-            echo "Echoing 'No changes'"
-          else
-            echo "Echoing 'Changes detected'"
+          if [ "$gitstatusafter" != "$gitstatusbefore" ]; then
             if [ "TicTacToeML/MLModels" in "$gitstatusafter" ] || [ "TicTacToeML/TrainingData" in "$gitstatusafter" ]
             then
                 echo "Echoing 'Changes detected in TicTacToeML/MLModels or TicTacToeML/TrainingData'"
@@ -50,6 +47,8 @@ jobs:
                 git config --global user.email 'JosephWee@users.noreply.github.com'
                 git commit -m "WORKFLOW:$GITHUB_WORKFLOW JOB:$GITHUB_JOB RUN:$GITHUB_RUN_NUMBER triggered by Commit $GITHUB_SHA pushed by $GITHUB_ACTOR"
                 git push origin
+            else
+                echo "Echoing 'No Changes detected'"
             fi
           fi
           
