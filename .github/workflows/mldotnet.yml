@@ -33,7 +33,9 @@ jobs:
     - name: Commit and Push File Changes
       run: |
           DoCommit=0
-          gitstatus=$(git status)
+          git status >> "gitstatus.txt"
+          cat "gitstatus.txt"
+          grep -i -c "nothing to commit, working tree clean" "gitstatus.txt"
           if [ "$gitstatus" = *"nothing to commit, working tree clean"* ]
           then
                 echo "Block 1"
