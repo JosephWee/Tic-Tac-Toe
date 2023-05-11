@@ -38,6 +38,7 @@ jobs:
           then            
                 DoCommit=0
           else
+                DoCommit=1
                 if [ "$gitstatus" = *'TicTacToeML'*'MLModels'* ] || [ "$gitstatus" = *'TicTacToeML'*'TrainingData'* ]
                 then
                     DoCommit=1
