@@ -37,6 +37,8 @@ jobs:
       run: |
           gitstatusafter=$(git status)
           if [ "$gitstatusafter" != "$gitstatusbefore" ]; then
+            echo $gitstatusbefore
+            echo $gitstatusafter
             if [ "TicTacToeML/MLModels" in "$gitstatusafter" ] || [ "TicTacToeML/TrainingData" in "$gitstatusafter" ]
             then
                 echo "Echoing 'Changes detected in TicTacToeML/MLModels or TicTacToeML/TrainingData'"
