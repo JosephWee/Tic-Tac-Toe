@@ -36,32 +36,4 @@ jobs:
           git status >> "gitstatus.txt"
           cat "gitstatus.txt"
           grep -i -c "nothing to commit, working tree clean" "gitstatus.txt"
-          if [ "$gitstatus" = *"nothing to commit, working tree clean"* ]
-          then
-                echo "Block 1"
-                DoCommit=0
-          else
-                echo "Block 2"
-                git add TicTacToeML/MLModels
-                git add TicTacToeML/TrainingData
-                
-                gitstatus=$(git status)
-                echo $gitstatus
-
-                if [ "$gitstatus" = '*Changes to be committed*' ]
-                then
-                    echo "Block 3"
-                    DoCommit=1
-                fi
-          fi
-
-          if [ $DoCommit -eq 1 ] 
-          then
-                echo "Changes detected"
-                git config --global user.name 'JosephWee'
-                git config --global user.email 'JosephWee@users.noreply.github.com'
-                git commit -m "WORKFLOW:$GITHUB_WORKFLOW JOB:$GITHUB_JOB RUN:$GITHUB_RUN_NUMBER triggered by Commit $GITHUB_SHA pushed by $GITHUB_ACTOR"
-                git push origin
-          else
-                echo "No Changes detected"
-          fi
+          
