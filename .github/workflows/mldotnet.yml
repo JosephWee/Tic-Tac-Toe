@@ -35,13 +35,13 @@ jobs:
           DoCommit=0
           gitstatus=$(git status)
           substring='nothing to commit, working tree clean'
-          if [ "$substring" in "$gitstatus" ]
+          if [ "$gitstatus" = *"$substring"* ]
           then            
                 DoCommit=0
           else
                 substring1='TicTacToeML/MLModels'
                 substring2='TicTacToeML/TrainingData'
-                if [ "$substring1" in "$gitstatusafter" ] || [ "$substring2" in "$gitstatusafter" ]
+                if [ "$gitstatus" = *"$substring1"* ] || [ "$gitstatus" = *"$substring2"* ]
                 then
                     DoCommit=1
                 fi
