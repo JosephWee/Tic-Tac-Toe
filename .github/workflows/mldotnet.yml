@@ -33,16 +33,14 @@ jobs:
     - name: Commit and Push File Changes
       run: |
           DoCommit=0
-          git status >> "gitstatus.txt"
-          IsMainBranch=$(grep -i -c "Your branch is up to date with 'origin/main'." "gitstatus.txt")
-          echo "$IsMainBranch"
-          NothingToCommit=$(grep -i -c "nothing to commit, working tree clean" "gitstatus.txt")
-          echo "$NothingToCommit"
-          HasNewModelZip=$(grep -i -c "TicTacToeML/MLModels/[:alnum:]+[.]zip" "gitstatus.txt")
-          echo "$HasNewModelZip"
-          HasProcessedCsv=$(grep -i -c "TicTacToeML/TrainingData/Processed/[:alnum:]+[.]csv" "gitstatus.txt")
-          echo "$HasProcessedCsv"
-          HasRejectedCsv=$(grep -i -c "TicTacToeML/TrainingData/Rejected/[:alnum:]+[.]csv" "gitstatus.txt")
-          echo "$HasRejectedCsv"
+          gitstatus=$(git status)
+          
+          if [ "$gitstatus" = *"Your branch is up to date with 'origin/main'."* ]
+          then
+            echo "Up to date"
+          else
+            echo "Not up to date"
+          fi
+          
           cat "gitstatus.txt"
           
