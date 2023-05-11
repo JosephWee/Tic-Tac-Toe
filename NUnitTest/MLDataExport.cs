@@ -73,7 +73,7 @@ namespace UnitTests
             var games =
                 dbContext
                 .TicTacToeGames
-                .Where(x => x.Status == T3Mod.TicTacToeGameStatus.Player1Wins)
+                .Where(x => x.Status != T3Mod.TicTacToeGameStatus.InProgress)
                 .ToList();
 
             try
