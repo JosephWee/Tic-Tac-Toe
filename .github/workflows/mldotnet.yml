@@ -37,16 +37,13 @@ jobs:
           
           echo $gitstatus
 
-          if [[ "$gitstatus" == *"nothing to commit, working tree clean"* ]]
+          if [[ "$gitstatus" == *"Changes not staged for commit"* ]]
           then
             echo "Block 1"
-            DoCommit=0
-          else
-            echo "Block 2"
             
             if [[ "$gitstatus" == *"TicTacToeML/MLModels/"*".zip"* ]] || [[ "$gitstatus" == *"TicTacToeML/TrainingData/Processed/"*".csv"* ]] || [[ "$gitstatus" == *"TicTacToeML/TrainingData/Rejected/"*".csv"* ]]
             then
-                echo "Block 3"
+                echo "Block 2"
                 
                 git add TicTacToeML/MLModels
                 git add TicTacToeML/TrainingData
@@ -55,7 +52,7 @@ jobs:
 
                 if [[ $gitstatus == *"Changes to be committed"* ]]
                 then
-                    echo "Block 4"
+                    echo "Block 3"
                     DoCommit=1
                 fi
             fi

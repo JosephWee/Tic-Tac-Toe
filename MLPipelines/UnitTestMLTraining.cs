@@ -234,20 +234,23 @@ namespace MLPipelines
                 }
             }
 
-            // Train new ML Model
-            IDataView newData = mlContext.Data.LoadFromEnumerable<MLModel1.ModelInput>(inputs);
+            if (processedFiles.Any())
+            {
+                // Train new ML Model
+                IDataView newData = mlContext.Data.LoadFromEnumerable<MLModel1.ModelInput>(inputs);
 
-            var newModel = pipeline.Fit(newData);
+                var newModel = pipeline.Fit(newData);
 
-            Assert.IsNotNull(_MLModelFileInfo.Directory);
+                Assert.IsNotNull(_MLModelFileInfo.Directory);
 
-            // Save New ML Model
-            var newMLModelFilePath =
-                Path.Combine(
-                    _MLModelFileInfo.Directory.FullName,
-                    $"MLModel1_{DateTime.UtcNow.ToString("yyyy_MM_dd_HHmmss")}.zip");
+                // Save New ML Model
+                var newMLModelFilePath =
+                    Path.Combine(
+                        _MLModelFileInfo.Directory.FullName,
+                        $"MLModel1_{DateTime.UtcNow.ToString("yyyy_MM_dd_HHmmss")}.zip");
 
-            mlContext.Model.Save(newModel, newData.Schema, newMLModelFilePath);
+                mlContext.Model.Save(newModel, newData.Schema, newMLModelFilePath);
+            }
 
             //Do Clean Up
             for (int i = 0; i < processedFiles.Count; i++)
@@ -257,7 +260,7 @@ namespace MLPipelines
                     Path.Combine(
                         _MLTrainingDataProcessedPath,
                         processedFile.Name );
-                File.Move(processedFile.FullName, fileDestination);
+                File.Move(processedFile.FullName, fileDestination, true);
             }
 
             for (int i = 0; i < rejectedFiles.Count; i++)
@@ -267,7 +270,7 @@ namespace MLPipelines
                     Path.Combine(
                         _MLTrainingDataRejectedPath,
                         rejectedFile.Name);
-                File.Move(rejectedFile.FullName, fileDestination);
+                File.Move(rejectedFile.FullName, fileDestination, true);
             }
         }
     }
