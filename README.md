@@ -116,7 +116,7 @@ The number of Player 1 wins is more than 9 times the number of Player 2 wins and
 
 ![Tic-Tac-Toe Game Outcome - 2P ComputerPlayerV2 vs ComputerPlayerV2](/Jupyter-Notebook/GameStats/Output/20230429/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV2_P2__ComputerPlayerV2.png)
 
-There are no Player 1 wins and the number of Player 2 wins are slightly higher than the number of Draws. This suggests that when both players are moving strategically, moving second has a slight advantage.
+There are no Player 1 wins and the number of Player 2 wins are slightly higher than the number of Draws. This suggests that when both players are moving strategically, moving second has a significant advantage.
 
 **Game Setup 5:** ComputerPlayerV2 [X] vs ComputerPlayerV3 [O]
 
@@ -139,10 +139,10 @@ In setup 6, there are again no Player 1 or Player 2 wins. It suggests that when 
 ### 2023-05-01 9:29am Mon - Tic-Tac-Toe Game Stats Part 2
 In this entry, I am posting 2 heatmaps showing the distribution of the winning player's moves across the 9 cells.
 
-#### Distribution (%) of Player 1 moves across the 9 cells
+#### Distribution (%) of Winning Player (Player 1) moves across the 9 cells
 ![Distribution % of Player 1 moves across the 9 cells](/Jupyter-Notebook/GameStats/Output/20230429/P1_Wins_Cells_occupancy_by_percentage.png)
 
-#### Distribution (%) of Player 2 moves across the 9 cells
+#### Distribution (%) of Winning Player (Player 2) moves across the 9 cells
 ![Distribution % of Player 2 moves across the 9 cells](/Jupyter-Notebook/GameStats/Output/20230429/P2_Wins_Cells_occupancy_by_percentage.png)
 
 #### Distribution (%) of Winning Player moves across the 9 cells
@@ -168,10 +168,10 @@ To recap the difference between ComputerPlayerV1, ComputerPlayerV2 and ComputerP
 
 The number of Player 1 wins are more than 2 times the number of Player 2 wins and 4 times that of Draws. Since both Player 1 and Player 2 chooses their moves randomly, it would suggest that moving first has a significant advantage. This seems consistent with the findings in the entry on [2023-04-28 9:59pm](https://github.com/JosephWee/Tic-Tac-Toe#2023-04-28-959pm-fri---tic-tac-toe-game-stats-part-1)
 
-#### Distribution (%) of Player 1 moves across the 9 cells
+#### Distribution (%) of Winning Player (Player 1) moves across the 9 cells
 ![Distribution % of Player 1 moves across the 9 cells](/Jupyter-Notebook/GameStats/Output/20230509/P1_Wins_Cells_occupancy_by_percentage20230509.png)
 
-#### Distribution (%) of Player 2 moves across the 9 cells
+#### Distribution (%) of Winning Player (Player 2) moves across the 9 cells
 ![Distribution % of Player 2 moves across the 9 cells](/Jupyter-Notebook/GameStats/Output/20230509/P2_Wins_Cells_occupancy_by_percentage20230509.png)
 
 #### Distribution (%) of Winning Player moves across the 9 cells
@@ -182,3 +182,54 @@ It seems that when both players are moving randomly, the value of the cells are 
 **Conclusion**
 
 I believe that the AI model would be more unbiased if the data used is not skewed due to stragems / algorithms employed by specific computer players or human players.
+
+### 2023-05-11 7:28pm Thu - Tic-Tac-Toe Game Stats Part 4
+After the creating a ML Model with the unbiased data, ie. without human or computer player stragems / algorithms, I noticed that the new ML Model improved the performance of ComputerPlayerV3, but decreased the accuracy of the Game Outcome prediction.
+
+Player 1 plays `X` while Player 2 plays `O`.
+Player 1 always move first.
+
+To recap the difference between ComputerPlayerV1, ComputerPlayerV2 and ComputerPlayerV3:
+- ComputerPlayerV1 chooses it's moves randomly.
+- ComputerPlayerV2 chooses it's moves programatically.
+- ComputerPlayerV3 chooses it's moves based on the probability of winning the game using an AI model.
+
+**Game Setup 1:** ComputerPlayerV1 [X] vs ComputerPlayerV1 [O]
+
+![Tic-Tac-Toe Game Outcome - ComputerPlayerV1 vs ComputerPlayerV1](/Jupyter-Notebook/GameStats/Output/20230511/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV1_P2__ComputerPlayerV120230511.png)
+
+The number of Player 1 wins are more than 2 times the number of Player 2 wins and 3.5 times that of Draws. Since both Player 1 and Player 2 chooses their moves randomly, it would suggest that moving first has a significant advantage. This seems consistent with the findings in the entry on [2023-04-28 9:59pm](https://github.com/JosephWee/Tic-Tac-Toe#2023-04-28-959pm-fri---tic-tac-toe-game-stats-part-1).
+
+
+**Game Setup 2:** ComputerPlayerV1 [X] vs ComputerPlayerV2 [O]
+
+![Tic-Tac-Toe Game Outcome - ComputerPlayerV1 vs ComputerPlayerV2](/Jupyter-Notebook/GameStats/Output/20230511/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV1_P2__ComputerPlayerV220230511.png)
+
+The number of Player 2 wins are at least 8 times the number of Player 1 wins and the number of Draws is at least 2 times than the number of Player 1 wins. Since Player 1 chooses it's moves randomly and Player 2 chooses it's moves strategically via an algorithm, it would suggest that choosing one's move strategically has a far greater advantage than moving first. This seems consistent with the findings in the entry on [2023-04-28 9:59pm](https://github.com/JosephWee/Tic-Tac-Toe#2023-04-28-959pm-fri---tic-tac-toe-game-stats-part-1).
+
+**Game Setup 3:** ComputerPlayerV2 [X] vs ComputerPlayerV1 [O]
+
+![Tic-Tac-Toe Game Outcome - ComputerPlayerV2 vs ComputerPlayerV1](/Jupyter-Notebook/GameStats/Output/20230511/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV2_P2__ComputerPlayerV120230511.png)
+
+The number of Player 1 wins is more than 16 to 50 times the number of Player 2 wins and Draws. This suggests that choosing one's move strategically and moving first has a very significant advantage. This seems consistent with the findings in the entry on [2023-04-28 9:59pm](https://github.com/JosephWee/Tic-Tac-Toe#2023-04-28-959pm-fri---tic-tac-toe-game-stats-part-1).
+
+**Game Setup 4:** ComputerPlayerV2 [X] vs ComputerPlayerV2 [O]
+
+![Tic-Tac-Toe Game Outcome - ComputerPlayerV2 vs ComputerPlayerV2](/Jupyter-Notebook/GameStats/Output/20230511/TicTacToeGameOutcomeByGameSetup2P_Valid_Test_-_P1__ComputerPlayerV2_P2__ComputerPlayerV220230511.png)
+
+There are no Player 1 wins and the number of Player 2 wins are slightly lower than the number of Draws. This suggests that when both players are moving strategically, moving second has a significant advantage. This seems consistent with the findings in the entry on [2023-04-28 9:59pm](https://github.com/JosephWee/Tic-Tac-Toe#2023-04-28-959pm-fri---tic-tac-toe-game-stats-part-1).
+
+#### Distribution (%) of Winning Player (Player 1) moves across the 9 cells
+![Distribution % of Player 1 moves across the 9 cells](/Jupyter-Notebook/GameStats/Output/20230511/P1_Wins_Cells_occupancy_by_percentage20230511.png)
+
+#### Distribution (%) of Winning Player (Player 2) moves across the 9 cells
+![Distribution % of Player 2 moves across the 9 cells](/Jupyter-Notebook/GameStats/Output/20230511/P2_Wins_Cells_occupancy_by_percentage20230511.png)
+
+#### Distribution (%) of Winning Player moves across the 9 cells
+![Distribution % of Winning Player moves across the 9 cells](/Jupyter-Notebook/GameStats/Output/20230511/Winner_Cells_occupancy_by_percentage20230511.png)
+
+It seems that when both players are moving randomly, the value of the cells are more apparent. The most valuable cell would be the one in the center followed by the cells in the corners.
+
+**Conclusion**
+
+`ComputerPlayerV3` would benefit from an AI Model that is based on Player 1 and Player 2 winning moves when both players chooses their moves `randomly`. While the `Game Outcome Prediction` would be better served by an AI Model based on Player 1 winning, Player 2 winning and Draws when the players are moving `randomly` and also when they are choosing their moves `strategically`.
