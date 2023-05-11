@@ -34,11 +34,14 @@ jobs:
       run: |
           DoCommit=0
           gitstatus=$(git status)
-          if [ "nothing to commit, working tree clean" in "$gitstatus" ]
+          substring='nothing to commit, working tree clean'
+          if [ "$substring" in "$gitstatus" ]
           then            
                 DoCommit=0
           else
-                if [ "TicTacToeML/MLModels" in "$gitstatusafter" ] || [ "TicTacToeML/TrainingData" in "$gitstatusafter" ]
+                substring1='TicTacToeML/MLModels'
+                substring2='TicTacToeML/TrainingData'
+                if [ "$substring1" in "$gitstatusafter" ] || [ "$substring2" in "$gitstatusafter" ]
                 then
                     DoCommit=1
                 fi
