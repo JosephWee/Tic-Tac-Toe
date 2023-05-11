@@ -32,15 +32,15 @@ jobs:
 
     - name: Commit and Push File Changes
       run: |
-          $DoCommit = 0
+          DoCommit = 0
           gitstatus=$(git status)
           if [ "nothing to commit, working tree clean" in "$gitstatus" ]
           then            
-                $DoCommit = 0
+                DoCommit = 0
           else
                 if [ "TicTacToeML/MLModels" in "$gitstatusafter" ] || [ "TicTacToeML/TrainingData" in "$gitstatusafter" ]
                 then
-                    $DoCommit = 1
+                    DoCommit = 1
                 fi
           fi
 
@@ -57,4 +57,3 @@ jobs:
           else
                 echo "No Changes detected"
           fi
-          
