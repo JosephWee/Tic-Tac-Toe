@@ -34,7 +34,7 @@ jobs:
       run: |
           DoCommit=0
           gitstatus=$(git status)
-          if [ "$gitstatus" = *'nothing to commit,'*'working tree clean'* ]
+          if [ "$gitstatus" = '*nothing to commit,*working tree clean*' ]
           then
                 echo "Block 1"
                 DoCommit=0
@@ -46,7 +46,7 @@ jobs:
                 gitstatus=$(git status)
                 echo $gitstatus
 
-                if [ "$gitstatus" = *'Changes to be committed'* ]
+                if [ "$gitstatus" = '*Changes to be committed*' ]
                 then
                     echo "Block 3"
                     DoCommit=1
