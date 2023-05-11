@@ -35,12 +35,10 @@ jobs:
           DoCommit=0
           gitstatus=$(git status)
           
-          if [ "$gitstatus" = *"Your branch is up to date with 'origin/main'."* ]
+          if [[ "$gitstatus" == *"Your branch is up to date with 'origin/main'."* ]]
           then
             echo "Up to date"
           else
             echo "Not up to date"
           fi
-          
-          cat "gitstatus.txt"
           
