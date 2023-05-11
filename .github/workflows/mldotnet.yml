@@ -38,9 +38,10 @@ jobs:
     - name: Commit and Push File Changes
       run: |
           export gitstatusafter=$(git status)
-          echo $gitstatusbefore
-          echo $gitstatusafter
-          if [ "$gitstatusafter" != "$gitstatusbefore" ]; then
+          echo "Before=\n$gitstatusbefore"
+          echo "After=\n$gitstatusafter"
+          if [ "$gitstatusafter" != "$gitstatusbefore" ]
+          then
             if [ "TicTacToeML/MLModels" in "$gitstatusafter" ] || [ "TicTacToeML/TrainingData" in "$gitstatusafter" ]
             then
                 echo "Echoing 'Changes detected in TicTacToeML/MLModels or TicTacToeML/TrainingData'"
