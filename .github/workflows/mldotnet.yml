@@ -36,11 +36,4 @@ jobs:
     - name: Commit and Push File Changes
       run: |
           git status >> "./git-status-after.txt"
-          diff ./git-status-before.txt ./git-status-after.txt >> "git-changes.txt"
-          #git add TicTacToeML/MLModels
-          #git add TicTacToeML/TrainingData
-          #git status
-          #git config --global user.name 'JosephWee'
-          #git config --global user.email 'JosephWee@users.noreply.github.com'
-          #git commit -m "WORKFLOW:$GITHUB_WORKFLOW JOB:$GITHUB_JOB RUN:$GITHUB_RUN_NUMBER triggered by Commit $GITHUB_SHA pushed by $GITHUB_ACTOR"
-          #git push origin
+          
