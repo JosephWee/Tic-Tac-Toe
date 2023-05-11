@@ -34,20 +34,17 @@ jobs:
       run: |
           DoCommit=0
           gitstatus=$(git status)
-          substring='nothing to commit, working tree clean'
-          if [ "$gitstatus" = *"$substring"* ]
+          if [ "$gitstatus" = *'nothing to commit,'*'working tree clean'* ]
           then            
                 DoCommit=0
           else
-                substring1='TicTacToeML/MLModels'
-                substring2='TicTacToeML/TrainingData'
-                if [ "$gitstatus" = *"$substring1"* ] || [ "$gitstatus" = *"$substring2"* ]
+                if [ "$gitstatus" = *'TicTacToeML'*'MLModels'* ] || [ "$gitstatus" = *'TicTacToeML'*'TrainingData'* ]
                 then
                     DoCommit=1
                 fi
           fi
 
-          if [ "$DoCommit" -eq 1 ] 
+          if [ $DoCommit -eq 1 ] 
           then
                 echo "Changes detected"
                 git add TicTacToeML/MLModels
