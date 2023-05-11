@@ -26,25 +26,27 @@ jobs:
       
     - name: Build
       run: dotnet build --no-restore
-
-    - name: Init Before Running ML Pipelines
-      run: |
-          export gitstatusbefore=$(git status)
-          echo $gitstatusbefore
-
+      
     - name: Run ML Pipeline
       run: dotnet test ./MLPipelines/MLPipelines.csproj --no-build --verbosity normal --settings /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/MLPipelines/MLPipeline.runsettings
 
     - name: Commit and Push File Changes
       run: |
-          export gitstatusafter=$(git status)
-          echo "Before=\n$gitstatusbefore"
-          echo "After=\n$gitstatusafter"
-          if [ "$gitstatusafter" != "$gitstatusbefore" ]
+          $DoCommit = 0
+          gitstatus=$(git status)
+          if [ "nothing to commit, working tree clean" in "$gitstatus" ]
+          then            
+                $DoCommit = 0
+          else
+                if [ "TicTacToeML/MLModels" in "$gitstatusafter" ] || [ "TicTacToeML/TrainingData" in "$gitstatusafter" ]
+                then
+                    $DoCommit = 1
+                fi
+          fi
+
+          if [ "$DoCommit" -eq 1 ] 
           then
-            if [ "TicTacToeML/MLModels" in "$gitstatusafter" ] || [ "TicTacToeML/TrainingData" in "$gitstatusafter" ]
-            then
-                echo "Echoing 'Changes detected in TicTacToeML/MLModels or TicTacToeML/TrainingData'"
+                echo "Changes detected"
                 git add TicTacToeML/MLModels
                 git add TicTacToeML/TrainingData
                 git status
@@ -52,8 +54,7 @@ jobs:
                 git config --global user.email 'JosephWee@users.noreply.github.com'
                 git commit -m "WORKFLOW:$GITHUB_WORKFLOW JOB:$GITHUB_JOB RUN:$GITHUB_RUN_NUMBER triggered by Commit $GITHUB_SHA pushed by $GITHUB_ACTOR"
                 git push origin
-            else
-                echo "Echoing 'No Changes detected'"
-            fi
+          else
+                echo "No Changes detected"
           fi
           
