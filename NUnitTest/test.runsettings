@@ -2,7 +2,8 @@
 <RunSettings>
 	<TestRunParameters>
 		<Parameter name="TicTacToeDataConnString" value="Server=127.0.0.1;Port=43594;Database=TicTacToeDb;User Id=&quot;TicTacToeUser&quot;;Password=&quot;TicTacToePassword&quot;;" />
-		<Parameter name="MLModel1Path" value="$(SolutionDir)/NUnitTest/MLModels/MLModel1_2023_05_09_233130.zip" />
+		<Parameter name="ComputerPlayerModelPath" value="$(SolutionDir)/NUnitTest/MLModels/MLModel1_2023_05_09_233130.zip" />
+		<Parameter name="OutcomePredictionModelPath" value="$(SolutionDir)/NUnitTest/MLModels/MLModel1_2023_05_11_150603.zip" />
 		<Parameter name="CsvOutputPath" value="$(SolutionDir)/TicTacToeML/TrainingData/Queue" />
 		<Parameter name="PrepAndExportData" value="false" />
 	</TestRunParameters>

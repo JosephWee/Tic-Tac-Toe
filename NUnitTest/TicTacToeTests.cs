@@ -16,7 +16,8 @@ namespace UnitTests
     public class TicTacToeTests
     {
         private static Random random = new Random();
-        private static string _MLModel1Path = string.Empty;
+        private static string _ComputerPlayerModelPath = string.Empty;
+        private static string _OutcomePredictionModelPath = string.Empty;
 
         public class GameSetting
         {
@@ -47,10 +48,17 @@ namespace UnitTests
                 .DbContextConfig
                 .AddOrReplace("TicTacToeData", TicTacToeDataConnString);
 
-            _MLModel1Path =
+            _ComputerPlayerModelPath =
                 TestContext
                 .Parameters
-                .Get("MLModel1Path", string.Empty)
+                .Get("ComputerPlayerModelPath", string.Empty)
+                .Replace("$(SolutionDir)", solutionDir)
+                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            _OutcomePredictionModelPath =
+                TestContext
+                .Parameters
+                .Get("OutcomePredictionModelPath", string.Empty)
                 .Replace("$(SolutionDir)", solutionDir)
                 .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }
@@ -74,7 +82,7 @@ namespace UnitTests
         [Test]
         public void TestValid1PGamesV3()
         {
-            var computerPlayer = new T3BL.ComputerPlayerV3(_MLModel1Path);
+            var computerPlayer = new T3BL.ComputerPlayerV3(_ComputerPlayerModelPath);
             var gameoutcomes = TestValid1PGames(computerPlayer);
             VerifyGameOutcomes(gameoutcomes);
         }
@@ -115,7 +123,7 @@ namespace UnitTests
                     request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
 
                     var response =
-                        T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
+                        T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _OutcomePredictionModelPath, Description);
 
                     gameStatus = response.Status;
 
@@ -156,7 +164,7 @@ namespace UnitTests
         [Test]
         public void TestInvalid1PGamesV3()
         {
-            var computerPlayer = new T3BL.ComputerPlayerV3(_MLModel1Path);
+            var computerPlayer = new T3BL.ComputerPlayerV3(_ComputerPlayerModelPath);
             TestInvalid1PGames(computerPlayer);
         }
 
@@ -189,7 +197,7 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _OutcomePredictionModelPath, Description);
 
                 if (response.ComputerMove.HasValue)
                     request.CellStates[response.ComputerMove.Value] = computerPlayer.PlayerSymbolSelf;
@@ -213,7 +221,7 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = 3; //Invalid value
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _OutcomePredictionModelPath, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -238,7 +246,7 @@ namespace UnitTests
                     request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
                 }
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _OutcomePredictionModelPath, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -260,7 +268,7 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _OutcomePredictionModelPath, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -294,7 +302,7 @@ namespace UnitTests
                 index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _OutcomePredictionModelPath, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -305,7 +313,7 @@ namespace UnitTests
             {
                 //Test Invalid GridSize
                 request.GridSize = 5;
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _OutcomePredictionModelPath, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -331,7 +339,7 @@ namespace UnitTests
                 int index = random.Next(validMoves.Count);
                 request.CellStates[validMoves[index]] = computerPlayer.PlayerSymbolOpponent;
 
-                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _MLModel1Path, Description);
+                var response = T3BL.TicTacToe.ProcessRequest(request, computerPlayer, _OutcomePredictionModelPath, Description);
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -379,7 +387,7 @@ namespace UnitTests
         public void TestValid2PGamesV2vsV3()
         {
             var player1 = new T3BL.ComputerPlayerV2(2, 1);
-            var player2 = new T3BL.ComputerPlayerV3(1, 2, _MLModel1Path);
+            var player2 = new T3BL.ComputerPlayerV3(1, 2, _ComputerPlayerModelPath);
             var gameoutcomes = TestValidGamesComVsCom(player1, player2);
             VerifyGameOutcomes(gameoutcomes);
         }
@@ -387,7 +395,7 @@ namespace UnitTests
         [Test]
         public void TestValid2PGamesV3vsV2()
         {
-            var player1 = new T3BL.ComputerPlayerV3(2, 1, _MLModel1Path);
+            var player1 = new T3BL.ComputerPlayerV3(2, 1, _ComputerPlayerModelPath);
             var player2 = new T3BL.ComputerPlayerV2(1, 2);
             var gameoutcomes = TestValidGamesComVsCom(player1, player2);
             VerifyGameOutcomes(gameoutcomes);
@@ -396,8 +404,8 @@ namespace UnitTests
         [Test]
         public void TestValid2PGamesV3vsV3()
         {
-            var player1 = new T3BL.ComputerPlayerV3(2, 1, _MLModel1Path);
-            var player2 = new T3BL.ComputerPlayerV3(1, 2, _MLModel1Path);
+            var player1 = new T3BL.ComputerPlayerV3(2, 1, _ComputerPlayerModelPath);
+            var player2 = new T3BL.ComputerPlayerV3(1, 2, _ComputerPlayerModelPath);
             var gameoutcomes = TestValidGamesComVsCom(player1, player2);
             VerifyGameOutcomes(gameoutcomes);
         }
@@ -432,7 +440,7 @@ namespace UnitTests
                         request.CellStates[p1Move] = computerPlayer1.PlayerSymbolSelf;
 
                     var response =
-                        T3BL.TicTacToe.ProcessRequest(request, computerPlayer2, _MLModel1Path, Description);
+                        T3BL.TicTacToe.ProcessRequest(request, computerPlayer2, _OutcomePredictionModelPath, Description);
 
                     gameStatus = response.Status;
 
