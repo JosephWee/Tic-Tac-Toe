@@ -38,8 +38,12 @@ jobs:
           then            
                 DoCommit=0
           else
-                DoCommit=1
-                if [ "$gitstatus" = *'TicTacToeML'*'MLModels'* ] || [ "$gitstatus" = *'TicTacToeML'*'TrainingData'* ]
+                git add TicTacToeML/MLModels
+                git add TicTacToeML/TrainingData
+                
+                gitstatus=$(git status)
+                
+                if [ "$gitstatus" = *'Changes to be committed'* ]
                 then
                     DoCommit=1
                 fi
@@ -48,9 +52,6 @@ jobs:
           if [ $DoCommit -eq 1 ] 
           then
                 echo "Changes detected"
-                git add TicTacToeML/MLModels
-                git add TicTacToeML/TrainingData
-                git status
                 git config --global user.name 'JosephWee'
                 git config --global user.email 'JosephWee@users.noreply.github.com'
                 git commit -m "WORKFLOW:$GITHUB_WORKFLOW JOB:$GITHUB_JOB RUN:$GITHUB_RUN_NUMBER triggered by Commit $GITHUB_SHA pushed by $GITHUB_ACTOR"
