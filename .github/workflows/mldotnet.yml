@@ -35,9 +35,11 @@ jobs:
           DoCommit=0
           gitstatus=$(git status)
           if [ "$gitstatus" = *'nothing to commit,'*'working tree clean'* ]
-          then            
+          then
+                echo "Block 1"
                 DoCommit=0
           else
+                echo "Block 2"
                 git add TicTacToeML/MLModels
                 git add TicTacToeML/TrainingData
                 
@@ -45,6 +47,7 @@ jobs:
                 
                 if [ "$gitstatus" = *'Changes to be committed'* ]
                 then
+                    echo "Block 3"
                     DoCommit=1
                 fi
           fi
