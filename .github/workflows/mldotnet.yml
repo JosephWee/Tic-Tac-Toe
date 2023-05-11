@@ -28,17 +28,19 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Init Before Running ML Pipelines
-      run: gitstatusbefore=$(git status)
+      run: |
+          export gitstatusbefore=$(git status)
+          echo $gitstatusbefore
 
     - name: Run ML Pipeline
       run: dotnet test ./MLPipelines/MLPipelines.csproj --no-build --verbosity normal --settings /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/MLPipelines/MLPipeline.runsettings
 
     - name: Commit and Push File Changes
       run: |
-          gitstatusafter=$(git status)
+          export gitstatusafter=$(git status)
+          echo $gitstatusbefore
+          echo $gitstatusafter
           if [ "$gitstatusafter" != "$gitstatusbefore" ]; then
-            echo $gitstatusbefore
-            echo $gitstatusafter
             if [ "TicTacToeML/MLModels" in "$gitstatusafter" ] || [ "TicTacToeML/TrainingData" in "$gitstatusafter" ]
             then
                 echo "Echoing 'Changes detected in TicTacToeML/MLModels or TicTacToeML/TrainingData'"
