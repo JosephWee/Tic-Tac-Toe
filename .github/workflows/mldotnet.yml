@@ -41,19 +41,31 @@ jobs:
             DoCommit=0
           else
             echo "Block 2"
-            if [[ "$gitstatus" == *"TicTacToeML/MLModels/"*".zip"* ]]
+            
+            if [[ "$gitstatus" == *"TicTacToeML/MLModels/"*".zip"* ]] || [[ "$gitstatus" == *"TicTacToeML/TrainingData/Processed/"*".csv"* ]] || [[ "$gitstatus" == *"TicTacToeML/TrainingData/Rejected/"*".csv"* ]]
             then
                 echo "Block 3"
-            fi
+                
+                git add TicTacToeML/MLModels
+                git add TicTacToeML/TrainingData
+                
+                gitstatus=$(git status)
 
-            if [[ "$gitstatus" == *"TicTacToeML/TrainingData/Processed/"*".csv"* ]]
-            then
-                echo "Block 4"
-            fi
-
-            if [[ "$gitstatus" == *"TicTacToeML/TrainingData/Rejected/"*".csv"* ]]
-            then
-                echo "Block 5"
+                if [[ $gitstatus == *"Changes to be committed"* ]]
+                then
+                    echo "Block 4"
+                    DoCommit=1
+                fi
             fi
           fi
-          
+
+          if [ $DoCommit -eq 1 ]
+          then
+                echo "Changes detected"
+                git config --global user.name 'JosephWee'
+                git config --global user.email 'JosephWee@users.noreply.github.com'
+                git commit -m "WORKFLOW:$GITHUB_WORKFLOW JOB:$GITHUB_JOB RUN:$GITHUB_RUN_NUMBER triggered by Commit $GITHUB_SHA pushed by $GITHUB_ACTOR"
+                git push origin
+          else
+                echo "No Changes detected"
+          fi
