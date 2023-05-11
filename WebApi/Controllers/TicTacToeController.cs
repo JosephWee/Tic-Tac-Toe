@@ -15,7 +15,8 @@ namespace WebApi.Controllers
     public class TicTacToeController : ControllerBase
     {
         private readonly IConfiguration _config;
-        private string _MLNetModelPath = string.Empty;
+        private string _OutcomePredictionModelPath = string.Empty;
+        private string _ComputerPlayerV3ModelPath = string.Empty;
 
         public TicTacToeController(IConfiguration config)
         {
@@ -35,14 +36,23 @@ namespace WebApi.Controllers
                     "TicTacToeData",
                     TicTacToeDataConnString);
 
-            var MLNetModelPath = config.GetValue<string>("MLModel1Path") ?? string.Empty;
-            _MLNetModelPath =
-                MLNetModelPath
+            var ComputerPlayerV3ModelPath = config.GetValue<string>("ComputerPlayerV3ModelPath") ?? string.Empty;
+            _ComputerPlayerV3ModelPath =
+                ComputerPlayerV3ModelPath
                 .Replace("$(SolutionDir)", solutionDir)
                 .Replace("$(MSBuildProjectDirectory)", msbuildDir);
 
-            if (!System.IO.File.Exists(_MLNetModelPath))
-                throw new FileNotFoundException($"MLModel1 file not found.\r\nFile not found:\r\n{_MLNetModelPath}");
+            if (!System.IO.File.Exists(_ComputerPlayerV3ModelPath))
+                throw new FileNotFoundException($"ComputerPlayerV3ModelPath file not found.\r\nFile not found:\r\n{_ComputerPlayerV3ModelPath}");
+
+            var OutcomePredictionModelPath = config.GetValue<string>("OutcomePredictionModelPath") ?? string.Empty;
+            _OutcomePredictionModelPath =
+                OutcomePredictionModelPath
+                .Replace("$(SolutionDir)", solutionDir)
+                .Replace("$(MSBuildProjectDirectory)", msbuildDir);
+
+            if (!System.IO.File.Exists(_OutcomePredictionModelPath))
+                throw new FileNotFoundException($"OutcomePredictionModelPath file not found.\r\nFile not found:\r\n{_OutcomePredictionModelPath}");
         }
 
         // GET api/values
@@ -195,10 +205,10 @@ namespace WebApi.Controllers
                     return BadRequest();
 
                 //var computerPlayer = new T3BL.ComputerPlayerV2();
-                var computerPlayer = new T3BL.ComputerPlayerV3(_MLNetModelPath);
+                var computerPlayer = new T3BL.ComputerPlayerV3(_ComputerPlayerV3ModelPath);
 
                 string Description = $"Web Api - {computerPlayer.GetType().Name}";
-                var retVal = T3BL.TicTacToe.ProcessRequest(value, computerPlayer, _MLNetModelPath, Description);
+                var retVal = T3BL.TicTacToe.ProcessRequest(value, computerPlayer, _OutcomePredictionModelPath, Description);
 
                 return Ok(retVal);
             }
