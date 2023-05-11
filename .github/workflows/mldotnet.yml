@@ -35,10 +35,25 @@ jobs:
           DoCommit=0
           gitstatus=$(git status)
           
-          if [[ "$gitstatus" == *"Your branch is up to date with 'origin/main'."* ]]
+          if [[ "$gitstatus" == *"nothing to commit, working tree clean"* ]]
           then
-            echo "Up to date"
+            echo "Block 1"
+            DoCommit=0
           else
-            echo "Not up to date"
+            echo "Block 2"
+            if [[ "$gitstatus" == *"TicTacToeML/MLModels/"*".zip"* ]]
+            then
+                echo "Block 3"
+            fi
+
+            if [[ "$gitstatus" == *"TicTacToeML/TrainingData/Processed/"*".csv"* ]]
+            then
+                echo "Block 4"
+            fi
+
+            if [[ "$gitstatus" == *"TicTacToeML/TrainingData/Rejected/"*".csv"* ]]
+            then
+                echo "Block 5"
+            fi
           fi
           
