@@ -40,7 +40,8 @@ jobs:
             echo "Echoing 'No changes'"
           else
             echo "Echoing 'Changes detected'"
-            if [ "TicTacToeML/MLModels" in "$gitstatusafter" ] || [ "TicTacToeML/TrainingData" in "$gitstatusafter" ] then
+            if [ "TicTacToeML/MLModels" in "$gitstatusafter" ] || [ "TicTacToeML/TrainingData" in "$gitstatusafter" ]
+            then
                 echo "Echoing 'Changes detected in TicTacToeML/MLModels or TicTacToeML/TrainingData'"
                 git add TicTacToeML/MLModels
                 git add TicTacToeML/TrainingData
