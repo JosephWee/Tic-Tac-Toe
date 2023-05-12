@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <RunSettings>
 	<TestRunParameters>
-		<Parameter name="MLModelPath" value="$(SolutionDir)/TicTacToeML/MLModels/MLModel1_2023_05_09_233130.zip" />
+		<Parameter name="MLModelPath" value="$(SolutionDir)/TicTacToeML/MLModels/MLModel1_2023_05_12_072508.zip" />
 		<Parameter name="MLTrainingDataPath" value="$(SolutionDir)/TicTacToeML/TrainingData" />
 	</TestRunParameters>
 </RunSettings>
