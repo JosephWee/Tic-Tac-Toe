@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTest", "NUnitTest\NUni
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicTacToeML", "TicTacToeML\TicTacToeML.csproj", "{D6C8A225-6E1A-4F60-8A36-C064A909DB9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLPipelines", "MLPipelines\MLPipelines.csproj", "{7609D087-D652-498B-8702-9CDB83E46BFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLPipelines", "MLPipelines\MLPipelines.csproj", "{7609D087-D652-498B-8702-9CDB83E46BFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLModelMetrics", "MLModelMetrics\MLModelMetrics.csproj", "{5A5CBD38-E02A-4529-8880-3A58E6A8B3A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{7609D087-D652-498B-8702-9CDB83E46BFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7609D087-D652-498B-8702-9CDB83E46BFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7609D087-D652-498B-8702-9CDB83E46BFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A5CBD38-E02A-4529-8880-3A58E6A8B3A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A5CBD38-E02A-4529-8880-3A58E6A8B3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A5CBD38-E02A-4529-8880-3A58E6A8B3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A5CBD38-E02A-4529-8880-3A58E6A8B3A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
