@@ -14,7 +14,7 @@ namespace UnitTests
     public class MLDataExport
     {
         //private static Random random = new Random();
-        private static FileInfo _MLModel1FileInfo = null;
+        //private static FileInfo _MLModel1FileInfo = null;
         private static DirectoryInfo _CsvOutputDirInfo = null;
 
         [SetUp]
@@ -44,15 +44,15 @@ namespace UnitTests
                 .DbContextConfig
                 .AddOrReplace("TicTacToeData", TicTacToeDataConnString);
 
-            var MLModel1Path =
-                TestContext
-                .Parameters
-                .Get("MLModel1Path", string.Empty)
-                .Replace("$(SolutionDir)", solutionDir)
-                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            //var MLModel1Path =
+            //    TestContext
+            //    .Parameters
+            //    .Get("MLModel1Path", string.Empty)
+            //    .Replace("$(SolutionDir)", solutionDir)
+            //    .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
-            _MLModel1FileInfo = new FileInfo( MLModel1Path );
-            Assert.IsTrue(_MLModel1FileInfo.Exists);
+            //_MLModel1FileInfo = new FileInfo( MLModel1Path );
+            //Assert.IsTrue(_MLModel1FileInfo.Exists);
 
             var CsvOutputPath =
                 TestContext
