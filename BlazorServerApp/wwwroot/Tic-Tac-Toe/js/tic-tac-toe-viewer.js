@@ -133,6 +133,10 @@
             '           <button type="button" class="btn btn-viewer-nav next">Next</button>' +
             '       </div>' +
             '   </div>' +
+            '</div>' +
+            '<div id="overlay_' + $(this.#container).attr('id') + '" class="overlay text-center" style="background-color: rgba(180, 180, 180, 0.5)">' +
+            '   <div class="overlay-text" style="background-color: rgba(180, 180, 180, 0.5)">' +
+            '   </div>' +
             '</div>'
         );
 
@@ -292,6 +296,11 @@
         let PageNum = parseInt(sessionStorage.getItem(app.InstanceId + "PageNum"));
         //let PageCount = parseInt(sessionStorage.getItem(app.InstanceId + "PageCount"));
 
+        let loaderId = 'overlay_' + $(this.#container).attr('id');
+
+        if (typeof loaderShow === 'function' && typeof loaderHide === 'function')
+            loaderShow(loaderId);
+
         let thepromise = this.#getTicTacToeResultSetDelegate(1, PageNum);
 
         thepromise.then(resultSetJson => {
@@ -324,6 +333,9 @@
                         $(cellToChange).attr("data-state", result.CellStates[i]);
                     }
                 }
+
+                if (typeof loaderShow === 'function' && typeof loaderHide === 'function')
+                    loaderHide(loaderId);
 
                 app.refreshUI.call(app);
             }

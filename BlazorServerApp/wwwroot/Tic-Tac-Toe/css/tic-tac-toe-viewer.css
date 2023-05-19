@@ -122,3 +122,7 @@ div.tic-tac-toe-pager div div {
     vertical-align: middle;
     text-align: right;
 }
+
+div.tictactoeviewerjq {
+    position: relative !important;
+}
