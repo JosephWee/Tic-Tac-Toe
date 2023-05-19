@@ -3,50 +3,57 @@
 @using TicTacToe.Extensions
 @using BlazorServerApp.Data
 @inject TicTacToeService tictactoesvc
+@inject IJSRuntime JS
 
 <div>@gameheader</div>
-<div id="@ID" class="game">
-    @for (int r = 0; r < @GridSize; r++)
-    {
-        <div class="gamerow">
-            @for (int c = 0; c < GridSize; c++)
-            {
-                int i = r * GridSize + c;
+<div style="position: relative; max-width: 365px !important; max-height: 365px !important;">
+    <div id="@ID" class="game">
+        @for (int r = 0; r < @GridSize; r++)
+        {
+            <div class="gamerow">
+                @for (int c = 0; c < GridSize; c++)
+                {
+                    int i = r * GridSize + c;
                 
-                List<string> cssClasses = new List<string>() { "gamecell" };
+                    List<string> cssClasses = new List<string>() { "gamecell" };
                 
-                if (r == 0)
-                    cssClasses.Add("firstrow");
-                else if (r == GridSize -1)
-                    cssClasses.Add("lastrow");
-                else
-                    cssClasses.Add("midrow");
+                    if (r == 0)
+                        cssClasses.Add("firstrow");
+                    else if (r == GridSize -1)
+                        cssClasses.Add("lastrow");
+                    else
+                        cssClasses.Add("midrow");
 
-                if (c == 0)
-                    cssClasses.Add("firstcol");
-                else if (c == GridSize - 1)
-                    cssClasses.Add("lastcol");
-                else
-                    cssClasses.Add("midcol");
+                    if (c == 0)
+                        cssClasses.Add("firstcol");
+                    else if (c == GridSize - 1)
+                        cssClasses.Add("lastcol");
+                    else
+                        cssClasses.Add("midcol");
 
-                int CellState = CellStates[i];
+                    int CellState = CellStates[i];
 
-                string imgUrl = "/Tic-Tac-Toe/Blank120x120.png";
-                string symbolColor = WinningCells.Contains(i) ? "Red" : string.Empty;
+                    string imgUrl = "/Tic-Tac-Toe/Blank120x120.png";
+                    string symbolColor = WinningCells.Contains(i) ? "Red" : string.Empty;
                 
-                if (CellState == 1)
-                    imgUrl = $"/Tic-Tac-Toe/Cross{symbolColor}120x120.png";
-                else if (CellState == 2)
-                    imgUrl = $"/Tic-Tac-Toe/Circle{symbolColor}120x120.png";
+                    if (CellState == 1)
+                        imgUrl = $"/Tic-Tac-Toe/Cross{symbolColor}120x120.png";
+                    else if (CellState == 2)
+                        imgUrl = $"/Tic-Tac-Toe/Circle{symbolColor}120x120.png";
 
-                List<string> contentCssClasses = new List<string>() { "gamecellcontent" };
+                    List<string> contentCssClasses = new List<string>() { "gamecellcontent" };
 
-                <div id="cell@(i)" class="@(string.Join(" ", cssClasses))">
-                    <img class="@(string.Join(" ", contentCssClasses))" src="@imgUrl" @onclick="e => imgOnClick(e, i)" />
-                </div>
-            }
+                    <div id="cell@(i)" class="@(string.Join(" ", cssClasses))">
+                        <img class="@(string.Join(" ", contentCssClasses))" src="@imgUrl" @onclick="e => imgOnClick(e, i)" />
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div id="@("overlay_" + ID)" class="overlay text-center" style="background-color: rgba(180, 180, 180, 0.5)">
+        <div class="overlay-text" style="background-color: rgba(180, 180, 180, 0.5)">
         </div>
-    }
+    </div>
 </div>
 <div>
     <HideableButton CssClass="btn btn-danger" Text="Reset" Hidden="@(gameStatus==null)" clickedEventCallback="resetButtonClicked" ></HideableButton>
@@ -103,7 +110,7 @@
         InitVariables();
     }
 
-    public void imgOnClick(MouseEventArgs e, int cellIndex)
+    public async void imgOnClick(MouseEventArgs e, int cellIndex)
     {
         var CellState = CellStates[cellIndex];
         if (CellState == 0)
@@ -118,7 +125,10 @@
                     NumberOfPlayers = 1,
                     CellStates = cellstates
                 };
-            var response = tictactoesvc.UpdateTicTacToe(request);
+
+            JS.InvokeVoidAsync("loaderShow", "overlay_" + ID);
+            var response = await tictactoesvc.UpdateTicTacToe(request);
+            JS.InvokeVoidAsync("loaderHide", "overlay_" + ID);
 
             if (response == null)
             {

@@ -128,6 +128,10 @@
             '        <button type="button" class="btn btn-danger changeMode">Change Mode</button>' +
             '        <button type="button" class="btn btn-info aiPrediction">AI Prediction</button>' +
             '    </div> ' +
+            '</div>' +
+            '<div id="overlay_' + $(this.#container).attr('id') + '" class="overlay text-center" style="background-color: rgba(180, 180, 180, 0.5)">' +
+            '   <div class="overlay-text" style="background-color: rgba(180, 180, 180, 0.5)">' +
+            '   </div>' +
             '</div>'
         );
 
@@ -443,6 +447,11 @@
         //app.log("checkResult()");
         //app.log(requestData);
 
+        let loaderId = 'overlay_' + $(this.#container).attr('id');
+
+        if (typeof loaderShow === 'function' && typeof loaderHide === 'function')
+            loaderShow(loaderId);
+
         let thepromise = this.#updateTicTacToeDelegate(requestData);
 
         //app.log("checkResult()");
@@ -489,6 +498,9 @@
                     app.#aiPredictionScore = maxScore;
                 }
             }
+
+            if (typeof loaderShow === 'function' && typeof loaderHide === 'function')
+                loaderHide(loaderId);
 
             app.refreshUI();
         });

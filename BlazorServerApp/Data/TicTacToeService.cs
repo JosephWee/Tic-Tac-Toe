@@ -20,7 +20,7 @@ namespace BlazorServerApp.Data
             return DateTime.UtcNow.ToString("O");
         }
 
-        public TicTacToeUpdateResponse UpdateTicTacToe(TicTacToeUpdateRequest request)
+        public async Task<TicTacToeUpdateResponse> UpdateTicTacToe(TicTacToeUpdateRequest request)
         {
             var configExternalServices =
                 this._config.GetSection("ExternalServices");

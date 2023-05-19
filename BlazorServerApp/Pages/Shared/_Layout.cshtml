@@ -54,6 +54,15 @@
             </div>
         </nav>
     </header>
+    <script type="text/javascript">
+        function loaderShow(loaderId) {
+            $("#" + loaderId).show();
+        }
+
+        function loaderHide(loaderId) {
+            $("#" + loaderId).hide();
+        }
+    </script>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

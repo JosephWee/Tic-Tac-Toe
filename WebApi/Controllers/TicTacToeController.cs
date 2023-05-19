@@ -57,7 +57,7 @@ namespace WebApi.Controllers
 
         // GET api/values
         [HttpGet]
-        public ActionResult Get(int pageSize, int pageNum)
+        public async Task<ActionResult> Get(int pageSize, int pageNum)
         {
             try
             {
@@ -197,7 +197,7 @@ namespace WebApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public ActionResult Post([FromBody] TicTacToe.Models.TicTacToeUpdateRequest value)
+        public async Task<ActionResult> Post([FromBody] TicTacToe.Models.TicTacToeUpdateRequest value)
         {
             try
             {

@@ -93,3 +93,7 @@ div.player2 div {
 
 div.tic-tac-toe-controls {
 }
+
+div.tictactoejq {
+    position: relative !important;
+}
