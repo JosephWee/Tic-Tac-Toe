@@ -1,5 +1,35 @@
 # Tick-Tac-Toe
-## Background
+
+[MIT License](https://github.com/JosephWee/Tic-Tac-Toe/blob/main/LICENSE)
+
+## Table of Contents
+* [About](https://github.com/JosephWee/Tic-Tac-Toe#about)
+* [Objectives](https://github.com/JosephWee/Tic-Tac-Toe#objectives)
+* [Quickstart](https://github.com/JosephWee/Tic-Tac-Toe#quickstart)
+  * [Code Entry Point](https://github.com/JosephWee/Tic-Tac-Toe#code-entry-point)
+  * [Database](https://github.com/JosephWee/Tic-Tac-Toe#database)
+  * [Web API](https://github.com/JosephWee/Tic-Tac-Toe#web-api)
+  * [BlazorServerApp](https://github.com/JosephWee/Tic-Tac-Toe#blazorserverapp)
+  * [Running the code](https://github.com/JosephWee/Tic-Tac-Toe#running-the-code)
+* [Notes](https://github.com/JosephWee/Tic-Tac-Toe#notes)
+  * [2023-04-24 12:30pm Mon - ComputerPlayerV3](https://github.com/JosephWee/Tic-Tac-Toe#2023-04-24-1230pm-mon---computerplayerv3)
+  * [2023-04-28 9:59pm Fri - Tic-Tac-Toe Game Stats Part 1](https://github.com/JosephWee/Tic-Tac-Toe#2023-04-28-959pm-fri---tic-tac-toe-game-stats-part-1)
+  * [2023-05-01 9:29am Mon - Tic-Tac-Toe Game Stats Part 2](https://github.com/JosephWee/Tic-Tac-Toe#2023-05-01-929am-mon---tic-tac-toe-game-stats-part-2)
+    * [Distribution (%) of Winning Player (Player 1) moves across the 9 cells](https://github.com/JosephWee/Tic-Tac-Toe#distribution--of-winning-player-player-1-moves-across-the-9-cells)
+    * [Distribution (%) of Winning Player (Player 2) moves across the 9 cells](https://github.com/JosephWee/Tic-Tac-Toe#distribution--of-winning-player-player-2-moves-across-the-9-cells)
+    * [Distribution (%) of Winning Player moves across the 9 cells](https://github.com/JosephWee/Tic-Tac-Toe#distribution--of-winning-player-moves-across-the-9-cells)
+  * [2023-05-04 4:02pm - Possibility of using GitHub Actions for ML Learning Pipeline](https://github.com/JosephWee/Tic-Tac-Toe#2023-05-04-402pm---possibility-of-using-github-actions-for-ml-learning-pipeline)
+  * [2023-05-10 4:23pm Wed - Tic-Tac-Toe Game Stats Part 3](https://github.com/JosephWee/Tic-Tac-Toe#2023-05-10-423pm-wed---tic-tac-toe-game-stats-part-3)
+    * [Distribution (%) of Winning Player (Player 1) moves across the 9 cells](https://github.com/JosephWee/Tic-Tac-Toe#distribution--of-winning-player-player-1-moves-across-the-9-cells-1)
+    * [Distribution (%) of Winning Player (Player 2) moves across the 9 cells](https://github.com/JosephWee/Tic-Tac-Toe#distribution--of-winning-player-player-2-moves-across-the-9-cells-1)
+    * [Distribution (%) of Winning Player moves across the 9 cells](https://github.com/JosephWee/Tic-Tac-Toe#distribution--of-winning-player-moves-across-the-9-cells-1)
+  * [2023-05-11 7:28pm Thu - Tic-Tac-Toe Game Stats Part 4](https://github.com/JosephWee/Tic-Tac-Toe#2023-05-11-728pm-thu---tic-tac-toe-game-stats-part-4)
+    * [Distribution (%) of Winning Player (Player 1) moves across the 9 cells](https://github.com/JosephWee/Tic-Tac-Toe#distribution--of-winning-player-player-1-moves-across-the-9-cells-2)
+    * [Distribution (%) of Winning Player (Player 2) moves across the 9 cells](https://github.com/JosephWee/Tic-Tac-Toe#distribution--of-winning-player-player-2-moves-across-the-9-cells-2)
+    * [Distribution (%) of Winning Player moves across the 9 cells](https://github.com/JosephWee/Tic-Tac-Toe#distribution--of-winning-player-moves-across-the-9-cells-2)
+
+
+## About
 The Tic-Tac-Toe project was started in 16 Feb 2022 as a way to learn about Machine Learning.
 
 The current implementation has 3 versions of Computer Players.
