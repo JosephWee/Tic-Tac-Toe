@@ -16,12 +16,14 @@ RUN dotnet restore "./WebAPI/./WebAPI.csproj"
 COPY . .
 WORKDIR "/src/WebAPI"
 RUN dotnet build "./WebAPI.csproj" -c $BUILD_CONFIGURATION -o /build/build
-#RUN dotnet publish "./WebAPI.csproj" -c $BUILD_CONFIGURATION -o /build/publish /p:UseAppHost=false
-RUN dotnet publish "./WebAPI.csproj" -c $BUILD_CONFIGURATION -o /build/publish
+RUN dotnet publish "./WebAPI.csproj" -c $BUILD_CONFIGURATION -o /build/publish /p:UseAppHost=false
+#RUN dotnet publish "./WebAPI.csproj" -c $BUILD_CONFIGURATION -o /build/publish
 #RUN dotnet publish -p:PublishProfile=FolderProfile
 
 FROM base AS finalstage
+EXPOSE 8080
+EXPOSE 8443
 WORKDIR /app
 COPY --from=publishstage /build/publish /app
-#ENTRYPOINT ["dotnet", "WebAPI.dll"]
-ENTRYPOINT "/app/WebAPI"
+ENTRYPOINT ["dotnet", "WebAPI.dll"]
+#ENTRYPOINT "/app/WebAPI"
