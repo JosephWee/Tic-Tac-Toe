@@ -8,13 +8,13 @@ EXPOSE 8443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publishstage
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["WebApi/WebApi.csproj", "WebApi/"]
+COPY ["WebAPI/WebApi.csproj", "WebAPI/"]
 COPY ["TicTacToe.Distribution/TicTacToe.Distribution.csproj", "TicTacToe.Distribution/"]
 COPY ["TicTacToeBL/TicTacToeBL.csproj", "TicTacToeBL/"]
 COPY ["TicTacToeML/TicTacToeML.csproj", "TicTacToeML/"]
-RUN dotnet restore "./WebApi/./WebApi.csproj"
+RUN dotnet restore "./WebAPI/./WebApi.csproj"
 COPY . .
-WORKDIR "/src/WebApi"
+WORKDIR "/src/WebAPI"
 RUN dotnet build "./WebApi.csproj" -c $BUILD_CONFIGURATION -o /build/build
 RUN dotnet publish "./WebApi.csproj" -c $BUILD_CONFIGURATION -o /build/publish /p:UseAppHost=false
 
