@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using log4net;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.ML;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Reflection;
 using T3BL = TicTacToe.BusinessLogic;
 using T3Ent = TicTacToe.Entity;
 using T3ML = TicTacToe.ML;
@@ -17,13 +20,17 @@ namespace WebApi.Controllers
         private readonly IConfiguration _config;
         private string _OutcomePredictionModelPath = string.Empty;
         private string _ComputerPlayerV3ModelPath = string.Empty;
-
-        public TicTacToeController(IConfiguration config)
+        private log4net.ILog _logger;
+        
+        public TicTacToeController(IConfiguration config, log4net.ILog logger)
         {
             _config = config;
+            _logger = logger;
 
-            string solutionDir = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..")).FullName;
-            string msbuildDir = Path.Combine(solutionDir, "WebApi");
+            //string solutionDir = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..")).FullName;
+            //string msbuildDir = Path.Combine(solutionDir, "WebApi");
+            string msbuildDir = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "..", "..", "..")).FullName;
+            string solutionDir = new DirectoryInfo(Path.Combine(msbuildDir, "..")).FullName;
 
             string connectionString = config.GetConnectionString("TicTacToeDataConnString") ?? string.Empty;
             string TicTacToeDataConnString =
@@ -42,6 +49,9 @@ namespace WebApi.Controllers
                 .Replace("$(SolutionDir)", solutionDir)
                 .Replace("$(MSBuildProjectDirectory)", msbuildDir);
 
+            if (System.IO.File.Exists(Path.Combine(AppContext.BaseDirectory, _ComputerPlayerV3ModelPath)))
+                _ComputerPlayerV3ModelPath = Path.Combine(AppContext.BaseDirectory, _ComputerPlayerV3ModelPath);
+
             if (!System.IO.File.Exists(_ComputerPlayerV3ModelPath))
                 throw new FileNotFoundException($"ComputerPlayerV3ModelPath file not found.\r\nFile not found:\r\n{_ComputerPlayerV3ModelPath}");
 
@@ -50,6 +60,9 @@ namespace WebApi.Controllers
                 OutcomePredictionModelPath
                 .Replace("$(SolutionDir)", solutionDir)
                 .Replace("$(MSBuildProjectDirectory)", msbuildDir);
+
+            if (System.IO.File.Exists(Path.Combine(AppContext.BaseDirectory, _OutcomePredictionModelPath)))
+                _OutcomePredictionModelPath = Path.Combine(AppContext.BaseDirectory, _OutcomePredictionModelPath);
 
             if (!System.IO.File.Exists(_OutcomePredictionModelPath))
                 throw new FileNotFoundException($"OutcomePredictionModelPath file not found.\r\nFile not found:\r\n{_OutcomePredictionModelPath}");
@@ -189,8 +202,14 @@ namespace WebApi.Controllers
 
                 return Ok(resultSet);
             }
+            catch (TicTacToe.CustomValidationException valEx)
+            {
+                this._logger.Debug(valEx);
+                return BadRequest();
+            }
             catch (Exception ex)
             {
+                this._logger.Error(ex);
                 return Problem(detail: "Internal Error", statusCode: 500);
             }
         }
@@ -212,12 +231,14 @@ namespace WebApi.Controllers
 
                 return Ok(retVal);
             }
-            catch (ArgumentException argEx)
+            catch (TicTacToe.CustomValidationException valEx)
             {
+                this._logger.Debug(valEx);
                 return BadRequest();
             }
             catch (Exception ex)
             {
+                this._logger.Error(ex);
                 return Problem(detail: "Internal Error", statusCode: 500);
             }
         }

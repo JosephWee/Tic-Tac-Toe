@@ -4,6 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>e5a6f87c-ab36-4de4-96b5-ee54b6751fc2</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,15 +15,32 @@
 
   <ItemGroup>
     <None Remove="appsettings.json.txt" />
+    <None Remove="MLModels\MLModel1_2023_05_11_150603.zip" />
+    <None Remove="MLModels\MLModel1_2023_05_12_072508.zip" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="MLModels\MLModel1_2023_05_11_150603.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MLModels\MLModel1_2023_05_12_072508.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TicTacToe.Distribution\TicTacToe.Distribution.csproj" />
     <ProjectReference Include="..\TicTacToeBL\TicTacToeBL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 {
   "ConnectionStrings": {
-    "TicTacToeDataConnString": "Server=127.0.0.1;Port=43594;Database=TicTacToeDb;User Id=\"TicTacToeUser\";Password=\"TicTacToePassword\";"
+    "TicTacToeDataConnString": "Server=host.docker.internal;Port=5432;Database=TicTacToeDb;User Id=\"TicTacToeUser\";Password=\"TicTacToePassword\";"
   }
 }

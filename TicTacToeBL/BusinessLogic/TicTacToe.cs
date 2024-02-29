@@ -150,10 +150,10 @@ namespace TicTacToe.BusinessLogic
         public static Models.TicTacToeGameStatus EvaluateResult(ComputerPlayerBase computerPlayer, int GridSize, List<int> CellStates, out int BlankCellCount, out List<int> WinningCells)
         {
             if (computerPlayer == null)
-                throw new ArgumentNullException("computerPlayer should not be null");
+                throw new CustomValidationException(new ArgumentNullException("computerPlayer should not be null"));
 
             if (CellStates == null)
-                throw new ArgumentNullException("CellStates should not be null");
+                throw new CustomValidationException(new ArgumentNullException("CellStates should not be null"));
 
             int TotalCellCount = GridSize * GridSize;
             int winner = int.MinValue;
@@ -171,7 +171,7 @@ namespace TicTacToe.BusinessLogic
                 int cellState = CellStates[i];
 
                 if (!ValidCellStateValues.Contains(cellState))
-                    throw new ArgumentException(string.Format("Cell[{0},{1}] is invalid", row, col));
+                    throw new CustomValidationException(new ArgumentException(string.Format("Cell[{0},{1}] is invalid", row, col)));
 
                 cell[row, col] = cellState;
 
@@ -302,10 +302,10 @@ namespace TicTacToe.BusinessLogic
             {
                 if (blankCellCount <= 0)
                     Status = Models.TicTacToeGameStatus.Draw;
-                
+
                 WinningCells = null;
             }
-            
+
             return Status;
         }
 
@@ -331,7 +331,7 @@ namespace TicTacToe.BusinessLogic
             game = matchingGame;
 
             if (game == null && ds.Any())
-                throw new DataException("TicTacToeData has orphaned entries.");
+                throw new CustomValidationException(new DataException("TicTacToeData has orphaned entries."));
 
             if (game == null && !ds.Any())
                 return ds;
@@ -345,8 +345,10 @@ namespace TicTacToe.BusinessLogic
                 .ToList();
 
             if (invalidCellContent.Any())
-                throw new ArgumentOutOfRangeException(
-                    string.Format("Cells {0} has invalid cell contents", string.Join(", ", invalidCellContent))
+                throw new CustomValidationException(
+                    new ArgumentOutOfRangeException(
+                        string.Format("Cells {0} has invalid cell contents", string.Join(", ", invalidCellContent))
+                    )
                 );
 
             bool allCellIndexOkay = true;
@@ -361,7 +363,7 @@ namespace TicTacToe.BusinessLogic
             }
 
             if (!allCellIndexOkay)
-                throw new IndexOutOfRangeException("Cell Indices are not 0 based or contiguous");
+                throw new CustomValidationException(new IndexOutOfRangeException("Cell Indices are not 0 based or contiguous"));
 
             return ds;
         }
@@ -369,14 +371,15 @@ namespace TicTacToe.BusinessLogic
         public static void ValidateTicTacToeUpdateRequest(Models.TicTacToeUpdateRequest request, ComputerPlayerBase computerPlayer, out Entity.TicTacToeGame game, out List<Entity.TicTacToeDataEntry> latestMove)
         {
             if (request == null)
-                throw new ArgumentNullException("Request is null");
+                throw new CustomValidationException(new ArgumentNullException("Request is null"));
             if (request.CellStates == null)
-                throw new ArgumentNullException("Request.CellStates is null");
+                throw new CustomValidationException(new ArgumentNullException("Request.CellStates is null"));
             if (request.CellStates.Count != request.TotalCellCount)
-                throw new ArgumentNullException("Unexpected Request.CellStates count");
+                throw new CustomValidationException(new ArgumentNullException("Unexpected Request.CellStates count"));
 
             //Check that the request is valid
-            var exInvalidRquest = new ArgumentException("TicTacToeUpdateRequest is invalid.");
+            var innerEx = new ArgumentException("TicTacToeUpdateRequest is invalid.");
+            var exInvalidRquest = new CustomValidationException(innerEx);
 
             if (request.CellStates.Count() != request.TotalCellCount)
                 throw exInvalidRquest;
@@ -395,7 +398,7 @@ namespace TicTacToe.BusinessLogic
                 && (game == null || !latestMove.Any()))
                 return;
 
-            if (game.GridSize != request.GridSize)
+            if (game == null || game.GridSize != request.GridSize)
                 throw exInvalidRquest;
 
             if (latestMove.Count() != request.TotalCellCount)
