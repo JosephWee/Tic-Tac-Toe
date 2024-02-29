@@ -39,7 +39,7 @@ namespace BlazorServerApp.Data
                             request
                         );
 
-                    httpPostTask.Wait();
+                    await httpPostTask;
 
                     var httpResponseMessage = httpPostTask.Result;
                     
@@ -48,7 +48,7 @@ namespace BlazorServerApp.Data
                         .Content
                         .ReadFromJsonAsync<TicTacToeUpdateResponse>();
 
-                    readJsonTask.Wait();
+                    await readJsonTask;
 
                     if (readJsonTask.Result != null)
                         return readJsonTask.Result;

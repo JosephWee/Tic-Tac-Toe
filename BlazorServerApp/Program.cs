@@ -9,6 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 //builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton(typeof(log4net.ILog),
+    builder => {
+        return log4net.LogManager.GetLogger(typeof(Program));
+    }
+);
 
 //builder.Services.AddSingleton<TicTacToeService>();
 var ticTacToeService = new TicTacToeService(builder.Configuration);
