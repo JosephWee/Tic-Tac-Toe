@@ -32,7 +32,7 @@ EXPOSE 8080
 EXPOSE 8443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publishstage
-ARG BUILD_CONFIGURATION=Release
+ARG BUILD_CONFIGURATION=Debug
 WORKDIR /src
 COPY ["BlazorServerApp/BlazorServerApp.csproj", "BlazorServerApp/"]
 COPY ["TicTacToe.Distribution/TicTacToe.Distribution.csproj", "TicTacToe.Distribution/"]
@@ -40,11 +40,14 @@ RUN dotnet restore "./BlazorServerApp/./BlazorServerApp.csproj"
 COPY . .
 WORKDIR "/src/BlazorServerApp"
 RUN dotnet build "./BlazorServerApp.csproj" -c $BUILD_CONFIGURATION -o /build/build
-RUN dotnet publish "./BlazorServerApp.csproj" -c $BUILD_CONFIGURATION -o /build/publish /p:UseAppHost=false
+#RUN dotnet publish "./BlazorServerApp.csproj" -c $BUILD_CONFIGURATION -o /build/publish /p:UseAppHost=false
+RUN dotnet publish -p:PublishProfile=FolderProfile
 
 FROM base AS finalstage
+ARG BUILD_CONFIGURATION=Debug
 EXPOSE 8080
 EXPOSE 8443
 WORKDIR /app
-COPY --from=publishstage /build/publish /app
-ENTRYPOINT ["dotnet", "BlazorServerApp.dll"]
+COPY --from=publishstage /src/BlazorServerApp/bin/$BUILD_CONFIGURATION/net6.0/publish /app
+#ENTRYPOINT ["dotnet", "BlazorServerApp.dll"]
+ENTRYPOINT "/app/BlazorServerApp"
