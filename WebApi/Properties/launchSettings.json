@@ -28,7 +28,7 @@
       "publishAllPorts": true,
       "httpPort": 8080,
       "sslPort": 8443,
-      "useSSL": true
+      "useSSL": false
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json",
