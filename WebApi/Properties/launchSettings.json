@@ -3,25 +3,32 @@
     "WebApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "swagger",
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:8443;http://localhost:8080"
+      "applicationUrl": "https://+:8443;http://+:8080",
+      "httpPort": 8080,
+      "sslPort": 8443,
+      "useSSL": false,
+      "dotnetRunMessages": true
     },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "swagger",
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "https://+:8443;http://+:8080",
+      "httpPort": 8080,
+      "sslPort": 8443,
+      "useSSL": false
     },
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/",
       "environmentVariables": {
         "ASPNETCORE_URLS": "https://+:8443;http://+:8080"
       },
@@ -36,8 +43,10 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:8443;http://localhost:8080",
-      "sslPort": 8443
+      "applicationUrl": "https://+:8443;http://+:8080",
+      "httpPort": 8080,
+      "sslPort": 8443,
+      "useSSl": false
     }
   }
 }

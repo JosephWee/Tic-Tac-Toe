@@ -17,3 +17,5 @@ appSetting*.config
 smtp*.config
 #log4net*.config
 /WebAPI/publish
+/obj
+/bin/Debug
