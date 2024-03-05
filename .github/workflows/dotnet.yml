@@ -60,10 +60,10 @@ jobs:
         dotnet-version: 6.0.x
 
     - name: Restore dependencies
-      run: dotnet restore
-
+      run: dotnet restore Tic-Tac-Toe.sln
+    
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore Tic-Tac-Toe.sln
 
     - name: Initialize Postgres Database for Unit Tests
       run: |
