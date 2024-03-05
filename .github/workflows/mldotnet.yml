@@ -22,10 +22,10 @@ jobs:
         dotnet-version: 6.0.x
     
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore Tic-Tac-Toe.sln
       
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore Tic-Tac-Toe.sln
       
     - name: Run ML Pipeline
       run: dotnet test ./MLPipelines/MLPipelines.csproj --no-build --verbosity normal --settings /home/runner/work/Tic-Tac-Toe/Tic-Tac-Toe/MLPipelines/MLPipeline.runsettings
