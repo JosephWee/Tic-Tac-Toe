@@ -22,15 +22,16 @@ namespace BlazorServerApp.Pages
         [JSInvokableAttribute("jsGetTicTacToeResultSet")]
         public static async Task<string> OnPostFetchTicTacToeResultSet(int PageSize, int PageNum)
         {
-            var configExternalServices =
-                _config.GetSection("ExternalServices");
+            //var configExternalServices =
+            //    _config.GetSection("ExternalServices");
 
-            if (configExternalServices != null)
-            {
-                var configTicTacToeWebApi = configExternalServices.GetSection("TicTacToeWebApi");
-                if (configTicTacToeWebApi != null)
-                {
-                    var endpoint = configTicTacToeWebApi["endpoint"];
+            //if (configExternalServices != null)
+            //{
+            //    var configTicTacToeWebApi = configExternalServices.GetSection("TicTacToeWebApi");
+            //    if (configTicTacToeWebApi != null)
+            //    {
+                    //var endpoint = configTicTacToeWebApi["endpoint"];
+                    var endpoint = _config.GetValue<string>("TicTacToeWebApiEndPoint");
 
                     var client = new HttpClient();
                     var httpGetTask =
@@ -53,8 +54,8 @@ namespace BlazorServerApp.Pages
 
                         return tictactoeResultSet;
                     }
-                }
-            }
+            //    }
+            //}
 
             return string.Empty;
         }

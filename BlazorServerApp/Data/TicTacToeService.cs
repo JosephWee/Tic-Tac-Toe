@@ -22,15 +22,16 @@ namespace BlazorServerApp.Data
 
         public async Task<TicTacToeUpdateResponse> UpdateTicTacToe(TicTacToeUpdateRequest request)
         {
-            var configExternalServices =
-                this._config.GetSection("ExternalServices");
+            //var configExternalServices =
+            //    this._config.GetSection("ExternalServices");
 
-            if (configExternalServices != null)
-            {
-                var configTicTacToeWebApi = configExternalServices.GetSection("TicTacToeWebApi");
-                if (configTicTacToeWebApi != null)
-                {
-                    var endpoint = configTicTacToeWebApi["endpoint"];
+            //if (configExternalServices != null)
+            //{
+            //    var configTicTacToeWebApi = configExternalServices.GetSection("TicTacToeWebApi");
+            //    if (configTicTacToeWebApi != null)
+            //    {
+                    //var endpoint = configTicTacToeWebApi["endpoint"];
+                    var endpoint = _config.GetValue<string>("TicTacToeWebApiEndPoint");
 
                     var client = new HttpClient();
                     var httpPostTask =
@@ -52,8 +53,8 @@ namespace BlazorServerApp.Data
 
                     if (readJsonTask.Result != null)
                         return readJsonTask.Result;
-                }
-            }
+            //    }
+            //}
 
             return null;
         }

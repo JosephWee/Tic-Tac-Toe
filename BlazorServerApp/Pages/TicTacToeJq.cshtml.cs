@@ -26,15 +26,16 @@ namespace BlazorServerApp.Pages
 
             if (request != null)
             {
-                var configExternalServices =
-                    _config.GetSection("ExternalServices");
+                //var configExternalServices =
+                //    _config.GetSection("ExternalServices");
 
-                if (configExternalServices != null)
-                {
-                    var configTicTacToeWebApi = configExternalServices.GetSection("TicTacToeWebApi");
-                    if (configTicTacToeWebApi != null)
-                    {
-                        var endpoint = configTicTacToeWebApi["endpoint"];
+                //if (configExternalServices != null)
+                //{
+                //    var configTicTacToeWebApi = configExternalServices.GetSection("TicTacToeWebApi");
+                //    if (configTicTacToeWebApi != null)
+                //    {
+                        //var endpoint = configTicTacToeWebApi["endpoint"];
+                        var endpoint = _config.GetValue<string>("TicTacToeWebApiEndPoint");
 
                         var client = new HttpClient();
                         var httpPostTask =
@@ -60,8 +61,8 @@ namespace BlazorServerApp.Pages
                             if (tictactoeUpdateResponse != null)
                                 return JsonSerializer.Serialize(tictactoeUpdateResponse);
                         }
-                    }
-                }
+                //    }
+                //}
             }
 
             return string.Empty;

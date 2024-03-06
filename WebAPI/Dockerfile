@@ -2,25 +2,23 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publishstage
-ARG BUILD_CONFIGURATION=Release
+ARG BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
 WORKDIR /src
-COPY ["WebAPI/WebApi.csproj", "WebAPI/"]
+COPY ["WebAPI/WebAPI.csproj", "WebAPI/"]
 COPY ["TicTacToe.Distribution/TicTacToe.Distribution.csproj", "TicTacToe.Distribution/"]
 COPY ["TicTacToeBL/TicTacToeBL.csproj", "TicTacToeBL/"]
 COPY ["TicTacToeML/TicTacToeML.csproj", "TicTacToeML/"]
-RUN dotnet restore "./WebAPI/./WebApi.csproj"
+RUN dotnet restore "./WebAPI/./WebAPI.csproj"
 COPY . .
 WORKDIR "/src/WebAPI"
-RUN dotnet build "./WebApi.csproj" -c $BUILD_CONFIGURATION -o /build/build
-RUN dotnet publish "./WebApi.csproj" -c $BUILD_CONFIGURATION -o /build/publish /p:UseAppHost=false
+RUN dotnet build "./WebAPI.csproj" -c $BUILD_CONFIGURATION -o /build/build
+RUN dotnet publish "./WebAPI.csproj" -c $BUILD_CONFIGURATION -o /build/publish /p:UseAppHost=false
 
 FROM base AS finalstage
-EXPOSE 8080
-EXPOSE 8443
+EXPOSE 80
+EXPOSE 443
 WORKDIR /app
 COPY --from=publishstage /build/publish /app
-ENTRYPOINT ["dotnet", "WebApi.dll"]
+ENTRYPOINT ["dotnet", "WebAPI.dll"]

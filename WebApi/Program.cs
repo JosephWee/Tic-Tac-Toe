@@ -34,18 +34,20 @@ builder.Services.AddSingleton(
 //);
 
 // Add connection strings
-builder.Configuration.AddJsonFile("connectionStrings.json",
-        optional: false,
-        reloadOnChange: true);
+builder.Configuration.AddEnvironmentVariables();
+//builder.Configuration.AddJsonFile("connectionStrings.json",
+//        optional: false,
+//        reloadOnChange: true);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
-//{
-app.UseSwagger();
-app.UseSwaggerUI();
-//}
+if (app.Environment.EnvironmentName.StartsWith("Development"))
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 

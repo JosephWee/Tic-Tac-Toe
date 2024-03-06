@@ -4,24 +4,36 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "TicTacToeWebApiEndPoint": "http://localhost:5080/TicTacToe"
       },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://+:8453;http://+:8090"
+      "applicationUrl": "https://localhost:5453;http://localhost:5090",
+      "httpPort": 5090,
+      "sslPort": 5453,
+      "useSSL": false,
+      "dotnetRunMessages": true
     },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "TicTacToeWebApiEndPoint": "http://localhost:7080/TicTacToe"
+      },
+      "applicationUrl": "https://localhost:7453;http://localhost:7090",
+      "httpPort": 7090,
+      "sslPort": 7453,
+      "useSSL": false
     },
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
-        "ASPNETCORE_URLS": "https://+:8443;http://+:8080"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "BUILD_CONFIGURATION": "Debug",
+        "TicTacToeWebApiEndPoint": "http://host.docker.internal:8080/TicTacToe"
       },
       "publishAllPorts": true,
       "httpPort": 8090,
@@ -33,8 +45,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://+:8090",
-      "sslPort": 8453
+      "applicationUrl": "http://localhost:7090",
+      "sslPort": 0
     }
   }
 }
