@@ -17,6 +17,7 @@ builder.Services
             jsonOptions
             .JsonSerializerOptions
             .PropertyNamingPolicy = null);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -34,10 +35,10 @@ builder.Services.AddSingleton(
 //);
 
 // Add connection strings
-builder.Configuration.AddEnvironmentVariables();
 //builder.Configuration.AddJsonFile("connectionStrings.json",
 //        optional: false,
 //        reloadOnChange: true);
+builder.Configuration.AddEnvironmentVariables();
 
 var app = builder.Build();
 

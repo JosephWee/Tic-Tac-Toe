@@ -46,8 +46,7 @@ ARG BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
 EXPOSE 80
 EXPOSE 443
 WORKDIR /app
-#COPY --from=publishstage /src/BlazorServerApp/bin/$BUILD_CONFIGURATION/net6.0/publish /app
 COPY --from=publishstage /build/publish /app
 ENTRYPOINT "/app/BlazorServerApp"
-#COPY --from=publishstage /build/publish /app
+#COPY --from=publishstage /src/BlazorServerApp/bin/$BUILD_CONFIGURATION/net6.0/publish /app
 #ENTRYPOINT ["dotnet", "BlazorServerApp.dll"]

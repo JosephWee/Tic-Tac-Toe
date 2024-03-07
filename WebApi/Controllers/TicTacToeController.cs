@@ -32,7 +32,7 @@ namespace WebApi.Controllers
             string msbuildDir = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "..", "..", "..")).FullName;
             string solutionDir = new DirectoryInfo(Path.Combine(msbuildDir, "..")).FullName;
 
-            string connectionString = config.GetConnectionString("TicTacToeDataConnString") ?? string.Empty;
+            string connectionString = config.GetValue<string>("TicTacToeDataConnString") ?? string.Empty;
             string TicTacToeDataConnString =
                 connectionString
                 .Replace("$(SolutionDir)", solutionDir)
