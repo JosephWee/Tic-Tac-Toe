@@ -4,22 +4,16 @@ services:
   webapi:
     image: ${DOCKER_REGISTRY-}webapi
     build: ./WebAPI
-    #build:
-    #  context: .
-    #  dockerfile: WebAPI/Dockerfile
     ports:
-      - "8080:8080"
-      - "8443:8443"
+      - "${webapi_http_port_external}:80"
+      - "${webapi_ssl_port_external}:443"
 
   blazorserverapp:
     image: ${DOCKER_REGISTRY-}blazorserverapp
     build: ./BlazorServerApp
-    #build:
-    #  context: .
-    #  dockerfile: BlazorServerApp/Dockerfile
     ports:
-      - "8090:8080"
-      - "8453:8443"
+      - "${blazorserverapp_http_port_external}:80"
+      - "${blazorserverapp_ssl_port_external}:443"
     depends_on:
       webapi:
         condition: service_started
