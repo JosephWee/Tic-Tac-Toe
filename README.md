@@ -30,7 +30,7 @@
 
 
 ## About
-The Tic-Tac-Toe project was started in 16 Feb 2022 as a way to learn about Machine Learning.
+The Tic-Tac-Toe project was started in 16 Feb 2022 as a way to learn about Machine Learning. Since then I have added PostgreSQL Database support for running Unit Tests using GitHub Actions and Docker support for better deployment management.
 
 The current implementation has 3 versions of Computer Players.
 - ComputerPlayerV1 chooses it's moves randomly.
@@ -54,29 +54,33 @@ For more information see:
 - https://visualstudio.microsoft.com/vs/
 
 ### Database
-The project is currently implemented to use `SQL Server Express LocalDB`.
-The LocalDB files can be found at `\WebApi\LocalDB\`.
-As the current LocalDB files are locked to my Account, they need to be replaced with your own LocalDB files.
-Once you have created your own LocalDB files, you can create the necessary tables using the SQL script `CreateTicTacToeTable.sql` located at `\TicTacToeBL\DBScripts\`
+#### SQL Server Express LocalDB (Depreciated)
+The project was implemented to use `SQL Server Express LocalDB`, but this has been depreciated in favor of PostgreSQL.
+
+The LocalDB file has been removed from `\WebApi\LocalDB\`.
+
+The old DB scripts for SQL Server can still be found at `\TicTacToeBL\DBScripts\` but they are no longer updated.
 
 For more information please see:
 - https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16
 - https://learn.microsoft.com/en-us/visualstudio/data-tools/create-a-sql-database-by-using-a-designer?view=vs-2022
 
+#### Postgresql
+You can now use `PostgreSQL` as the database.
+
+To create the database and login credentials run the DB script `\TicTacToeBL\DBScripts\CreateTicTacToeSchema-Postgresql.sql`.
+
+For more information please see:
+- https://www.postgresql.org/docs/current/tutorial-install.html
+- https://www.postgresql.org/docs/current/app-psql.html
+- https://www.pgadmin.org/docs/pgadmin4/latest/query_tool.html
+
 ### Web API
-#### connectionStrings.json
-Replace the connection string named `TicTacToeDataConnString` with the actual value of your connection string.
+#### Connection Strings
 
-For example:
-```json
-{
-  "ConnectionStrings": {
-    "TicTacToeDataConnString": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=$(MSBuildProjectDirectory)\\LocalDB\\TicTacToeData.mdf;Integrated Security=True;Connect Timeout=30"
-  }
-}
-```
+The `\WebAPI\connectionStrings.json` file has been removed.
 
-Please note that the well-known MSBuild property `$(MSBuildProjectDirectory)` is automatically replaced with the `WebApi` project directory if found in the connection string.
+To make it easier to switch between the different Visual Studios Debugging Profiles the connection strings are now stored as an Environmental Variable `TicTacToeDataConnString` in the `\WebApi\Properties\launchsettings.json`.
 
 For more information see:
 - https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-strings
@@ -85,11 +89,29 @@ For more information see:
 - https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-reserved-and-well-known-properties?view=vs-2022
 
 ### BlazorServerApp
-#### appsettings.json
-Replace the `TicTacToeWebApi` endpoint in the `appsettings.json` file with the actual endpoint of the TicTacToe Web API. The baseaddress can be found in the `launchsettings.json` file found at `\WebApi\Properties`.
+#### TicTacToe WebApi Endpoint
+
+To make it easier to switch between the different Visual Studios Debugging Profiles the TicTacToe WebApi Endpoints are now stored as an Environmental Variable `TicTacToeWebApiEndPoint` in the `\BlazorServerApp\Properties\launchsettings.json`.
 
 ### Running the code
-To run the code, make sure you start the `WebApi` project before starting the `BlazorServerApp` project.
+#### Running the code with Docker
+
+Docker Compose is the recommended way to Run/Debug the project as Docker-Compose will start the WebAPI and BlazorServerApp services in the right order.
+
+To run the code with Docker-Compose you need the following installed:
+- Visual Studio Community 2022 or Visual Studio Professional 2022
+- Docker Desktop
+- Docker Compose
+- PostgreSQL
+- pgAdmin (Optional)
+
+Once you have cloned the code into your local development machine, open it with Visual Studio 2022.
+
+Right-Click on the `docker-compose` solution folder and select `Set as Startup Project` from the context menu.
+
+Then click on the green play button that says `Docker Compose` near the top.
+
+To run the code using other Debugging Profiles, make sure you start the `WebApi` project before starting the `BlazorServerApp` project.
 
 ## Notes
 As previously mentioned, the purpose of this project is for learning about ML(Machine Learning).
