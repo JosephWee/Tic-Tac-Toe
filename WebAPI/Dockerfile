@@ -20,5 +20,5 @@ FROM base AS finalstage
 EXPOSE 80
 EXPOSE 443
 WORKDIR /app
-COPY --from=publishstage /build/publish /app
+COPY --from=publishstage /build/publish/. /app
 ENTRYPOINT ["dotnet", "WebAPI.dll"]
