@@ -1,5 +1,7 @@
 ﻿using log4net;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.ML;
 using System.ComponentModel.DataAnnotations;
@@ -18,13 +20,15 @@ namespace WebApi.Controllers
     public class TicTacToeController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private readonly IDistributedCache _distCache;
         private string _OutcomePredictionModelPath = string.Empty;
         private string _ComputerPlayerV3ModelPath = string.Empty;
         private log4net.ILog _logger;
         
-        public TicTacToeController(IConfiguration config, log4net.ILog logger)
+        public TicTacToeController(IConfiguration config, IDistributedCache distCache, log4net.ILog logger)
         {
             _config = config;
+            _distCache = distCache;
             _logger = logger;
 
             //string solutionDir = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..")).FullName;
@@ -200,6 +204,9 @@ namespace WebApi.Controllers
                     resultSet.Results.Add(result);
                 }
 
+                resultSet.AppInstanceId = _distCache.GetString("AppInstanceId") ?? string.Empty;
+                resultSet.AppStartTimeUTC = _distCache.GetString("AppStartTimeUTC") ?? string.Empty;
+                
                 return Ok(resultSet);
             }
             catch (TicTacToe.CustomValidationException valEx)
@@ -228,6 +235,9 @@ namespace WebApi.Controllers
 
                 string Description = $"Web Api - {computerPlayer.GetType().Name}";
                 var retVal = T3BL.TicTacToe.ProcessRequest(value, computerPlayer, _OutcomePredictionModelPath, Description);
+
+                retVal.AppInstanceId = _distCache.GetString("AppInstanceId") ?? string.Empty;
+                retVal.AppStartTimeUTC = _distCache.GetString("AppStartTimeUTC") ?? string.Empty;
 
                 return Ok(retVal);
             }

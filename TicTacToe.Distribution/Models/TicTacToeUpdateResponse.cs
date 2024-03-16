@@ -7,6 +7,10 @@ namespace TicTacToe.Models
 {
     public class TicTacToeUpdateResponse
     {
+        public string AppInstanceId { get; set; }
+
+        public string AppStartTimeUTC { get; set; }
+
         public TicTacToeGameStatus Status { get; set; }
         public List<int> WinningCells { get; set; }
 
@@ -18,6 +22,8 @@ namespace TicTacToe.Models
 
         public TicTacToeUpdateResponse()
         {
+            AppInstanceId = string.Empty;
+            AppStartTimeUTC = string.Empty;
             Status = TicTacToeGameStatus.InProgress;
             WinningCells = new List<int>();
             ComputerMove = null;

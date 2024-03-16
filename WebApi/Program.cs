@@ -1,5 +1,6 @@
 using log4net;
 using log4net.Config;
+using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json.Linq;
 using TicTacToe.BusinessLogic;
 using TicTacToe.Entity;
@@ -40,6 +41,16 @@ builder.Services.AddSingleton(
 //        reloadOnChange: true);
 builder.Configuration.AddEnvironmentVariables();
 
+// Add services to the container.
+var config = builder.Configuration;
+
+builder.Services.AddDistributedSqlServerCache(options =>
+{
+    options.ConnectionString = config.GetValue<string>("TicTacToeWebApiCache") ?? string.Empty;
+    options.SchemaName = "dbo";
+    options.TableName = "TicTacToeWebApiCache";
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -49,6 +60,26 @@ if (app.Environment.EnvironmentName.StartsWith("Development"))
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+int? TicTacToeWebApiCacheExpiration = config.GetValue<int>("TicTacToeWebApiCacheExpiration");
+
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    var instanceId = Guid.NewGuid().ToString();
+    byte[] encodedInstanceId = System.Text.Encoding.UTF8.GetBytes(instanceId);
+
+    var currentTimeUTC = DateTime.UtcNow.ToString("O");
+    byte[] encodedCurrentTimeUTC = System.Text.Encoding.UTF8.GetBytes(currentTimeUTC);
+
+    var options =
+        new DistributedCacheEntryOptions()
+        .SetSlidingExpiration(TimeSpan.FromMinutes(TicTacToeWebApiCacheExpiration.HasValue ? TicTacToeWebApiCacheExpiration.Value : 60));
+    var DistCache = app.Services.GetService<IDistributedCache>();
+    if (DistCache == null)
+        throw new Exception("TicTacToeWebApiCache registration failed.");
+    DistCache.Set("AppInstanceId", encodedInstanceId, options);
+    DistCache.Set("AppStartTimeUTC", encodedCurrentTimeUTC, options);
+});
 
 app.UseHttpsRedirection();
 

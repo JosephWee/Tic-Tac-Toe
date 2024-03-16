@@ -1,5 +1,6 @@
 ﻿using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.ML;
 using System.ComponentModel.DataAnnotations;
@@ -18,13 +19,15 @@ namespace WebApi.Controllers
     public class HomeController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private readonly IDistributedCache _distCache;
         private string _OutcomePredictionModelPath = string.Empty;
         private string _ComputerPlayerV3ModelPath = string.Empty;
         private log4net.ILog _logger;
         
-        public HomeController(IConfiguration config, log4net.ILog logger)
+        public HomeController(IConfiguration config, IDistributedCache distCache, log4net.ILog logger)
         {
             _config = config;
+            _distCache = distCache;
             _logger = logger;
         }
 
@@ -34,7 +37,11 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            return Ok();
+            WebApiInstanceInfo instanceInfo = new WebApiInstanceInfo();
+            instanceInfo.AppInstanceId = _distCache.GetString("AppInstanceId") ?? string.Empty;
+            instanceInfo.AppStartTimeUTC = _distCache.GetString("AppStartTimeUTC") ?? string.Empty;
+
+            return Ok(instanceInfo);
         }
     }
 }
