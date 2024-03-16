@@ -4,6 +4,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json.Linq;
 using TicTacToe.BusinessLogic;
 using TicTacToe.Entity;
+using TicTacToe.Cache;
 using TicTacToe.ML;
 using static TicTacToe.BusinessLogic.ComputerPlayerV3;
 
@@ -65,11 +66,7 @@ int? TicTacToeWebApiCacheExpiration = config.GetValue<int>("TicTacToeWebApiCache
 
 app.Lifetime.ApplicationStarted.Register(() =>
 {
-    var instanceId = Guid.NewGuid().ToString();
-    byte[] encodedInstanceId = System.Text.Encoding.UTF8.GetBytes(instanceId);
-
-    var currentTimeUTC = DateTime.UtcNow.ToString("O");
-    byte[] encodedCurrentTimeUTC = System.Text.Encoding.UTF8.GetBytes(currentTimeUTC);
+    string currentTimeUTC = DateTime.UtcNow.ToString("O");
 
     var options =
         new DistributedCacheEntryOptions()
@@ -77,8 +74,8 @@ app.Lifetime.ApplicationStarted.Register(() =>
     var DistCache = app.Services.GetService<IDistributedCache>();
     if (DistCache == null)
         throw new Exception("TicTacToeWebApiCache registration failed.");
-    DistCache.Set("AppInstanceId", encodedInstanceId, options);
-    DistCache.Set("AppStartTimeUTC", encodedCurrentTimeUTC, options);
+
+    DistCache.SetCache("AppStartTimeUTC", currentTimeUTC, options);
 });
 
 app.UseHttpsRedirection();

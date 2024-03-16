@@ -6,6 +6,7 @@ using Microsoft.ML;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Reflection;
+using TicTacToe.Cache;
 using T3BL = TicTacToe.BusinessLogic;
 using T3Ent = TicTacToe.Entity;
 using T3ML = TicTacToe.ML;
@@ -38,8 +39,8 @@ namespace WebApi.Controllers
         public async Task<ActionResult> Get()
         {
             WebApiInstanceInfo instanceInfo = new WebApiInstanceInfo();
-            instanceInfo.AppInstanceId = _distCache.GetString("AppInstanceId") ?? string.Empty;
-            instanceInfo.AppStartTimeUTC = _distCache.GetString("AppStartTimeUTC") ?? string.Empty;
+            instanceInfo.AppInstanceId = _distCache.AppInstanceId();
+            instanceInfo.AppStartTimeUTC = _distCache.GetCache("AppStartTimeUTC") ?? string.Empty;
 
             return Ok(instanceInfo);
         }

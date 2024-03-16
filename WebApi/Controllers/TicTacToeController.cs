@@ -7,6 +7,7 @@ using Microsoft.ML;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Reflection;
+using TicTacToe.Cache;
 using T3BL = TicTacToe.BusinessLogic;
 using T3Ent = TicTacToe.Entity;
 using T3ML = TicTacToe.ML;
@@ -204,8 +205,8 @@ namespace WebApi.Controllers
                     resultSet.Results.Add(result);
                 }
 
-                resultSet.AppInstanceId = _distCache.GetString("AppInstanceId") ?? string.Empty;
-                resultSet.AppStartTimeUTC = _distCache.GetString("AppStartTimeUTC") ?? string.Empty;
+                resultSet.AppInstanceId = _distCache.AppInstanceId();
+                resultSet.AppStartTimeUTC = _distCache.GetCache("AppStartTimeUTC") ?? string.Empty;
                 
                 return Ok(resultSet);
             }
@@ -236,8 +237,8 @@ namespace WebApi.Controllers
                 string Description = $"Web Api - {computerPlayer.GetType().Name}";
                 var retVal = T3BL.TicTacToe.ProcessRequest(value, computerPlayer, _OutcomePredictionModelPath, Description);
 
-                retVal.AppInstanceId = _distCache.GetString("AppInstanceId") ?? string.Empty;
-                retVal.AppStartTimeUTC = _distCache.GetString("AppStartTimeUTC") ?? string.Empty;
+                retVal.AppInstanceId = _distCache.AppInstanceId();
+                retVal.AppStartTimeUTC = _distCache.GetCache("AppStartTimeUTC") ?? string.Empty;
 
                 return Ok(retVal);
             }
