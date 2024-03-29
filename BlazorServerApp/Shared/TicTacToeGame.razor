@@ -2,6 +2,7 @@
 @using TicTacToe.Models
 @using TicTacToe.Extensions
 @using BlazorServerApp.Data
+@using System.Text.Json;
 @inject TicTacToeService tictactoesvc
 @inject IJSRuntime JS
 
@@ -129,6 +130,11 @@
             JS.InvokeVoidAsync("loaderShow", "overlay_" + ID);
             var response = await tictactoesvc.UpdateTicTacToe(request);
             JS.InvokeVoidAsync("loaderHide", "overlay_" + ID);
+
+            //JsonSerializerOptions options = new JsonSerializerOptions();
+            //options.WriteIndented = true;
+            //string jsonTicTacToeUpdateResponse = JsonSerializer.Serialize<TicTacToeUpdateResponse>(response, options);
+            JS.InvokeVoidAsync("safelog", response);
 
             if (response == null)
             {

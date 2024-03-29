@@ -50,6 +50,7 @@ builder.Services.AddDistributedSqlServerCache(options =>
     options.ConnectionString = config.GetValue<string>("TicTacToeWebApiCache") ?? string.Empty;
     options.SchemaName = "dbo";
     options.TableName = "TicTacToeWebApiCache";
+    options.DefaultSlidingExpiration = TimeSpan.FromMinutes(60);
 });
 
 var app = builder.Build();

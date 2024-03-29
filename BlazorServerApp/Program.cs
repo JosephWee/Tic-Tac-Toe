@@ -2,12 +2,24 @@ using BlazorServerApp.Data;
 using BlazorServerApp.Pages;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Caching;
+using Microsoft.Extensions.Caching.Distributed;
+using TicTacToe.Cache;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
+var config = builder.Configuration;
+
+// Add services to the container.
+builder.Services.AddDistributedSqlServerCache((options) => {
+    options.ConnectionString = config.GetValue<string>("TicTacToeWebApiCache", string.Empty);
+    options.SchemaName = "dbo";
+    options.TableName = "TicTacToeWebApiCache";
+    options.DefaultSlidingExpiration = TimeSpan.FromMinutes(60);
+});
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 //builder.Services.AddSingleton<WeatherForecastService>();
@@ -33,6 +45,22 @@ if (!app.Environment.EnvironmentName.StartsWith("Development"))
 
     app.UseHttpsRedirection();
 }
+
+int? TicTacToeWebApiCacheExpiration = config.GetValue<int>("TicTacToeWebApiCacheExpiration");
+
+app.Lifetime.ApplicationStarted.Register(() => {
+
+    string currentTimeUTC = DateTime.UtcNow.ToString("O");
+
+    var options =
+        new DistributedCacheEntryOptions()
+        .SetSlidingExpiration(TimeSpan.FromMinutes(TicTacToeWebApiCacheExpiration.HasValue ? TicTacToeWebApiCacheExpiration.Value : 60));
+    var DistCache = app.Services.GetService<IDistributedCache>();
+    if (DistCache == null)
+        throw new Exception("TicTacToeWebApiCache registration failed.");
+
+    DistCache.SetCache("AppStartTimeUTC", currentTimeUTC, options);
+});
 
 app.UseStaticFiles();
 

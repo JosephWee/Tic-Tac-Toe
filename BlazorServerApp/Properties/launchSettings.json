@@ -5,7 +5,9 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "TicTacToeWebApiEndPoint": "http://localhost:5080/TicTacToe"
+        "TicTacToeWebApiEndPoint": "http://localhost:5080/TicTacToe",
+        "TicTacToeWebApiCache": "Server=localhost\\SQLEXPRESS2019;Database=DistSqlSvrCache;User Id=DistSqlSvrCacheUser;Password=DistSqlSvrCacheUserP@ssw0rd;",
+        "TicTacToeWebApiCacheExpiration": "60"
       },
       "applicationUrl": "https://localhost:5453;http://localhost:5090",
       "httpPort": 5090,
@@ -18,7 +20,9 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "TicTacToeWebApiEndPoint": "http://localhost:7080/TicTacToe"
+        "TicTacToeWebApiEndPoint": "http://localhost:7080/TicTacToe",
+        "TicTacToeWebApiCache": "Server=localhost\\SQLEXPRESS2019;Database=DistSqlSvrCache;User Id=DistSqlSvrCacheUser;Password=DistSqlSvrCacheUserP@ssw0rd;",
+        "TicTacToeWebApiCacheExpiration": "60"
       },
       "applicationUrl": "https://localhost:7453;http://localhost:7090",
       "httpPort": 7090,
@@ -33,7 +37,9 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "https://+:443;http://+:80",
         "BUILD_CONFIGURATION": "Debug",
-        "TicTacToeWebApiEndPoint": "http://host.docker.internal:8080/TicTacToe"
+        "TicTacToeWebApiEndPoint": "http://host.docker.internal:8080/TicTacToe",
+        "TicTacToeWebApiCache": "Server=host.docker.internal;Database=DistSqlSvrCache;User Id=DistSqlSvrCacheUser;Password=DistSqlSvrCacheUserP@ssw0rd;",
+        "TicTacToeWebApiCacheExpiration": "60"
       },
       "publishAllPorts": true,
       "httpPort": 8090,
