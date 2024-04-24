@@ -3,19 +3,34 @@ version: '3.4'
 services:
   webapi:
     environment:
-      - BUILD_CONFIGURATION=Debug
       - ASPNETCORE_ENVIRONMENT=Development-Docker
-      - ASPNETCORE_URLS=http://+:80"
+      - ASPNETCORE_URLS=http://+:80
+      - BUILD_CONFIGURATION=Debug
       - TicTacToeDataConnString=${TicTacToeDataConnString}
+      - TicTacToeWebApiCache=${TicTacToeWebApiCache}
+      - TicTacToeWebApiCacheExpiration=${TicTacToeWebApiCacheExpiration}
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  aspcorewebapprazorpages:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development-Docker
+      - ASPNETCORE_URLS=http://+:80
+      - BUILD_CONFIGURATION=Debug
+      - TicTacToeWebApiEndPoint=${TicTacToeWebApiEndPoint}
+      - TicTacToeWebApiCache=${TicTacToeWebApiCache}
+      - TicTacToeWebApiCacheExpiration=${TicTacToeWebApiCacheExpiration}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
   blazorserverapp:
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development-Docker
+      - ASPNETCORE_URLS=http://+:80
       - BUILD_CONFIGURATION=Debug
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80"
       - TicTacToeWebApiEndPoint=${TicTacToeWebApiEndPoint}
+      - TicTacToeWebApiCache=${TicTacToeWebApiCache}
+      - TicTacToeWebApiCacheExpiration=${TicTacToeWebApiCacheExpiration}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

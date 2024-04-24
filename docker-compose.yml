@@ -8,6 +8,16 @@ services:
       - "${webapi_http_port_external}:80"
       - "${webapi_ssl_port_external}:443"
 
+  aspcorewebapprazorpages:
+    image: ${DOCKER_REGISTRY-}aspcorewebapprazorpages
+    build: ./AspCoreWebAppRazorPages
+    ports:
+      - "${aspcorewebapprazorpages_http_port_external}:80"
+      - "${aspcorewebapprazorpages_ssl_port_external}:443"
+    depends_on:
+      webapi:
+        condition: service_started
+
   blazorserverapp:
     image: ${DOCKER_REGISTRY-}blazorserverapp
     build: ./BlazorServerApp
