@@ -2,16 +2,15 @@
   "profiles": {
     "AspCoreWebAppRazorPages": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5463;http://localhost:5100",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "TicTacToeWebApiEndPoint": "http://localhost:5080/TicTacToe",
         "TicTacToeWebApiCache": "Server=localhost\\SQLEXPRESS2019;Database=DistSqlSvrCache;User Id=DistSqlSvrCacheUser;Password=DistSqlSvrCacheUserP@ssw0rd;",
         "TicTacToeWebApiCacheExpiration": "60"
       },
-
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:5463;http://localhost:5100",
       "httpPort": 5100,
       "sslPort": 5463,
       "useSSL": false
@@ -29,6 +28,15 @@
       "httpPort": 7100,
       "sslPort": 7463,
       "useSSL": false
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "http://+:80"
+      },
+      "publishAllPorts": true
     }
   },
   "iisSettings": {
