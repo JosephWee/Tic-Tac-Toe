@@ -29,14 +29,22 @@
       "sslPort": 7463,
       "useSSL": false
     },
-    "Container (Dockerfile)": {
+    "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
-        "ASPNETCORE_URLS": "http://+:80"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "BUILD_CONFIGURATION": "Debug",
+        "TicTacToeWebApiEndPoint": "http://host.docker.internal:8080/TicTacToe",
+        "TicTacToeWebApiCache": "Server=host.docker.internal;Database=DistSqlSvrCache;User Id=DistSqlSvrCacheUser;Password=DistSqlSvrCacheUserP@ssw0rd;",
+        "TicTacToeWebApiCacheExpiration": "60"
       },
-      "publishAllPorts": true
+      "publishAllPorts": true,
+      "httpPort": 8090,
+      "sslPort": 8453,
+      "useSSL": false
     }
   },
   "iisSettings": {
