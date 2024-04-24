@@ -34,7 +34,24 @@
             //if (console && console.log)
             //    console.log("PageSize = " + PageSize + " PageNum = " + PageNum);
 
-            let thepromise = DotNet.invokeMethodAsync('BlazorServerApp', 'jsGetTicTacToeResultSet', PageSize, PageNum);
+            //let thepromise = DotNet.invokeMethodAsync('AspCoreWebAppRazorPages', 'jsGetTicTacToeResultSet', PageSize, PageNum);
+
+            var fd = new FormData();
+            fd.append('PageSize', PageSize);
+            fd.append('PageNum', PageNum);
+
+            const RequestVerificationToken = $("input[name='__RequestVerificationToken']").val();
+
+            let thepromise = $.ajax({
+                type: "POST",
+                url: "/TicTacToeResultViewer?handler=FetchTicTacToeResultSet",
+                data: fd,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'RequestVerificationToken': RequestVerificationToken
+                }
+            });
 
             //if (console && console.log)
             //    console.log(thepromise);

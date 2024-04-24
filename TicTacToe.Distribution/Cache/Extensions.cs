@@ -11,6 +11,21 @@ namespace TicTacToe.Cache
 {
     public static class Extensions
     {
+        static string _appInstanceId;
+        public static string _AppInstanceId
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_appInstanceId))
+                {
+                    string appName = System.AppDomain.CurrentDomain.FriendlyName + "|" + System.Environment.MachineName;
+                    _appInstanceId = appName.GetHash_SHA256();
+                }
+
+                return _appInstanceId;
+            }
+        }
+
         public static string GetHash_SHA256(this string str)
         {
             using (SHA1 sha1 = SHA1.Create())
@@ -28,7 +43,7 @@ namespace TicTacToe.Cache
 
         public static string AppInstanceId(this Microsoft.Extensions.Caching.Distributed.IDistributedCache distCache)
         {
-            return System.Environment.MachineName.GetHash_SHA256();
+            return _AppInstanceId;
         }
 
         public static void SetCache(this Microsoft.Extensions.Caching.Distributed.IDistributedCache distCache, string key, string data, Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions options)

@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Tic-Tac-Toe (jQuery)";
 }
-@using Microsoft.JSInterop
 
 <link rel="stylesheet" href="~/Tic-Tac-Toe/css/tic-tac-toe.css" asp-append-version="false" />
 <script src="~/Tic-Tac-Toe/js/tic-tac-toe.js" asp-append-version="false"></script>
@@ -27,6 +26,7 @@
 <p>For more information please visit <a href="https://github.com/JosephWee/Tic-Tac-Toe" target="_blank">https://github.com/JosephWee/Tic-Tac-Toe</a></p>
 
 <script type="text/javascript">
+
     jQuery(document).ready(function () {
 
         function OnPostUpdateTicTacToe(requestArgs) {
@@ -38,7 +38,23 @@
             //    console.log(requestArgs);
 
             let requestData = JSON.stringify(requestArgs);
-            let thepromise = DotNet.invokeMethodAsync('BlazorServerApp', 'jsUpdateTicTacToe', requestData);
+            var fd = new FormData();
+            fd.append('requestData', requestData);
+
+            //let thepromise = DotNet.invokeMethodAsync('AspCoreWebAppRazorPages', 'jsUpdateTicTacToe', requestData);
+            
+            const RequestVerificationToken = $("input[name='__RequestVerificationToken']").val();
+
+            let thepromise = $.ajax({
+                type: "POST",
+                url: "/TicTacToeJq?handler=UpdateTicTacToe",
+                data: fd,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'RequestVerificationToken': RequestVerificationToken
+                }
+            });
 
             //if (console && console.log)
             //    console.log(thepromise);

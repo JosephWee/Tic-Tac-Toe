@@ -8,4 +8,28 @@
     <DockerfileContext>..\Tic-Tac-Toe</DockerfileContext>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="6.0.28" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TicTacToe.Distribution\TicTacToe.Distribution.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Pages\Shared\_Layout.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\launchSettings.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

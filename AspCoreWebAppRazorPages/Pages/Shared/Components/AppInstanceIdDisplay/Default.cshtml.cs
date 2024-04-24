@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using TicTacToe.Cache;
 
-namespace BlazorServerApp.Pages.Shared.Components
+namespace AspCoreWebAppRazorPages.Pages.Shared.Components
 {
     public class AppInstanceIdDisplayViewComponent : ViewComponent
     {

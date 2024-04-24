@@ -4,7 +4,7 @@ using Microsoft.JSInterop;
 using System.Text.Json;
 using T3Mod = TicTacToe.Models;
 
-namespace BlazorServerApp.Pages
+namespace AspCoreWebAppRazorPages.Pages
 {
     public class TicTacToeResultViewerModel : PageModel
     {
@@ -19,45 +19,20 @@ namespace BlazorServerApp.Pages
         {
         }
 
-        [JSInvokableAttribute("jsGetTicTacToeResultSet")]
-        public static async Task<string> OnPostFetchTicTacToeResultSet(int PageSize, int PageNum)
+        public async Task<IActionResult> OnPostFetchTicTacToeResultSetAsync(int PageSize, int PageNum)
         {
-            //var configExternalServices =
-            //    _config.GetSection("ExternalServices");
+            var endpoint = _config.GetValue<string>("TicTacToeWebApiEndPoint");
 
-            //if (configExternalServices != null)
-            //{
-            //    var configTicTacToeWebApi = configExternalServices.GetSection("TicTacToeWebApi");
-            //    if (configTicTacToeWebApi != null)
-            //    {
-                    //var endpoint = configTicTacToeWebApi["endpoint"];
-                    var endpoint = _config.GetValue<string>("TicTacToeWebApiEndPoint");
+            var client = new HttpClient();
+            var httpResponseMessage =
+                await client.GetAsync($"{endpoint}?PageSize={PageSize}&PageNum={PageNum}");
 
-                    var client = new HttpClient();
-                    var httpGetTask =
-                        client.GetAsync($"{endpoint}?PageSize={PageSize}&PageNum={PageNum}");
+            var tictactoeResultSet =
+                await httpResponseMessage
+                .Content
+                .ReadAsStringAsync();
 
-                    httpGetTask.Wait();
-
-                    var httpResponseMessage = httpGetTask.Result;
-
-                    var readStringTask =
-                        httpResponseMessage
-                        .Content
-                        .ReadAsStringAsync();
-
-                    readStringTask.Wait();
-
-                    if (readStringTask.Result != null)
-                    {
-                        var tictactoeResultSet = readStringTask.Result;
-
-                        return tictactoeResultSet;
-                    }
-            //    }
-            //}
-
-            return string.Empty;
+            return new OkObjectResult(tictactoeResultSet);
         }
     }
 }

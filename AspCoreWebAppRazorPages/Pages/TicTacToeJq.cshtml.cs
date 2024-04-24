@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.JSInterop;
 using System.Text.Json;
 using TicTacToe.Models;
 
-namespace BlazorServerApp.Pages
+namespace AspCoreWebAppRazorPages.Pages
 {
     public class TicTacToeJqModel : PageModel
     {
@@ -19,53 +20,34 @@ namespace BlazorServerApp.Pages
         {
         }
 
-        [JSInvokableAttribute("jsUpdateTicTacToe")]
-        public static async Task<string> OnPostUpdateTicTacToeAsync(string requestData)
+        public async Task<IActionResult> OnPostUpdateTicTacToeAsync(string requestData)
         {
             var request = JsonSerializer.Deserialize<TicTacToeUpdateRequest>(requestData);
 
             if (request != null)
             {
-                //var configExternalServices =
-                //    _config.GetSection("ExternalServices");
+                var endpoint = _config.GetValue<string>("TicTacToeWebApiEndPoint");
 
-                //if (configExternalServices != null)
-                //{
-                //    var configTicTacToeWebApi = configExternalServices.GetSection("TicTacToeWebApi");
-                //    if (configTicTacToeWebApi != null)
-                //    {
-                        //var endpoint = configTicTacToeWebApi["endpoint"];
-                        var endpoint = _config.GetValue<string>("TicTacToeWebApiEndPoint");
+                var client = new HttpClient();
+                var httpResponseMessage =
+                    await client.PostAsJsonAsync<TicTacToeUpdateRequest>(
+                        endpoint,
+                        request
+                    );
 
-                        var client = new HttpClient();
-                        var httpPostTask =
-                            client.PostAsJsonAsync<TicTacToeUpdateRequest>(
-                                endpoint,
-                                request
-                            );
+                var tictactoeUpdateResponse =
+                    await httpResponseMessage
+                    .Content
+                    .ReadFromJsonAsync<TicTacToeUpdateResponse>();
 
-                        httpPostTask.Wait();
-
-                        var httpResponseMessage = httpPostTask.Result;
-
-                        var readJsonTask =
-                            httpResponseMessage
-                            .Content
-                            .ReadFromJsonAsync<TicTacToeUpdateResponse>();
-
-                        readJsonTask.Wait();
-
-                        if (readJsonTask.Result != null)
-                        {
-                            var tictactoeUpdateResponse = readJsonTask.Result;
-                            if (tictactoeUpdateResponse != null)
-                                return JsonSerializer.Serialize(tictactoeUpdateResponse);
-                        }
-                //    }
-                //}
+                if (tictactoeUpdateResponse != null)
+                {
+                    string jsonResponse = JsonSerializer.Serialize(tictactoeUpdateResponse);
+                    return new OkObjectResult(jsonResponse);
+                }
             }
 
-            return string.Empty;
+            return NotFound();
         }
     }
 }
