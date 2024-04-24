@@ -1,0 +1,55 @@
+﻿@page
+@model TicTacToeJqModel
+@{
+    ViewData["Title"] = "Tic-Tac-Toe (jQuery)";
+}
+@using Microsoft.JSInterop
+
+<link rel="stylesheet" href="~/Tic-Tac-Toe/css/tic-tac-toe.css" asp-append-version="false" />
+<script src="~/Tic-Tac-Toe/js/tic-tac-toe.js" asp-append-version="false"></script>
+
+<h1>@ViewData["Title"]</h1>
+<p>The Tic-Tac-Toe project was started in 16 Feb 2022 as a way to learn about Machine Learning. This is the jQuery version.</p>
+
+<form method="post">
+    <div style="display: table">
+        <div style="display: table-row">
+            <div style="display: table-cell">
+                <div id="tictactoejq1" class="tictactoejq"></div>
+            </div>
+            @*<div style="display: table-cell">
+                <div id="tictactoejq2" class="tictactoejq"></div>
+            </div>*@
+        </div>
+    </div>
+</form>
+
+<p>For more information please visit <a href="https://github.com/JosephWee/Tic-Tac-Toe" target="_blank">https://github.com/JosephWee/Tic-Tac-Toe</a></p>
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        function OnPostUpdateTicTacToe(requestArgs) {
+
+            //if (console && console.log)
+            //    console.log('OnPostUpdateTicTacToe');
+
+            //if (console && console.log)
+            //    console.log(requestArgs);
+
+            let requestData = JSON.stringify(requestArgs);
+            let thepromise = DotNet.invokeMethodAsync('BlazorServerApp', 'jsUpdateTicTacToe', requestData);
+
+            //if (console && console.log)
+            //    console.log(thepromise);
+
+            return thepromise;
+        }
+
+        var app1 = new TicTacToeJq("tictactoejq1");
+        app1.OnUpdate(OnPostUpdateTicTacToe);
+        
+        @*var app2 = new TicTacToeJq("tictactoejq2");
+        app2.OnUpdate(OnPostUpdateTicTacToe);*@
+    });
+</script>

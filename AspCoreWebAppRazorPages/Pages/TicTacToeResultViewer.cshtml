@@ -1,0 +1,49 @@
+﻿@page
+@model TicTacToeResultViewerModel
+@{
+    ViewData["Title"] = "Tic-Tac-Toe (Results)";
+}
+@using Microsoft.JSInterop
+
+<link rel="stylesheet" href="~/Tic-Tac-Toe/css/tic-tac-toe-viewer.css" />
+<script src="~/Tic-Tac-Toe/js/tic-tac-toe-viewer.js"></script>
+
+<h1>@ViewData["Title"]</h1>
+<p>The Tic-Tac-Toe project was started in 16 Feb 2022 as a way to learn about Machine Learning. This is the jQuery version.</p>
+
+<form method="post">
+    <div style="display: table">
+        <div style="display: table-row">
+            <div style="display: table-cell">
+                <div id="tictactoeviewerjq" class="tictactoeviewerjq"></div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<p>For more information please visit <a href="https://github.com/JosephWee/Tic-Tac-Toe" target="_blank">https://github.com/JosephWee/Tic-Tac-Toe</a></p>
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        function FetchTicTacToeResultSet(PageSize, PageNum) {
+
+            //if (console && console.log)
+            //    console.log('FetchTicTacToeResultSet (cshtml)');
+
+            //if (console && console.log)
+            //    console.log("PageSize = " + PageSize + " PageNum = " + PageNum);
+
+            let thepromise = DotNet.invokeMethodAsync('BlazorServerApp', 'jsGetTicTacToeResultSet', PageSize, PageNum);
+
+            //if (console && console.log)
+            //    console.log(thepromise);
+
+            return thepromise;
+        }
+
+        var app1 = new TicTacToeViewerJq("tictactoeviewerjq");
+        app1.OnNeedData(FetchTicTacToeResultSet);
+        //setTimeout(app1.getResultSet(),30000);
+    });
+</script>
