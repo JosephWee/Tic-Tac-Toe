@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.CompilerServices;
+using System.Reflection;
 
 namespace TicTacToe.Cache
 {
@@ -18,7 +19,7 @@ namespace TicTacToe.Cache
             {
                 if (string.IsNullOrEmpty(_appInstanceId))
                 {
-                    string appName = System.AppDomain.CurrentDomain.FriendlyName + "|" + System.Environment.MachineName;
+                    string appName = Assembly.GetEntryAssembly().GetName().FullName + "|" + System.Environment.MachineName;
                     _appInstanceId = appName.GetHash_SHA256();
                 }
 
@@ -57,6 +58,10 @@ namespace TicTacToe.Cache
         {
             string actualKey = distCache.AppInstanceId() + key;
             byte[] bytes = distCache.Get(actualKey);
+            
+            if (bytes == null || bytes.Length == 0)
+                return string.Empty;
+
             return System.Text.Encoding.UTF8.GetString(bytes);
         }
     }

@@ -33,6 +33,8 @@ builder.Services.AddSingleton(typeof(log4net.ILog),
 var ticTacToeService = new TicTacToeService(builder.Configuration);
 builder.Services.AddScoped<TicTacToeService>(sp => ticTacToeService);
 
+builder.WebHost.UseStaticWebAssets();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

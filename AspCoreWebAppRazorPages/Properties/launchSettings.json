@@ -32,9 +32,10 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
+      "launchBrowserTimeout": 10,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Development-Docker",
         "ASPNETCORE_URLS": "https://+:443;http://+:80",
         "BUILD_CONFIGURATION": "Debug",
         "TicTacToeWebApiEndPoint": "http://host.docker.internal:8080/TicTacToe",
@@ -42,8 +43,8 @@
         "TicTacToeWebApiCacheExpiration": "60"
       },
       "publishAllPorts": true,
-      "httpPort": 8090,
-      "sslPort": 8453,
+      "httpPort": 8100,
+      "sslPort": 8463,
       "useSSL": false
     }
   },
