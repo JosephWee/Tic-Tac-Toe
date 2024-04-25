@@ -29,43 +29,8 @@
 
     jQuery(document).ready(function () {
 
-        function OnPostUpdateTicTacToe(requestArgs) {
-
-            //if (console && console.log)
-            //    console.log('OnPostUpdateTicTacToe');
-
-            //if (console && console.log)
-            //    console.log(requestArgs);
-
-            let requestData = JSON.stringify(requestArgs);
-            var fd = new FormData();
-            fd.append('requestData', requestData);
-
-            //let thepromise = DotNet.invokeMethodAsync('AspCoreWebAppRazorPages', 'jsUpdateTicTacToe', requestData);
-            
-            const RequestVerificationToken = $("input[name='__RequestVerificationToken']").val();
-
-            let thepromise = $.ajax({
-                type: "POST",
-                url: "/TicTacToeJq?handler=UpdateTicTacToe",
-                data: fd,
-                processData: false,
-                contentType: false,
-                headers: {
-                    'RequestVerificationToken': RequestVerificationToken
-                }
-            });
-
-            //if (console && console.log)
-            //    console.log(thepromise);
-
-            return thepromise;
-        }
-
         var app1 = new TicTacToeJq("tictactoejq1");
-        app1.OnUpdate(OnPostUpdateTicTacToe);
         
-        @*var app2 = new TicTacToeJq("tictactoejq2");
-        app2.OnUpdate(OnPostUpdateTicTacToe);*@
+        @*var app2 = new TicTacToeJq("tictactoejq2");*@
     });
 </script>

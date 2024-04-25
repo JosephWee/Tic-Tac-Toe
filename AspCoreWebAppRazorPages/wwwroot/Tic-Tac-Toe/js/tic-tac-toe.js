@@ -12,7 +12,6 @@
     #winningCells;
     #aiPrediction;
     #aiPredictionScore;
-    #updateTicTacToeDelegate;
 
     constructor(elementId) {
 
@@ -128,10 +127,6 @@
             '        <button type="button" class="btn btn-danger changeMode">Change Mode</button>' +
             '        <button type="button" class="btn btn-info aiPrediction">AI Prediction</button>' +
             '    </div> ' +
-            '</div>' +
-            '<div id="overlay_' + $(this.#container).attr('id') + '" class="overlay text-center" style="background-color: rgba(180, 180, 180, 0.5)">' +
-            '   <div class="overlay-text" style="background-color: rgba(180, 180, 180, 0.5)">' +
-            '   </div>' +
             '</div>'
         );
 
@@ -421,6 +416,59 @@
         //}
     }
 
+    showOverlay(overlayTarget) {
+        //debugger;
+
+        // Overlay
+        // position: fixed; /* Sit on top of the page content */
+        // display: none; /* Hidden by default */
+        // width: 100 %; /* Full width (cover the whole page) */
+        // height: 100 %; /* Full height (cover the whole page) */
+        // top: 0;
+        // left: 0;
+        // right: 0;
+        // bottom: 0;
+        // background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+        // z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+
+        // Text
+        // position: absolute;
+        // top: 50 %;
+        // left: 50 %;
+        // font-size: 50px;
+        // color: white;
+        // transform: translate(-50%, -50%);
+        // -ms-transform: translate(-50%, -50%);
+
+        let overlay = $("<div class='overlay'></div>");
+        overlayTarget.append(overlay);
+        overlay.css("position", "absolute");
+        overlay.css("top", "0px");
+        overlay.css("left", "0px");
+        overlay.css("width", "100%");
+        overlay.css("height", "100%");
+        overlay.css("background-color", "rgba(0, 0, 0, 0.5)");
+        overlay.css("z-index", "2");
+
+        let overlayText = $("<div class='overlayText'>Thinking...<br/><br/></div>");
+        overlayTarget.append(overlayText);
+        overlayText.css("position", "absolute");
+        overlayText.css("top", "50%");
+        overlayText.css("left", "50%");
+        overlayText.css("font-size", "50px");
+        overlayText.css("color", "white");
+        overlayText.css("transform", "translate(-50%, -50%)");
+        overlayText.css("-ms-transform", "translate(-50%, -50%)");
+        overlayText.css("z-index", "3");
+    }
+
+    hideOverlay(overlayTarget) {
+        //debugger;
+
+        overlayTarget.children(".overlayText").remove();
+        overlayTarget.children(".overlay").remove();
+    }
+
     checkResult() {
 
         let unusedCells = this.#cells.filter("[data-state=0]");
@@ -447,67 +495,76 @@
         //app.log("checkResult()");
         //app.log(requestData);
 
-        let loaderId = 'overlay_' + $(this.#container).attr('id');
+        let overlayTarget = $(this.#container).children('div.tic-tac-toe-grid');
 
-        if (typeof loaderShow === 'function' && typeof loaderHide === 'function')
-            loaderShow(loaderId);
+        let requestDataJson = JSON.stringify(requestData);
+        var fd = new FormData();
+        fd.append('requestData', requestDataJson);
 
-        let thepromise = this.#updateTicTacToeDelegate(requestData);
+        const RequestVerificationToken = $("input[name='__RequestVerificationToken']").val();
 
-        //app.log("checkResult()");
-        //app.log(thepromise);
+        $.ajax({
+            type: "POST",
+            url: "/TicTacToeJq?handler=UpdateTicTacToe",
+            data: fd,
+            processData: false,
+            contentType: false,
+            headers: {
+                'RequestVerificationToken': RequestVerificationToken
+            },
+            beforeSend:
+                function () {
+                    app.showOverlay(overlayTarget);
+                },
+            success:
+                function (responseData) {
 
-        thepromise.then(responseData => {
+                    //debugger;
 
-            let resp = JSON.parse(responseData);
+                    let resp = JSON.parse(responseData);
 
-            app.log(resp);
-            app.#state = resp.Status;
-            app.#winningCells = [];
-            app.#aiPrediction = 0;
-            app.#aiPredictionScore = 0;
+                    app.log(resp);
+                    app.#state = resp.Status;
+                    app.#winningCells = [];
+                    app.#aiPrediction = 0;
+                    app.#aiPredictionScore = 0;
 
-            //debugger;
-            if (resp.WinningCells && Array.isArray(resp.WinningCells)) {
-                app.#winningCells = resp.WinningCells;
-            }
+                    //debugger;
+                    if (resp.WinningCells && Array.isArray(resp.WinningCells)) {
+                        app.#winningCells = resp.WinningCells;
+                    }
 
-            if (app.#gameMode == 1) {
-                //debugger;
-                let computerMove = parseInt(resp.ComputerMove);
-                if (isNaN(computerMove) === false && computerMove >= 0 && computerMove < app.#cells.length) {
-                    let cellToChange = $(app.#cells[computerMove]);
-                    if (cellToChange && cellToChange.length > 0)
-                        if (cellToChange.attr("data-state") == "0")
-                            cellToChange.attr("data-state", 2);
-                }
+                    if (app.#gameMode == 1) {
+                        //debugger;
+                        let computerMove = parseInt(resp.ComputerMove);
+                        if (isNaN(computerMove) === false && computerMove >= 0 && computerMove < app.#cells.length) {
+                            let cellToChange = $(app.#cells[computerMove]);
+                            if (cellToChange && cellToChange.length > 0)
+                                if (cellToChange.attr("data-state") == "0")
+                                    cellToChange.attr("data-state", 2);
+                        }
 
-                let prediction = parseInt(resp.Prediction);
-                let predictionScore = resp.PredictionScore;
+                        let prediction = parseInt(resp.Prediction);
+                        let predictionScore = resp.PredictionScore;
 
-                if (!isNaN(prediction) && Array.isArray(predictionScore)) {
-                    let tempArray = [];
-                    for (var i = 0; i < predictionScore.length; i++) {
-                        let tempFloat = parseFloat(predictionScore[i]);
-                        if (!isNaN(tempFloat)) {
-                            tempArray.push(tempFloat);
+                        if (!isNaN(prediction) && Array.isArray(predictionScore)) {
+                            let tempArray = [];
+                            for (var i = 0; i < predictionScore.length; i++) {
+                                let tempFloat = parseFloat(predictionScore[i]);
+                                if (!isNaN(tempFloat)) {
+                                    tempArray.push(tempFloat);
+                                }
+                            }
+                            let maxScore = Math.max(...tempArray);
+                            app.#aiPrediction = prediction;
+                            app.#aiPredictionScore = maxScore;
                         }
                     }
-                    let maxScore = Math.max(...tempArray);
-                    app.#aiPrediction = prediction;
-                    app.#aiPredictionScore = maxScore;
+
+                    app.refreshUI();
+
+                    app.hideOverlay(overlayTarget);
                 }
-            }
-
-            if (typeof loaderShow === 'function' && typeof loaderHide === 'function')
-                loaderHide(loaderId);
-
-            app.refreshUI();
         });
-
-    }
-
-    OnUpdate(funcdelegate) {
-        this.#updateTicTacToeDelegate = funcdelegate;
     }
 }
