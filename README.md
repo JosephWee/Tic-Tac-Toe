@@ -1,6 +1,7 @@
 # Tick-Tac-Toe
 
-[MIT License](https://github.com/JosephWee/Tic-Tac-Toe/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/JosephWee/Tic-Tac-Toe)](LICENSE)
+[![GitHub contributors](https://img.shields.io/github/contributors/JosephWee/Tic-Tac-Toe)](https://github.com/JosephWee/Tic-Tac-Toe/graphs/contributors)
 
 ## Table of Contents
 * [About](https://github.com/JosephWee/Tic-Tac-Toe#about)
